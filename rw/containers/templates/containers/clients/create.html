@@ -1,0 +1,63 @@
+{% extends 'containers/base.html'%}
+
+{%block page-name%}
+<h1>Наличие по клиентам</h1>
+{%endblock%}
+
+
+{%block content%}
+
+<div class="container">
+    <a class="btn btn-primary" href="{%url 'containers:clients'%}" role="button"><i class="fa-solid fa-list"> </i>Все документы</a>
+    <form method="POSt" id="client-form" enctype="multipart/form-data">
+        {%csrf_token%}
+                <!-- CLIENT FROM  -->
+                {{ form.non_field_errors }}
+                <div class="row">
+                    <div class="col-4 left">
+                        <!-- LEFT -->
+                        <!-- <div class="field-wrap">
+                            {{ form.name.errors }}
+                            <label for="{{ form.name.id_for_label }}">{{form.name.label}}:</label>
+                            {{ form.name }}
+                        </div> -->
+                        <div class="field-wrap">
+                            {{ form.document_date.errors }}
+                            <label for="{{ form.document_date.id_for_label }}">{{form.document_date.label}}:</label>
+                            {{ form.document_date }}
+                        </div>
+                        <div class="field-wrap">
+                            {{ form.client_row_pos.errors }}
+                            <label for="{{ form.client_row_pos.id_for_label }}">{{form.client_row_pos.label}}:</label>
+                            {{ form.client_row_pos }}
+                        </div>
+                        <div class="field-wrap">
+                            {{ form.description.errors }}
+                            <label for="{{ form.description.id_for_label }}">{{form.description.label}}:</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="field-wrap">
+                            {{ form.document_file.errors }}
+                            <label for="{{ form.document_file.id_for_label }}">{{form.document_file.label}}:</label>
+                            {{ form.document_file }}
+                        </div>
+                        <div class="field-wrap">
+                            <button class="btn btn-primary" type="submit">Сохранить</button>
+                        </div>
+                        
+                        <!-- LEFT --> 
+                    </div>
+                    <div class="col-8">
+                        <!-- RIGHT -->
+                        <div class="field-wrap">
+                            {{ form.document.errors }}
+                            <label for="{{ form.document.id_for_label }}">{{form.document.label}}:</label>
+                            {{ form.document }}
+                        </div>
+                        <!-- RIGHT -->
+                    </div>
+                </div>
+                        <!-- CLIENT FROM  -->
+    </form>
+</div>
+{%endblock%}

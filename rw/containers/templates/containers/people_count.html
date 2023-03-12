@@ -1,0 +1,97 @@
+{% extends 'containers/base.html' %}
+
+{%block page-name%}<h1>Наличие по клиентам</h1>{%endblock%}
+{% block content %}
+<style>
+  form{
+    display: flex;
+    flex-direction: column;
+  }
+  textarea{
+    width: 100%;
+    height: 60vh;
+    margin-bottom: 20px;
+  }
+  .copy-button{
+    display: flex;
+    justify-content: center;
+  }
+  #text{
+
+  }
+</style>
+<div class="container">
+{%if reader%}
+<label class="pure-material-switch" data-bs-toggle="tooltip" data-bs-placement="right" title="Показывать только номера контейнеров, либо всю строку с найденым в ней номером из документа целиком">
+  <input id="spellcheck" type="checkbox" checked>
+  <span>«Oтображать средний простой»</span>
+</label>
+{%endif%}
+  <div class="row">
+    <div class="col">
+      <form method="POST">
+        {%csrf_token%}
+        <h5>Вставте текст документа:</h5>
+        <textarea name="text" class="form-control" id="text"{%if text%}disabled{%endif%}>{{text}}</textarea>
+        <div class="for-buttons">
+          <button class="pure-material-button-contained" type="submit">Проверить</button>
+        <button id="clear" class="pure-material-button-text" type="none">Отчистить</button>
+        </div>
+      </form>
+    </div>
+    <div class="col">
+      <h5>Общее количество: {{counter.GENERAL_COUNT}}</h5>
+      <textarea class="form-control" id="result" {%if not reader%}disabled{%endif%}></textarea>
+      {%if counter.res_text%}
+      <div class="copy-button">
+        <button class="pure-material-button-contained" id="copy" onclick="copyTextCode('result')">Скопировать</button>
+      </div>
+      {%endif%}
+    </div>
+  </div>
+</div>
+<script>
+  let result = {{reader.result_json|safe}};
+  $('#clear').click(function(e){
+    e.preventDefault()
+    result = []
+    $('#spellcheck').prop('disabled', true)
+    $('#copy').hide()
+    $('textarea').val('')
+    $('#text').removeAttr('disabled')
+    $('#result').attr('disabled', 'disabled')
+  })
+
+
+  $('#spellcheck').click(function(){
+        if ($('#spellcheck').prop('checked'))
+        {$('.pure-material-switch span').text('«Oтображать средний простой»');uploadData(full=true)}
+        else
+        { $('.pure-material-switch span').text('«Скрыть средний простой»');uploadData()}
+        
+    })
+    function uploadData(full){
+      $('#result').val(getDataResult(full))
+    }
+    uploadData(full=true)
+
+    function getDataResult(full=false){
+      let STR_SEP = '    '
+      result_list = []
+      for (i in result){
+        res = []
+        elem = result[i]
+        client_name = elem['name']
+        count = 'КТК:' + elem['len']
+        avg = 'Средний простой:' + elem['avg'] + ' сут.';
+        res.push(client_name)
+        res.push(count)
+        if (full) {res.push(avg)}
+        res_string = res.join(STR_SEP)
+        result_list.push(res_string)
+      }
+      return result_list.join('\n')
+    }
+</script>
+
+{%endblock%}

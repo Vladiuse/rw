@@ -1,0 +1,92 @@
+{% extends 'containers/base.html'%}
+
+{%block page-name%}
+<style>
+
+    #create-new-cod i{
+      display: flex;
+        justify-content: center;
+        padding: 10px;
+      color: grey;
+      font-size: 70px;
+    }
+    .card .buttons{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+</style>
+<h1>Наличие по клиeнтaм</h1>
+
+
+{%endblock%}
+
+
+{%block content%}
+
+<div class="container">
+  <a href="{%url 'containers:create_client_doc' %}" class="btn btn-success">Создать новый <i class="fa-solid fa-file-circle-plus"></i></a>
+</div>
+
+<br>
+<div class="container">
+  {% regroup clients_docs by document_date|date:"F" as cliend_doc_mounth %}
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr  class="table-primary">
+        <th scope="col">Дата</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Описание</th>
+        <th scope="col">Файл</th>
+        <th scope="col">Дата загрузки</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for mounth in cliend_doc_mounth%}
+      <tr>
+        <td colspan="5" class="table-info">{{mounth.grouper}}</td>
+      </tr>
+          {%for cliend_doc in mounth.list %}
+          
+          <tr class="client_link" href="{%url 'containers:show_client' cliend_doc.pk %}">
+            <td >
+              {{cliend_doc.document_date}}
+            </td>
+            <td >
+              {{cliend_doc.name}}
+            </td>
+            <td>{{cliend_doc.description}}</td>
+            <td>
+              {%if cliend_doc.document_file%}
+              <a href="{{cliend_doc.document_file.url}}" class="btn btn-secondary">
+                {{cliend_doc.docfile_name}}
+                <i class="fa-solid fa-download"></i>
+              </a>
+              {%endif%}
+            </td>
+            <td>{{cliend_doc.load_date}}</td>
+          </tr>
+          {%endfor%}
+      {%endfor%}
+    </tbody>
+  </table>
+</div>
+  <style>
+    .table-hover>tbody>tr:hover {
+    background-color:  rgb(207, 255, 200);
+}
+  </style>
+<script>
+  $('tr.client_link').click(function(){
+    let href = $(this).attr('href')
+    window.location.href = href
+  })
+
+  $("tr").on('client_link', '.btn', function (e) {
+     e.stopPropagation()
+     // Show edit dialog
+});
+</script>
+
+{%endblock%}
