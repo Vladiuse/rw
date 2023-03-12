@@ -1,5 +1,6 @@
 asgiref==3.6.0
 Django==3.2.18
+docx2txt==0.8
 mysqlclient==2.1.1
 pytz==2022.7.1
 sqlparse==0.4.3

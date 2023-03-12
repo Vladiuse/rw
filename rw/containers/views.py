@@ -49,7 +49,7 @@ def people_count(requests):
 
 @login_required
 def clients(request):
-    clients_docs = ClientDoc.objects.defer('document').all()
+    clients_docs = ClientDoc.objects.all()
     content = {
         'clients_docs': clients_docs
     }

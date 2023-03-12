@@ -37,11 +37,6 @@
                             {{ form.description }}
                         </div>
                         <div class="field-wrap">
-                            {{ form.document_file.errors }}
-                            <label for="{{ form.document_file.id_for_label }}">{{form.document_file.label}}:</label>
-                            {{ form.document_file }}
-                        </div>
-                        <div class="field-wrap">
                             <button class="btn btn-primary" type="submit">Сохранить</button>
                         </div>
                         
@@ -50,9 +45,14 @@
                     <div class="col-8">
                         <!-- RIGHT -->
                         <div class="field-wrap">
-                            {{ form.document.errors }}
-                            <label for="{{ form.document.id_for_label }}">{{form.document.label}}:</label>
-                            {{ form.document }}
+                            {{ form.document_file.errors }}
+                            <label for="{{ form.document_file.id_for_label }}">{{form.document_file.label}}:</label>
+                            {{ form.document_file }}
+                        </div>
+                        <div class="field-wrap file">
+                            {{ form.area_document.errors }}
+                            <label for="{{ form.area_document.id_for_label }}">{{form.area_document.label}}:</label>
+                           {{ form.area_document }}
                         </div>
                         <!-- RIGHT -->
                     </div>

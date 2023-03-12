@@ -6,6 +6,8 @@ from datetime import datetime
 from django.db import connection
 import os
 from unidecode import unidecode
+from django.core.validators import MaxValueValidator
+import docx2txt
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -43,12 +45,11 @@ class ClientDoc(models.Model):
     )
 
     name = models.CharField(max_length=40, verbose_name='Имя документа', default='Без имени', blank=True)
-    document = models.TextField(verbose_name='Текст документа',)
-    load_date = models.DateField(default=timezone.now, editable=False)
     document_date = models.DateField(default=timezone.now, verbose_name='Дата документа')
-    description = models.TextField(blank=True, default='Нет описания', verbose_name='Отписание')
+    description = models.TextField(blank=True,verbose_name='Отписание')
     client_row_pos = models.CharField(max_length=10, choices=CLIENT_POS_IN_ROW, default='93:109',verbose_name='Тип загржаемого файла')
-    document_file = models.FileField(upload_to='containers/client_container', blank=True, verbose_name='Исходный документ')
+    document_file = models.FileField(upload_to='containers', verbose_name='Исходный документ')
+    area_document = models.FileField(upload_to='containers', blank=True, verbose_name='Файл с номерами участков')
 
     class Meta:
         ordering = ['-document_date', '-pk']
@@ -71,11 +72,12 @@ class ClientDoc(models.Model):
 
     def read_doc(self):
         self.find_n_save_rows()
-        self.get_doc_date()
+        self.add_area_data()
 
     def find_n_save_rows(self):
         rows = []
-        for line in str(self.document).split('\n'):
+        text = docx2txt.process(self.document_file.path)
+        for line in text.split('\n'):
             cont = Container.find_container_number(line)
             date = re.search(r'\d\d\.\d\d.\d{4}', line)
             pos = str(self.client_row_pos).split(':')
@@ -90,8 +92,28 @@ class ClientDoc(models.Model):
     def get_doc_date(self):
         pass
 
-    def document_text_rows(self):
-        return str(self.document).split('\n')
+    def add_area_data(self):
+        if self.area_document:
+            text = docx2txt.process(self.area_document.path)
+            rows = ClientContainerRow.objects.filter(document=self)
+            for row in rows:
+                row.area = 0
+            ClientContainerRow.objects.bulk_update(rows, ['area'])
+            area_data = {}
+            for line in text.split('\n'):
+                cont = Container.find_container_number(line)
+                if cont:
+                    area, *other = line.split()
+                    area_data[cont] = area
+            updates_rows = []
+            for client_container_row in rows:
+                try:
+                    area = area_data[client_container_row.container]
+                    client_container_row.area = area
+                    updates_rows.append(client_container_row)
+                except KeyError:
+                    pass
+            ClientContainerRow.objects.bulk_update(updates_rows, ['area'])
 
     def client_count(self):
         with connection.cursor() as cursor:
@@ -108,6 +130,7 @@ class ClientContainerRow(models.Model):
     container = models.CharField(max_length=11, )
     client_name = models.CharField(max_length=30)
     date = models.DateField()
+    area = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(99)])
 
     class Meta:
         ordering = ['client_name', 'date']

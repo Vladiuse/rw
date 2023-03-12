@@ -38,8 +38,8 @@
         <th scope="col">Дата</th>
         <th scope="col">Имя</th>
         <th scope="col">Описание</th>
-        <th scope="col">Файл</th>
-        <th scope="col">Дата загрузки</th>
+        <th scope="col">Файл клиенты</th>
+        <th scope="col">Файл участки</th>
       </tr>
     </thead>
     <tbody>
@@ -65,7 +65,14 @@
               </a>
               {%endif%}
             </td>
-            <td>{{cliend_doc.load_date}}</td>
+            <td>
+              {%if cliend_doc.area_document%}
+              <a href="{{cliend_doc.area_document.url}}" class="btn btn-secondary">
+                {{cliend_doc.area_document}}
+                <i class="fa-solid fa-download"></i>
+              </a>
+              {%endif%}
+            </td>
           </tr>
           {%endfor%}
       {%endfor%}
