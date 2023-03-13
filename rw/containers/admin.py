@@ -1,11 +1,15 @@
 from django.contrib import admin
 
-from .models import ClientDoc
+from .models import ClientDoc, WordDoc
 
 
 class ClientDocAdmin(admin.ModelAdmin):
-    list_display = ['name', 'document_date', 'description', 'document_file', 'area_document']
+    list_display = ['name', 'document_date', 'description', 'client_container_doc', 'area_doc']
     exclude = ['document']
     date_hierarchy = 'document_date'
 
+class WordDocAdmin(admin.ModelAdmin):
+    list_display = ['pk','doc_file', 'is_read', 'text_file']
+
 admin.site.register(ClientDoc, ClientDocAdmin)
+admin.site.register(WordDoc, WordDocAdmin)
