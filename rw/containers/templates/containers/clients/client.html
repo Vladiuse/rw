@@ -69,11 +69,12 @@
     <div class="card card-body">
 
                 <div class="row">
-                  <form method="POST" id="client-form" enctype="multipart/form-data">
-                    {%csrf_token%}
-                            <!-- CLIENT FROM  -->
-                            {{ form.non_field_errors }}
+                  
                     <div class="col-4 left">
+                      <form method="POST" id="client-form" enctype="multipart/form-data">
+                        {%csrf_token%}
+                                <!-- CLIENT FROM  -->
+                                {{ form.non_field_errors }}
                         <!-- LEFT -->
                         <div class="field-wrap">
                             {{ form.name.errors }}
@@ -95,22 +96,25 @@
                         </div>
                         
                         <!-- LEFT --> 
+                      </form>
                     </div>
-                  </form>
+                 
                     <div class="col-8">
 
                         <!-- RIGHT -->
-                        <form method="POST"  action="{%url 'containers:add_hand_text_to_docs' client_doc.pk %}">
+                        <form method="POST"  action="{%url 'containers:add_hand_text_to_docs' client_doc.pk %}" enctype="multipart/form-data">
                           {%csrf_token%}
                         {% if not client_doc.client_container_doc.is_read%}
+                        <p>Текст для "Клиент-Контейнеры"</p>
                         {{client_container_text_form}}
                         {%endif%}
                         
                         {% if not client_doc.area_doc.is_read%}
+                        <p>Текст для "Участки"</p>
                           {{area_text_form}}
                           {%endif%}
                         <!-- RIGHT -->
-                        <button type="submit">Send</button>         
+                        <button type="submit" class="btn btn-primary">Send</button>         
                       </form>
                     </div>
                 </div>

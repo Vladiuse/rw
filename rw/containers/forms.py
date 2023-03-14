@@ -32,4 +32,4 @@ class AreaDocForm(forms.ModelForm):
 
 
 class WordDocTextForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea)
+    text = forms.CharField(widget=forms.Textarea(attrs={'cols': 40, 'rows': 3}))

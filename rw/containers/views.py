@@ -75,7 +75,7 @@ def client(request, document_id):
         'rows': rows,
         'form': form,
         'form_show': form_show,
-        'client_container_text_form': WordDocTextForm(prefix='client_container'),
+        'client_container_text_form': WordDocTextForm(prefix='client_container', label_suffix='1123'),
         'area_text_form': WordDocTextForm(prefix='area'),
     }
     return render(request, 'containers/clients/client.html', content)
@@ -85,15 +85,15 @@ def add_hand_text_to_docs(request, document_id):
     client_container_text_form = WordDocTextForm(request.POST,prefix='client_container')
     area_text_form = WordDocTextForm(request.POST,prefix='area')
     if client_container_text_form.is_valid():
-        text = client_container_text_form.cleaned_data['text']
-        clients.client_container_doc.add_hand_text(text)
-        clients.find_n_save_rows()
-
+        client_container_text = client_container_text_form.cleaned_data['text']
+        clients.update_files_by_hand(
+            client_doc_text=client_container_text,
+        )
     if area_text_form.is_valid():
-        text = area_text_form.cleaned_data['text']
-        if clients.area_doc:
-            clients.area_doc.add_hand_text(text)
-            clients.add_area_data()
+        area_text = area_text_form.cleaned_data['text']
+        clients.update_files_by_hand(
+            area_doc_text=area_text,
+        )
     return HttpResponseRedirect(
         reverse('containers:show_client', args=(document_id,)))
 

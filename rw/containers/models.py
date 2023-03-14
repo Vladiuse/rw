@@ -228,8 +228,13 @@ class ClientDoc(models.Model):
 
             ClientContainerRow.objects.bulk_create(client_container_to_save)
 
-    def get_doc_date(self):
-        pass
+    def update_files_by_hand(self, client_doc_text=None,area_doc_text=None):
+        if client_doc_text:
+            self.client_container_doc.add_hand_text(client_doc_text)
+            self.find_n_save_rows()
+        if area_doc_text:
+            self.area_doc.add_hand_text(area_doc_text)
+            self.add_area_data()
 
     def add_area_data(self):
         if self.area_doc:
