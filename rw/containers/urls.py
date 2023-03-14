@@ -12,4 +12,5 @@ urlpatterns = [
     path('delete/<int:document_id>', views.delete, name='document_delete'),
 
     path('add_hand_text_to_docs/<int:document_id>', views.add_hand_text_to_docs, name='add_hand_text_to_docs'),
+    path('files_no_data_rows/<int:file_id>', views.files_no_data_rows, name='files_no_data_rows')
 ]

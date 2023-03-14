@@ -1,10 +1,10 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
 from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm
-from .models import ClientDoc, ClientContainerRow
+from .models import ClientDoc, ClientContainerRow, WordDoc
 from django.db.models import F
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 
@@ -59,6 +59,7 @@ def clients(request):
 def client(request, document_id):
     client_doc = ClientDoc.objects.get(pk=document_id)
     rows = ClientContainerRow.objects.filter(document=client_doc).annotate(past=client_doc.document_date - F('date'))
+    rows_no_area = [row for row in rows if row.area == 0]
     if request.method == 'POST':
         form = ClientContainer(request.POST, request.FILES,instance=client_doc)
         if form.is_valid():
@@ -73,6 +74,7 @@ def client(request, document_id):
     content = {
         'client_doc': client_doc,
         'rows': rows,
+        'rows_no_area': rows_no_area,
         'form': form,
         'form_show': form_show,
         'client_container_text_form': WordDocTextForm(prefix='client_container',instance=client_doc.client_container_doc),
@@ -143,6 +145,11 @@ def create_client(request):
         }
         return render(request, 'containers/clients/create.html', content)
 
+def files_no_data_rows(request, file_id):
+    file = WordDoc.objects.get(pk=file_id)
+    text = file.get_no_data_rows()
+    text = text.replace('\n', '<br>')
+    return HttpResponse(text)
 
 @login_required
 def delete(request, document_id):

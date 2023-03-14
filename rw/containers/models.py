@@ -58,14 +58,14 @@ class WordDoc(models.Model):
         if not self.rows_without_data:
             self.rows_without_data = ContentFile(text, name=self.word_doc_file.name + '__no_data.txt')
         else:
-            with open(self.rows_without_data.path, 'w') as file:
+            with open(self.rows_without_data.path, 'w', encoding='utf-8') as file:
                 file.write(text)
 
     def add_result_text(self, text):
         if not self.text_file:
             self.text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
         else:
-            with open(self.text_file.path, 'w') as file:
+            with open(self.text_file.path, 'w', encoding='utf-8') as file:
                 file.write(text)
 
     def add_hand_text(self, text):
@@ -76,10 +76,18 @@ class WordDoc(models.Model):
 
     def get_text(self):
         if self.is_read:
-            with open(self.text_file.path) as file:
+            with open(self.text_file.path, encoding='utf-8') as file:
                 text = file.read()
             return text
         raise ZeroDivisionError
+
+    def get_no_data_rows(self, unique=True):
+        with open(self.rows_without_data.path, encoding='utf-8') as file:
+            text =  file.read()
+        if unique:
+            text = set(text.split('\n'))
+            text = '\n'.join(text)
+        return text
 
 
 class ClientDocFile(WordDoc):

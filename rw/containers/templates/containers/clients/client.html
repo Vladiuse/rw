@@ -20,6 +20,13 @@
   #site-message{
     margin-bottom: 5px;
   }
+
+  .fa-solid.success{
+    color: green;
+  }
+  .fa-solid.danger{
+    color: red;
+  }
 </style>
 
 <div class="toast align-items-center text-white bg-primary border-0 position-fixed bottom-0 end-0"
@@ -33,21 +40,36 @@
   </div>
 
 
-
 <div class="container">
     <h2>Документ: {{client_doc.name}}</h2>
     <p>Дата: {{client_doc.document_date}}</p>
-    <p>Файл клиенты: 
-      <button class="btn btn-{% if client_doc.client_container_doc.is_read%}success{%else%}danger{%endif%}">
-      {{client_doc.client_container_doc}}
-    </button>
+    <p><b>Файл клиенты</b>: {{client_doc.client_container_doc.word_doc_file.name}}
     </p>
+    <p>Статус:
+      {% if client_doc.client_container_doc.is_read%}
+      <i class="fa-solid fa-circle-check success"></i>
+      Прочитан
+      {%else%}
+      <i class="fa-solid fa-circle-exclamation danger"></i>
+      Ошибка чтения
+      {%endif%}
+    </p>
+    <p>Строки  <a href="{%url 'containers:files_no_data_rows' client_doc.client_container_doc.pk %}" target="_blank">без данных</a></p>
+
+
     {%if client_doc.area_doc%}
-    <p>Файл участки: 
-      <button class="btn btn-{% if client_doc.area_doc.is_read%}success{%else%}danger{%endif%}">
-      {{client_doc.area_doc}}
-      </button>
+    <p><b>Файл участки</b>: {{client_doc.area_doc.word_doc_file.name}}
     </p>
+    <p>Статус:
+      {% if client_doc.area_doc.is_read%}
+      <i class="fa-solid fa-circle-check success"></i>
+      Прочитан
+      {%else%}
+      <i class="fa-solid fa-circle-exclamation danger"></i>
+      Ошибка чтения
+      {%endif%}
+    </p>
+    <p>Строки  <a href="{%url 'containers:files_no_data_rows' client_doc.area_doc.pk %}" target="_blank">без данных</a></p>
     {%endif%}
 
 </div>
@@ -134,6 +156,11 @@
         <li class="nav-item">
           <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span></span></a>
         </li>
+       {%if client_doc.area_doc.is_read%}
+       <li class="nav-item">
+        <a class="nav-link" id="tab-client_rows" data-table="client_rows_no_area">Строки без участков ({{rows_no_area|length}})<span></span></a>
+      </li>
+       {%endif%}
         <!-- <li class="nav-item">
           <a class="nav-link" id="tab-document_text_rows" data-table="document_text_rows">Текст документа</a>
         </li> -->
@@ -183,6 +210,27 @@
             <td>{{row.container}}</td>
             <td>{{row.date}}</td>
             <td>{{row.past}}</td>
+            <td>{%if row.area%}{{row.area}}{%endif%}</td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+
+      <table class="table table-striped" id="client_rows_no_area" style="display: none;">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Клиент</th>
+            <th scope="col">Контейнер</th>
+            <th scope="col">Участок</th>
+          </tr>
+        </thead>
+        <tbody>
+            {%for row in rows_no_area%}
+          <tr>
+            <th scope="row">{{row.pk}}</th>
+            <td class="client_name">{{row.client_name}}</td>
+            <td>{{row.container}}</td>
             <td>{%if row.area%}{{row.area}}{%endif%}</td>
           </tr>
           {%endfor%}
