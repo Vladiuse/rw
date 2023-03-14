@@ -29,8 +29,9 @@ def read_doc(path):
             text = reader(path)
             return text
         except BaseException as error:
-            print(reader)
-            print(error)
+            # print(reader)
+            # print(error)
+            pass
     return
 
 
@@ -48,7 +49,7 @@ class WordDoc(models.Model):
         super().save()
 
     def read_word_doc(self):
-        print('READ', self.word_doc_file.name)
+        # print('READ', self.word_doc_file.name)
         text = read_doc(self.word_doc_file.path)
         if text:
             self.is_read = True
@@ -69,7 +70,7 @@ class WordDoc(models.Model):
                 file.write(text)
 
     def add_hand_text(self, text):
-        print('RUN add_hand_text', len(text))
+        # print('RUN add_hand_text', len(text))
         self.is_read = True
         self.add_result_text(text)
         self.save()
@@ -228,8 +229,8 @@ class ClientDoc(models.Model):
 
     def save(self, **kwargs):
         if not self.pk:
-            print('CLIENT')
-            print(self.client_container_doc)
+            # print('CLIENT')
+            # print(self.client_container_doc)
             super().save()
             self.find_n_save_rows()
             if self.area_doc:

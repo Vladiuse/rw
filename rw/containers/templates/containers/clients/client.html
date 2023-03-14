@@ -41,6 +41,7 @@
 
 
 <div class="container">
+  {%if client_doc.client_container_doc%}
     <h2>Документ: {{client_doc.name}}</h2>
     <p>Дата: {{client_doc.document_date}}</p>
     <p><b>Файл клиенты</b>: {{client_doc.client_container_doc.word_doc_file.name}}
@@ -55,7 +56,7 @@
       {%endif%}
     </p>
     <p>Строки  <a href="{%url 'containers:files_no_data_rows' client_doc.client_container_doc.pk %}" target="_blank">без данных</a></p>
-
+{%endif%}
 
     {%if client_doc.area_doc%}
     <p><b>Файл участки</b>: {{client_doc.area_doc.word_doc_file.name}}

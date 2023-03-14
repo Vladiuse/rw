@@ -48,7 +48,39 @@ class WordDocTextForm(WordDocForm):
 
     def save(self, commit=True):
         instance = super(WordDocTextForm, self).save(commit=False)
-        print(len(self.cleaned_data['text']), 'len text ')
+        if 'word_doc_file' in self.changed_data:
+            instance.read_word_doc()
+        if self.cleaned_data['text']:
+            instance.add_hand_text(self.cleaned_data['text'])
+        if commit:
+            instance.save()
+        return instance
+
+
+class ClientTextForm(ClientDocForm):
+    text = forms.CharField(widget=forms.Textarea(attrs={'cols': 40, 'rows': 3}), required=False)
+    def __init__(self, *args, **kwargs):
+        super(ClientDocForm, self).__init__(*args, **kwargs)
+        self.fields['word_doc_file'].required = False
+
+    def save(self, commit=True):
+        instance = super(ClientDocForm, self).save(commit=False)
+        if 'word_doc_file' in self.changed_data:
+            instance.read_word_doc()
+        if self.cleaned_data['text']:
+            instance.add_hand_text(self.cleaned_data['text'])
+        if commit:
+            instance.save()
+        return instance
+
+class AreaTextForm(AreaDocForm):
+    text = forms.CharField(widget=forms.Textarea(attrs={'cols': 40, 'rows': 3}), required=False)
+    def __init__(self, *args, **kwargs):
+        super(AreaDocForm, self).__init__(*args, **kwargs)
+        self.fields['word_doc_file'].required = False
+
+    def save(self, commit=True):
+        instance = super(AreaDocForm, self).save(commit=False)
         if 'word_doc_file' in self.changed_data:
             instance.read_word_doc()
         if self.cleaned_data['text']:

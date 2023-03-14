@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
-from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm
+from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm, ClientTextForm, AreaTextForm
 from .models import ClientDoc, ClientContainerRow, WordDoc
 from django.db.models import F
 from django.utils import timezone
@@ -82,26 +82,26 @@ def client(request, document_id):
     }
     return render(request, 'containers/clients/client.html', content)
 
+
+
 def add_hand_text_to_docs(request, document_id):
     clients = ClientDoc.objects.get(pk=document_id)
-    client_container_text_form = WordDocTextForm(
+    client_container_text_form = ClientTextForm(
         request.POST,
         request.FILES,
         prefix='client_container',
         instance=clients.client_container_doc
     )
-    area_text_form = WordDocTextForm(
+    area_text_form = AreaTextForm(
         request.POST,
         request.FILES,
         prefix='area',
         instance=clients.area_doc
     )
     if client_container_text_form.is_valid():
-        print('CLIENT VALID')
         client_container_text_form.save()
         clients.find_n_save_rows()
     if area_text_form.is_valid():
-        print('AREA VALID')
         area_text_form.save()
         if not clients.area_doc:
             clients.area_doc = area_text_form.instance
