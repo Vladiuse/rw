@@ -52,7 +52,7 @@ class WordDoc(models.Model):
         text = read_doc(self.word_doc_file.path)
         if text:
             self.is_read = True
-            self.text_file = ContentFile(text, name=self.word_doc_file.name + '_READ.txt')
+            self.result_text_file = ContentFile(text, name=self.word_doc_file.name + '_READ.txt')
 
     def add_rows_without_data(self, text):
         if not self.rows_without_data:
@@ -62,10 +62,10 @@ class WordDoc(models.Model):
                 file.write(text)
 
     def add_result_text(self, text):
-        if not self.text_file:
-            self.text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
+        if not self.result_text_file:
+            self.result_text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
         else:
-            with open(self.text_file.path, 'w', encoding='utf-8') as file:
+            with open(self.result_text_file.path, 'w', encoding='utf-8') as file:
                 file.write(text)
 
     def add_hand_text(self, text):
@@ -76,7 +76,7 @@ class WordDoc(models.Model):
 
     def get_text(self):
         if self.is_read:
-            with open(self.text_file.path, encoding='utf-8') as file:
+            with open(self.result_text_file.path, encoding='utf-8') as file:
                 text = file.read()
             return text
         raise ZeroDivisionError
