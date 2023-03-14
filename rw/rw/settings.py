@@ -41,6 +41,11 @@ SECRET_KEY = get_secret('DJ_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'rw.vim-store.ru']
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = '/login/'
@@ -57,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #apps
     'containers.apps.ContainersConfig',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'rw.urls'

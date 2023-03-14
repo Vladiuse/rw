@@ -38,24 +38,40 @@ class WordDoc(models.Model):
     doc_file = models.FileField(upload_to='')
     is_read = models.BooleanField(default=False, editable=False)
     text_file = models.FileField(upload_to='', blank=True)
-    rows_without_data = models.TextField(blank=True,)
+    rows_without_data = models.FileField(blank=True,)
 
     def save(self, **kwargs):
         if not self.pk:
             super().save()
             self.doc_file.name = unidecode(self.doc_file.name)
-            self.read()
+            self.read_word_doc()
         super().save()
 
-    def read(self):
+    def read_word_doc(self):
+        print('READ', self.doc_file.name)
         text = read_doc(self.doc_file.path)
         if text:
             self.is_read = True
-            self.text_file = ContentFile(text, name=self.doc_file.name + '.txt')
+            self.text_file = ContentFile(text, name=self.doc_file.name + '_READ.txt')
+
+    def add_rows_without_data(self, text):
+        if not self.rows_without_data:
+            self.rows_without_data = ContentFile(text, name=self.doc_file.name + '__no_data.txt')
+        else:
+            with open(self.rows_without_data.path, 'w') as file:
+                file.write(text)
+
+    def add_result_text(self, text):
+        if not self.text_file:
+            self.text_file = ContentFile(text, name='result_text__'+self.doc_file.name + '.txt')
+        else:
+            with open(self.text_file.path, 'w') as file:
+                file.write(text)
 
     def add_hand_text(self, text):
+        print('RUN add_hand_text', len(text))
         self.is_read = True
-        self.text_file = ContentFile(text, name=self.doc_file.name + '.txt')
+        self.add_result_text(text)
         self.save()
 
     def get_text(self):
@@ -97,7 +113,7 @@ class ClientDocFile(WordDoc):
                 client_container_data.append(dic)
             else:
                 rows_without_data.append(line)
-        self.rows_without_data = '\n'.join(rows_without_data)
+        self.add_rows_without_data('\n'.join(rows_without_data))
         self.save()
         return client_container_data
 
@@ -119,7 +135,7 @@ class AreaDocFile(WordDoc):
                 area_data[cont] = area
             else:
                 rows_without_data.append(line)
-        self.rows_without_data = '\n'.join(rows_without_data)
+        self.add_rows_without_data('\n'.join(rows_without_data))
         self.save()
         return area_data
 
