@@ -76,6 +76,8 @@ class ClientDocFile(WordDoc):
         proxy = True
 
     def get_data(self, doc_type) -> list:
+        if not self.is_read:
+            return list()
         text = self.get_text()
         client_container_data = list()
         rows_without_data = []
@@ -105,6 +107,8 @@ class AreaDocFile(WordDoc):
         proxy = True
 
     def get_data(self) -> dict:
+        if not self.is_read:
+            return dict()
         text = self.get_text()
         area_data = {}
         rows_without_data = []
@@ -196,67 +200,53 @@ class ClientDoc(models.Model):
     class Meta:
         ordering = ['-document_date', '-pk']
 
-    # def save(self, **kwargs):
-    #     if self.pk:
-    #         super().save()
-    #     else:
-    #         try:
-    #             self.name = self.DOC_NAME[self.client_row_pos]
-    #         except KeyError:
-    #             pass
-    #         self.document_file.name = unidecode(self.document_file.name)
-    #         super().save()
-    #         # self.read_doc()
-    #
-    # def docfile_name(self):
-    #     return os.path.basename(str(self.document_file))
 
-    # def read_doc(self):
-    #     self.find_n_save_rows()
-    #     self.add_area_data()
 
-    # def find_n_save_rows(self):
-    #     rows = []
-    #     text = read_doc(self.document_file.path)
-    #     if text:
-    #         for line in text.split('\n'):
-    #             cont = Container.find_container_number(line)
-    #             date = re.search(r'\d\d\.\d\d.\d{4}', line)
-    #             pos = str(self.client_row_pos).split(':')
-    #             client_name = ClientContainer.get_client_name_from_row(line, pos)
-    #             if cont and date:
-    #                 date = datetime.strptime(date.group(0), '%d.%m.%Y').date()
-    #                 row = ClientContainerRow(document=self,container=cont,client_name=client_name,date=date)
-    #                 rows.append(row)
-    #         print('END')
-    #         ClientContainerRow.objects.bulk_create(rows)
+    def save(self, **kwargs):
+        if not self.pk:
+            print('CLIENT')
+            print(self.client_container_doc)
+            super().save()
+            self.find_n_save_rows()
+            if self.area_doc:
+                self.add_area_data()
+        else:
+            super().save()
+
+    def find_n_save_rows(self):
+        if self.client_container_doc:
+            client_container_data = self.client_container_doc.get_data(self.client_row_pos)
+            client_container_to_save = list()
+            for item in client_container_data:
+                row = ClientContainerRow(
+                    document=self,
+                    container=item['container'],
+                    client_name=item['client_name'],
+                    date=item['date']
+                )
+                client_container_to_save.append(row)
+
+            ClientContainerRow.objects.bulk_create(client_container_to_save)
 
     def get_doc_date(self):
         pass
 
-    # def add_area_data(self):
-    #     if self.area_document:
-    #         text = read_doc(self.area_document.path)
-    #         if text:
-    #             rows = ClientContainerRow.objects.filter(document=self)
-    #             for row in rows:
-    #                 row.area = 0
-    #             ClientContainerRow.objects.bulk_update(rows, ['area'])
-    #             area_data = {}
-    #             for line in text.split('\n'):
-    #                 cont = Container.find_container_number(line)
-    #                 if cont:
-    #                     area, *other = line.split()
-    #                     area_data[cont] = area
-    #             updates_rows = []
-    #             for client_container_row in rows:
-    #                 try:
-    #                     area = area_data[client_container_row.container]
-    #                     client_container_row.area = area
-    #                     updates_rows.append(client_container_row)
-    #                 except KeyError:
-    #                     pass
-    #             ClientContainerRow.objects.bulk_update(updates_rows, ['area'])
+    def add_area_data(self):
+        if self.area_doc:
+            containers_area = self.area_doc.get_data()
+            rows = ClientContainerRow.objects.filter(document=self)
+            for row in rows:
+                row.area = 0
+            ClientContainerRow.objects.bulk_update(rows, ['area'])
+            updates_rows = list()
+            for client_container_row in rows:
+                try:
+                    area = containers_area[client_container_row.container]
+                    client_container_row.area = area
+                    updates_rows.append(client_container_row)
+                except KeyError:
+                    pass
+            ClientContainerRow.objects.bulk_update(updates_rows, ['area'])
 
     def client_count(self):
         with connection.cursor() as cursor:

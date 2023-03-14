@@ -37,6 +37,18 @@
 <div class="container">
     <h2>Документ: {{client_doc.name}}</h2>
     <p>Дата: {{client_doc.document_date}}</p>
+    <p>Файл клиенты: 
+      <button class="btn btn-{% if client_doc.client_container_doc.is_read%}success{%else%}danger{%endif%}">
+      {{client_doc.client_container_doc}}
+    </button>
+    </p>
+    {%if client_doc.area_doc%}
+    <p>Файл участки: 
+      <button class="btn btn-{% if client_doc.area_doc.is_read%}success{%else%}danger{%endif%}">
+      {{client_doc.area_doc}}
+      </button>
+    </p>
+    {%endif%}
 
 </div>
 <!-- Button trigger modal -->
@@ -55,11 +67,12 @@
 <div class="container">
   <div class="collapse {%if form_show%}show{%endif%}" id="collapseExample">
     <div class="card card-body">
-      <form method="POST" id="client-form" enctype="multipart/form-data">
-        {%csrf_token%}
-                <!-- CLIENT FROM  -->
-                {{ form.non_field_errors }}
+
                 <div class="row">
+                  <form method="POST" id="client-form" enctype="multipart/form-data">
+                    {%csrf_token%}
+                            <!-- CLIENT FROM  -->
+                            {{ form.non_field_errors }}
                     <div class="col-4 left">
                         <!-- LEFT -->
                         <div class="field-wrap">
@@ -83,24 +96,26 @@
                         
                         <!-- LEFT --> 
                     </div>
+                  </form>
                     <div class="col-8">
+
                         <!-- RIGHT -->
-                      <div class="field-wrap file">
-                        {{ form.client_container_doc.errors }}
-                        <label for="{{ form.client_container_doc.id_for_label }}">{{form.client_container_doc.label}}:</label>
-                       {{ form.client_container_doc }}
-                      </div>
-                      <br>
-                      <div class="field-wrap file">
-                        {{ form.area_doc.errors }}
-                        <label for="{{ form.area_doc.id_for_label }}">{{form.area_doc.label}}:</label>
-                        {{ form.area_doc }}
-                      </div>
+                        <form method="POST"  action="{%url 'containers:add_hand_text_to_docs' client_doc.pk %}">
+                          {%csrf_token%}
+                        {% if not client_doc.client_container_doc.is_read%}
+                        {{client_container_text_form}}
+                        {%endif%}
+                        
+                        {% if not client_doc.area_doc.is_read%}
+                          {{area_text_form}}
+                          {%endif%}
                         <!-- RIGHT -->
+                        <button type="submit">Send</button>         
+                      </form>
                     </div>
                 </div>
                         <!-- CLIENT FROM  -->
-    </form>
+
     </div>
   </div>
 </div>

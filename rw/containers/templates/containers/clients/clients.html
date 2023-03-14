@@ -58,17 +58,17 @@
             </td>
             <td>{{cliend_doc.description}}</td>
             <td>
-              {%if cliend_doc.document_file%}
-              <a href="{{cliend_doc.document_file.url}}" class="btn btn-secondary">
-                {{cliend_doc.docfile_name}}
+              {%if cliend_doc.client_container_doc%}
+              <a href="{{cliend_doc.client_container_doc.url}}" class="btn btn-secondary">
+                {{cliend_doc.client_container_doc}}
                 <i class="fa-solid fa-download"></i>
               </a>
               {%endif%}
             </td>
             <td>
-              {%if cliend_doc.area_document%}
-              <a href="{{cliend_doc.area_document.url}}" class="btn btn-secondary">
-                {{cliend_doc.area_document}}
+              {%if cliend_doc.area_doc%}
+              <a href="{{cliend_doc.area_doc.url}}" class="btn btn-secondary">
+                {{cliend_doc.area_doc}}
                 <i class="fa-solid fa-download"></i>
               </a>
               {%endif%}

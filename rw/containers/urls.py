@@ -10,4 +10,6 @@ urlpatterns = [
     path('create_client', views.create_client, name='create_client_doc'),
     path('client/<int:document_id>', views.client, name='show_client'),
     path('delete/<int:document_id>', views.delete, name='document_delete'),
+
+    path('add_hand_text_to_docs/<int:document_id>', views.add_hand_text_to_docs, name='add_hand_text_to_docs'),
 ]
