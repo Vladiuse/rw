@@ -9,7 +9,7 @@ class ClientDocAdmin(admin.ModelAdmin):
     date_hierarchy = 'document_date'
 
 class WordDocAdmin(admin.ModelAdmin):
-    list_display = ['pk','doc_file', 'is_read', 'text_file']
+    list_display = ['pk','word_doc_file', 'is_read', 'result_text_file']
 
 admin.site.register(ClientDoc, ClientDocAdmin)
 admin.site.register(WordDoc, WordDocAdmin)

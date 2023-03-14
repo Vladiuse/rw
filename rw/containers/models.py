@@ -35,35 +35,35 @@ def read_doc(path):
 
 
 class WordDoc(models.Model):
-    doc_file = models.FileField(upload_to='')
+    word_doc_file = models.FileField(upload_to='')
     is_read = models.BooleanField(default=False, editable=False)
-    text_file = models.FileField(upload_to='', blank=True)
+    result_text_file = models.FileField(upload_to='', blank=True)
     rows_without_data = models.FileField(blank=True,)
 
     def save(self, **kwargs):
         if not self.pk:
             super().save()
-            self.doc_file.name = unidecode(self.doc_file.name)
+            self.word_doc_file.name = unidecode(self.word_doc_file.name)
             self.read_word_doc()
         super().save()
 
     def read_word_doc(self):
-        print('READ', self.doc_file.name)
-        text = read_doc(self.doc_file.path)
+        print('READ', self.word_doc_file.name)
+        text = read_doc(self.word_doc_file.path)
         if text:
             self.is_read = True
-            self.text_file = ContentFile(text, name=self.doc_file.name + '_READ.txt')
+            self.text_file = ContentFile(text, name=self.word_doc_file.name + '_READ.txt')
 
     def add_rows_without_data(self, text):
         if not self.rows_without_data:
-            self.rows_without_data = ContentFile(text, name=self.doc_file.name + '__no_data.txt')
+            self.rows_without_data = ContentFile(text, name=self.word_doc_file.name + '__no_data.txt')
         else:
             with open(self.rows_without_data.path, 'w') as file:
                 file.write(text)
 
     def add_result_text(self, text):
         if not self.text_file:
-            self.text_file = ContentFile(text, name='result_text__'+self.doc_file.name + '.txt')
+            self.text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
         else:
             with open(self.text_file.path, 'w') as file:
                 file.write(text)
