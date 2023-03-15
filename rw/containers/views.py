@@ -1,12 +1,14 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
-from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm, ClientTextForm, AreaTextForm
+from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm, ClientTextForm, AreaTextForm, WordDocForm
 from .models import ClientsReport, ClientContainerRow, WordDoc
 from django.db.models import F
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
 @login_required
 def index(requet):
@@ -156,5 +158,26 @@ def delete(request, document_id):
     doc = ClientsReport.objects.get(pk=document_id)
     doc.delete()
     return redirect('containers:clients')
+
+
+
+class WordDocView(ListView):
+    model = WordDoc
+    context_object_name = 'word_docs'
+    template_name = 'containers/word_docs/word_docs.html'
+
+
+class WordDocCreate(CreateView):
+    model = WordDoc
+    form_class = WordDocForm
+    template_name = 'containers/word_docs/create.html'
+    success_url = reverse_lazy('containers:word_docs')
+
+
+class WordDocUpdate(UpdateView):
+    model = WordDoc
+    form_class = WordDocForm
+    template_name = 'containers/word_docs/create.html'
+    success_url = reverse_lazy('containers:word_docs')
 
 

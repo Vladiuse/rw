@@ -8,31 +8,11 @@ import os
 from unidecode import unidecode
 from django.core.validators import MaxValueValidator
 from django.core.files.base import ContentFile
-import docx2txt
-import textract
+from .word_doc_reader import read_word_doc
 
-
-def read_one(path):
-    text = docx2txt.process(path)
-    return text
-
-
-def read_two(path):
-    text = textract.process(path)
-    text = text.decode('utf-8')
-    return text
-
-
-def read_doc(path):
-    for reader in read_one, read_two:
-        try:
-            text = reader(path)
-            return text
-        except BaseException as error:
-            # print(reader)
-            # print(error)
-            pass
-    return
+def remove_if_exists(path):
+    if os.path.exists(path):
+        os.remove(path)
 
 
 class WordDoc(models.Model):
@@ -41,19 +21,37 @@ class WordDoc(models.Model):
     hand_text_file = models.FileField(upload_to='', blank=True)
     rows_without_data = models.FileField(upload_to='',blank=True,editable=False)
 
-    def save(self, **kwargs):
-        if not self.pk:
-            super().save()
-            self.word_doc_file.name = unidecode(self.word_doc_file.name)
-            self.read_word_doc()
-        super().save()
+    class Meta:
+        ordering = ['-pk']
 
-    def read_word_doc(self):
-        # print('READ', self.word_doc_file.name)
-        text = read_doc(self.word_doc_file.path)
+    # def save(self, **kwargs):
+    #     if not self.pk:
+    #         super().save()
+    #         self.word_doc_file.name = unidecode(self.word_doc_file.name)
+    #         self.read_word_doc()
+    #     super().save()
+
+    def delete(self, **kwargs):
+        if self.word_doc_file:
+            remove_if_exists(self.word_doc_file.path)
+        if self.hand_text_file:
+            remove_if_exists(self.hand_text_file.path)
+        if self.rows_without_data:
+            remove_if_exists(self.rows_without_data.path)
+        super().delete()
+
+
+
+    def can_be_read(self):
+        if self.is_doc_readable or self.hand_text_file:
+            return True
+        return False
+
+    def check_word_doc(self):
+        text = read_word_doc(self.word_doc_file.path)
         if text:
             self.is_doc_readable = True
-            self.hand_text_file = ContentFile(text, name=self.word_doc_file.name + '_READ.txt')
+            self.save()
 
     def add_rows_without_data(self, text):
         if not self.rows_without_data:
@@ -62,25 +60,31 @@ class WordDoc(models.Model):
             with open(self.rows_without_data.path, 'w', encoding='utf-8') as file:
                 file.write(text)
 
-    def add_result_text(self, text):
+    def add_hand_text(self, text):
         if not self.hand_text_file:
-            self.hand_text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
+            name = self.word_doc_file.name if self.word_doc_file else ''
+            name += '__hand_text.txt'
+            self.hand_text_file = ContentFile(text, name=name)
         else:
             with open(self.hand_text_file.path, 'w', encoding='utf-8') as file:
                 file.write(text)
-
-    def add_hand_text(self, text):
-        # print('RUN add_hand_text', len(text))
-        self.is_doc_readable = True
-        self.add_result_text(text)
         self.save()
 
+
+    def _get_word_doc_text(self):
+        return read_word_doc(self.word_doc_file.path)
+
+    def _get_hand_text(self):
+        with open(self.hand_text_file.path, encoding='utf-8') as file:
+            return file.read()
+
     def get_text(self):
-        if self.is_doc_readable:
-            with open(self.hand_text_file.path, encoding='utf-8') as file:
-                text = file.read()
-            return text
-        raise ZeroDivisionError
+        if self.can_be_read():
+            if self.is_doc_readable:
+                return self._get_word_doc_text()
+            else:
+                return self._get_hand_text()
+
 
     def get_no_data_rows(self, unique=True):
         with open(self.rows_without_data.path, encoding='utf-8') as file:
@@ -93,6 +97,11 @@ class WordDoc(models.Model):
 
 class ClientDocFile(WordDoc):
     DOC_TYPES = {
+        'Книга выгрузки': [93, 109],
+        'Книга вывоза': [48, 75]
+    }
+
+    CLIENT_NAME_POSITION = {
         'Книга выгрузки': [93, 109],
         'Книга вывоза': [48, 75]
     }
