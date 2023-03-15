@@ -24,12 +24,6 @@ class WordDoc(models.Model):
     class Meta:
         ordering = ['-pk']
 
-    # def save(self, **kwargs):
-    #     if not self.pk:
-    #         super().save()
-    #         self.word_doc_file.name = unidecode(self.word_doc_file.name)
-    #         self.read_word_doc()
-    #     super().save()
 
     def delete(self, **kwargs):
         if self.word_doc_file:
@@ -96,27 +90,33 @@ class WordDoc(models.Model):
 
 
 class ClientDocFile(WordDoc):
-    DOC_TYPES = {
-        'Книга выгрузки': [93, 109],
-        'Книга вывоза': [48, 75]
-    }
+    BOOK_STORE = 'Книга выгрузки'
+    BOOK_CALL = 'Книга вывоза'
+    DOC_TYPES = (
+        (BOOK_STORE,BOOK_STORE),
+        (BOOK_CALL, BOOK_CALL),
+    )
 
     CLIENT_NAME_POSITION = {
-        'Книга выгрузки': [93, 109],
-        'Книга вывоза': [48, 75]
+        BOOK_STORE: [93, 109],
+        BOOK_CALL: [48, 75]
     }
 
-    class Meta:
-        proxy = True
+    type = models.CharField(
+        max_length=30,
+        verbose_name='Тип документа',
+        choices=DOC_TYPES,
+        default=BOOK_STORE,
+    )
 
-    def get_data(self, doc_type) -> list:
-        if not self.is_doc_readable:
+    def get_data(self) -> list:
+        if not self.can_be_read:
             return list()
         text = self.get_text()
         client_container_data = list()
         rows_without_data = []
-        start = ClientDocFile.DOC_TYPES[doc_type][0]
-        end = ClientDocFile.DOC_TYPES[doc_type][1]
+        start = ClientDocFile.CLIENT_NAME_POSITION[self.type][0]
+        end = ClientDocFile.CLIENT_NAME_POSITION[self.type][1]
         for line in text.split('\n'):
             container = Container.find_container_number(line)
             date = re.search(r'\d\d\.\d\d.\d{4}', line)
@@ -137,11 +137,17 @@ class ClientDocFile(WordDoc):
 
 
 class AreaDocFile(WordDoc):
-    class Meta:
-        proxy = True
+    AREA_TYPE = 'Номера участков'
+
+    type = models.CharField(
+        max_length=30,
+        verbose_name='Тип документа',
+        default=AREA_TYPE,
+        editable=False,
+    )
 
     def get_data(self) -> dict:
-        if not self.is_doc_readable:
+        if not self.can_be_read:
             return dict()
         text = self.get_text()
         area_data = {}
