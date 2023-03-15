@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
 from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm, ClientTextForm, AreaTextForm
-from .models import ClientDoc, ClientContainerRow, WordDoc
+from .models import ClientsReport, ClientContainerRow, WordDoc
 from django.db.models import F
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
@@ -49,7 +49,7 @@ def people_count(requests):
 
 @login_required
 def clients(request):
-    clients_docs = ClientDoc.objects.select_related('client_container_doc').select_related('area_doc').all()
+    clients_docs = ClientsReport.objects.select_related('client_container_doc').select_related('area_doc').all()
     content = {
         'clients_docs': clients_docs
     }
@@ -57,7 +57,7 @@ def clients(request):
 
 @login_required
 def client(request, document_id):
-    client_doc = ClientDoc.objects.get(pk=document_id)
+    client_doc = ClientsReport.objects.get(pk=document_id)
     rows = ClientContainerRow.objects.filter(document=client_doc).annotate(past=client_doc.document_date - F('date'))
     rows_no_area = [row for row in rows if row.area == 0]
     if request.method == 'POST':
@@ -85,7 +85,7 @@ def client(request, document_id):
 
 
 def add_hand_text_to_docs(request, document_id):
-    clients = ClientDoc.objects.get(pk=document_id)
+    clients = ClientsReport.objects.get(pk=document_id)
     client_container_text_form = ClientTextForm(
         request.POST,
         request.FILES,
@@ -153,7 +153,7 @@ def files_no_data_rows(request, file_id):
 
 @login_required
 def delete(request, document_id):
-    doc = ClientDoc.objects.get(pk=document_id)
+    doc = ClientsReport.objects.get(pk=document_id)
     doc.delete()
     return redirect('containers:clients')
 

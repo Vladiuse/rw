@@ -36,10 +36,10 @@ def read_doc(path):
 
 
 class WordDoc(models.Model):
-    word_doc_file = models.FileField(upload_to='')
-    is_read = models.BooleanField(default=False, editable=False)
-    result_text_file = models.FileField(upload_to='', blank=True)
-    rows_without_data = models.FileField(blank=True,)
+    word_doc_file = models.FileField(upload_to='', blank=True)
+    is_doc_readable = models.BooleanField(default=False, editable=False)
+    hand_text_file = models.FileField(upload_to='', blank=True)
+    rows_without_data = models.FileField(upload_to='',blank=True,editable=False)
 
     def save(self, **kwargs):
         if not self.pk:
@@ -52,8 +52,8 @@ class WordDoc(models.Model):
         # print('READ', self.word_doc_file.name)
         text = read_doc(self.word_doc_file.path)
         if text:
-            self.is_read = True
-            self.result_text_file = ContentFile(text, name=self.word_doc_file.name + '_READ.txt')
+            self.is_doc_readable = True
+            self.hand_text_file = ContentFile(text, name=self.word_doc_file.name + '_READ.txt')
 
     def add_rows_without_data(self, text):
         if not self.rows_without_data:
@@ -63,21 +63,21 @@ class WordDoc(models.Model):
                 file.write(text)
 
     def add_result_text(self, text):
-        if not self.result_text_file:
-            self.result_text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
+        if not self.hand_text_file:
+            self.hand_text_file = ContentFile(text, name='result_text__' + self.word_doc_file.name + '.txt')
         else:
-            with open(self.result_text_file.path, 'w', encoding='utf-8') as file:
+            with open(self.hand_text_file.path, 'w', encoding='utf-8') as file:
                 file.write(text)
 
     def add_hand_text(self, text):
         # print('RUN add_hand_text', len(text))
-        self.is_read = True
+        self.is_doc_readable = True
         self.add_result_text(text)
         self.save()
 
     def get_text(self):
-        if self.is_read:
-            with open(self.result_text_file.path, encoding='utf-8') as file:
+        if self.is_doc_readable:
+            with open(self.hand_text_file.path, encoding='utf-8') as file:
                 text = file.read()
             return text
         raise ZeroDivisionError
@@ -101,7 +101,7 @@ class ClientDocFile(WordDoc):
         proxy = True
 
     def get_data(self, doc_type) -> list:
-        if not self.is_read:
+        if not self.is_doc_readable:
             return list()
         text = self.get_text()
         client_container_data = list()
@@ -132,7 +132,7 @@ class AreaDocFile(WordDoc):
         proxy = True
 
     def get_data(self) -> dict:
-        if not self.is_read:
+        if not self.is_doc_readable:
             return dict()
         text = self.get_text()
         area_data = {}
@@ -157,7 +157,7 @@ def dictfetchall(cursor):
     ]
 
 
-class ClientDoc(models.Model):
+class ClientsReport(models.Model):
     QUERY = """
     SELECT client_name, COUNT(*)as count , 
     ROUND(AVG(DATEDIFF('%s', date))) as past,
@@ -288,7 +288,7 @@ class ClientDoc(models.Model):
 
 
 class ClientContainerRow(models.Model):
-    document = models.ForeignKey(ClientDoc, on_delete=models.CASCADE, related_query_name='row', related_name='rows')
+    document = models.ForeignKey(ClientsReport, on_delete=models.CASCADE, related_query_name='row', related_name='rows')
     container = models.CharField(max_length=11, )
     client_name = models.CharField(max_length=30)
     date = models.DateField()

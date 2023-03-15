@@ -1,5 +1,5 @@
 from django import forms
-from .models import ClientDoc, WordDoc, ClientDocFile, AreaDocFile
+from .models import ClientsReport, WordDoc, ClientDocFile, AreaDocFile
 from django.contrib.admin.widgets import AdminDateWidget
 from django.forms.widgets import DateInput
 from django.core.files.base import ContentFile
@@ -11,7 +11,7 @@ class ClientContainer(forms.ModelForm):
     # form_template_name = "vagons/base1.html"
     # document_date = forms.DateField(label='Дата документа', required=False, widget=AdminDateWidget)
     class Meta:
-        model = ClientDoc
+        model = ClientsReport
         # fields = '__all__'
         exclude = ['client_container_doc', 'area_doc']
         widgets = {

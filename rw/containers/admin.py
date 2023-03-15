@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ClientDoc, WordDoc
+from .models import ClientsReport, WordDoc
 
 
 class ClientDocAdmin(admin.ModelAdmin):
@@ -9,7 +9,7 @@ class ClientDocAdmin(admin.ModelAdmin):
     date_hierarchy = 'document_date'
 
 class WordDocAdmin(admin.ModelAdmin):
-    list_display = ['pk','word_doc_file', 'is_read', 'result_text_file']
+    list_display = ['pk','word_doc_file', 'is_doc_readable', 'hand_text_file']
 
-admin.site.register(ClientDoc, ClientDocAdmin)
+admin.site.register(ClientsReport, ClientDocAdmin)
 admin.site.register(WordDoc, WordDocAdmin)
