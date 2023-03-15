@@ -203,6 +203,8 @@ class ContainerFile:
 
     def __init__(self, text_file):
         self.text_file = text_file
+        for char in '"\'':
+            self.text_file = self.text_file.replace(char, '')
         self.containers = ContainerList()
         self.no_containers_lines = []
 
@@ -234,6 +236,8 @@ class ContainerReader:
         self.file_2 = ContainerFile(file_text_2)
         self.file_1.process()
         self.file_2.process()
+
+
 
     def incorrect_1(self):
         """Некоректные номера из файла 1"""
