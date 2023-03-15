@@ -50,7 +50,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = '/login/'
 
-
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 # Application definition
 
 INSTALLED_APPS = [
