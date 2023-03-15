@@ -18,4 +18,6 @@ urlpatterns = [
     path('word_docs/create', views.WordDocCreate.as_view(), name='word_doc_create'),
     path('word_docs/update/<int:pk>', views.WordDocUpdate.as_view(), name='update'),
 
+    path('test', views.test, name='test'),
+
 ]

@@ -62,7 +62,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #apps
     'containers.apps.ContainersConfig',
+    #tools
     'debug_toolbar',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

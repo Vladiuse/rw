@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
-from .forms import ClientContainer,ClientDocForm, AreaDocForm, WordDocTextForm, ClientTextForm, AreaTextForm, WordDocForm
+from .forms import ClientContainer, WordDocForm, ClientDocFileForm, AreaDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc
 from django.db.models import F
 from django.utils import timezone
@@ -79,8 +79,8 @@ def client(request, document_id):
         'rows_no_area': rows_no_area,
         'form': form,
         'form_show': form_show,
-        'client_container_text_form': WordDocTextForm(prefix='client_container',instance=client_doc.client_container_doc),
-        'area_text_form': WordDocTextForm(prefix='area',instance=client_doc.area_doc),
+        'client_container_text_form': ClientDocFileForm(prefix='client_container',instance=client_doc.client_container_doc),
+        'area_text_form': AreaDocFileForm(prefix='area',instance=client_doc.area_doc),
     }
     return render(request, 'containers/clients/client.html', content)
 
@@ -88,27 +88,29 @@ def client(request, document_id):
 
 def add_hand_text_to_docs(request, document_id):
     clients = ClientsReport.objects.get(pk=document_id)
-    client_container_text_form = ClientTextForm(
+    client_container_text_form = ClientDocFileForm(
         request.POST,
         request.FILES,
         prefix='client_container',
-        instance=clients.client_container_doc
+        instance=clients.client_container_doc,
     )
-    area_text_form = AreaTextForm(
+    area_text_form = AreaDocFileForm(
         request.POST,
         request.FILES,
         prefix='area',
-        instance=clients.area_doc
+        instance=clients.area_doc,
     )
     if client_container_text_form.is_valid():
         client_container_text_form.save()
-        clients.find_n_save_rows()
+        if client_container_text_form.has_changed():
+            clients.find_n_save_rows()
     if area_text_form.is_valid():
         area_text_form.save()
         if not clients.area_doc:
             clients.area_doc = area_text_form.instance
             clients.save()
-        clients.add_area_data()
+        if area_text_form.has_changed():
+            clients.add_area_data()
     return HttpResponseRedirect(
         reverse('containers:show_client', args=(document_id,)))
 
@@ -119,12 +121,13 @@ def add_hand_text_to_docs(request, document_id):
 def create_client(request):
     if request.method == 'POST':
         client_form = ClientContainer(request.POST, prefix='client_form')
-        client_container_file_form = ClientDocForm(request.POST, request.FILES,prefix='client_container')
-        area_container_file_form = AreaDocForm(request.POST, request.FILES,prefix='area_contaienr')
+        client_container_file_form = ClientDocFileForm(request.POST, request.FILES,prefix='client_container')
+        area_container_file_form = AreaDocFileForm(request.POST, request.FILES,prefix='area_contaienr')
         if client_container_file_form.is_valid():
             client_container_file_form.save()
             client_form.instance.client_container_doc = client_container_file_form.instance
         if area_container_file_form.is_valid():
+            print('AREA FORM VALID')
             area_container_file_form.save()
             client_form.instance.area_doc = area_container_file_form.instance
         if client_form.is_valid():
@@ -138,8 +141,8 @@ def create_client(request):
         return render(request, 'containers/clients/create.html', content)
     else:
         client_form = ClientContainer(prefix='client_form')
-        client_container_file_form = ClientDocForm(prefix='client_container',empty_permitted=True, use_required_attribute=False)
-        area_container_file_form = AreaDocForm(prefix='area_contaienr', empty_permitted=True, use_required_attribute=False)
+        client_container_file_form = ClientDocFileForm(prefix='client_container',empty_permitted=True, use_required_attribute=False)
+        area_container_file_form = AreaDocFileForm(prefix='area_contaienr', empty_permitted=True, use_required_attribute=False)
         content = {
             'client_form': client_form,
             'client_container_file_form': client_container_file_form,
@@ -179,5 +182,14 @@ class WordDocUpdate(UpdateView):
     form_class = WordDocForm
     template_name = 'containers/word_docs/create.html'
     success_url = reverse_lazy('containers:word_docs')
+
+
+def test(request):
+
+    content = {
+        'client_container_form': ClientDocFileForm(),
+        'area_form': AreaDocFileForm(),
+    }
+    return render(request, 'containers/test.html', content)
 
 

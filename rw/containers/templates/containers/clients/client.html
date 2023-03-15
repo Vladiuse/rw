@@ -47,7 +47,7 @@
     <p><b>Файл клиенты</b>: {{client_doc.client_container_doc.word_doc_file.name}}
     </p>
     <p>Статус:
-      {% if client_doc.client_container_doc.is_read%}
+      {% if client_doc.client_container_doc.can_be_read%}
       <i class="fa-solid fa-circle-check success"></i>
       Прочитан
       {%else%}
@@ -62,7 +62,7 @@
     <p><b>Файл участки</b>: {{client_doc.area_doc.word_doc_file.name}}
     </p>
     <p>Статус:
-      {% if client_doc.area_doc.is_read%}
+      {% if client_doc.area_doc.can_be_read%}
       <i class="fa-solid fa-circle-check success"></i>
       Прочитан
       {%else%}
@@ -157,7 +157,7 @@
         <li class="nav-item">
           <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span></span></a>
         </li>
-       {%if client_doc.area_doc.is_read%}
+       {%if client_doc.area_doc.can_be_read%}
        <li class="nav-item">
         <a class="nav-link" id="tab-client_rows" data-table="client_rows_no_area">Строки без участков ({{rows_no_area|length}})<span></span></a>
       </li>

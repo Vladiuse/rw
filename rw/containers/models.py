@@ -10,6 +10,7 @@ from django.core.validators import MaxValueValidator
 from django.core.files.base import ContentFile
 from .word_doc_reader import read_word_doc
 
+
 def remove_if_exists(path):
     if os.path.exists(path):
         os.remove(path)
@@ -18,12 +19,11 @@ def remove_if_exists(path):
 class WordDoc(models.Model):
     word_doc_file = models.FileField(upload_to='', blank=True)
     is_doc_readable = models.BooleanField(default=False, editable=False)
-    hand_text_file = models.FileField(upload_to='', blank=True)
-    rows_without_data = models.FileField(upload_to='',blank=True,editable=False)
+    hand_text_file = models.FileField(upload_to='', blank=True, editable=False)
+    rows_without_data = models.FileField(upload_to='', blank=True, editable=False)
 
     class Meta:
         ordering = ['-pk']
-
 
     def delete(self, **kwargs):
         if self.word_doc_file:
@@ -33,8 +33,6 @@ class WordDoc(models.Model):
         if self.rows_without_data:
             remove_if_exists(self.rows_without_data.path)
         super().delete()
-
-
 
     def can_be_read(self):
         if self.is_doc_readable or self.hand_text_file:
@@ -64,7 +62,6 @@ class WordDoc(models.Model):
                 file.write(text)
         self.save()
 
-
     def _get_word_doc_text(self):
         return read_word_doc(self.word_doc_file.path)
 
@@ -79,10 +76,12 @@ class WordDoc(models.Model):
             else:
                 return self._get_hand_text()
 
-
     def get_no_data_rows(self, unique=True):
-        with open(self.rows_without_data.path, encoding='utf-8') as file:
-            text =  file.read()
+        if self.rows_without_data:
+            with open(self.rows_without_data.path, encoding='utf-8') as file:
+                text = file.read()
+        else:
+            text = 'no data'
         if unique:
             text = set(text.split('\n'))
             text = '\n'.join(text)
@@ -93,7 +92,7 @@ class ClientDocFile(WordDoc):
     BOOK_STORE = 'Книга выгрузки'
     BOOK_CALL = 'Книга вывоза'
     DOC_TYPES = (
-        (BOOK_STORE,BOOK_STORE),
+        (BOOK_STORE, BOOK_STORE),
         (BOOK_CALL, BOOK_CALL),
     )
 
@@ -110,7 +109,7 @@ class ClientDocFile(WordDoc):
     )
 
     def get_data(self) -> list:
-        if not self.can_be_read:
+        if not self.can_be_read():
             return list()
         text = self.get_text()
         client_container_data = list()
@@ -162,6 +161,7 @@ class AreaDocFile(WordDoc):
         self.add_rows_without_data('\n'.join(rows_without_data))
         self.save()
         return area_data
+
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -240,8 +240,6 @@ class ClientsReport(models.Model):
     class Meta:
         ordering = ['-document_date', '-pk']
 
-
-
     def save(self, **kwargs):
         if not self.pk:
             # print('CLIENT')
@@ -255,7 +253,7 @@ class ClientsReport(models.Model):
 
     def find_n_save_rows(self):
         if self.client_container_doc:
-            client_container_data = self.client_container_doc.get_data(self.client_row_pos)
+            client_container_data = self.client_container_doc.get_data()
             client_container_to_save = list()
             for item in client_container_data:
                 row = ClientContainerRow(
@@ -267,18 +265,12 @@ class ClientsReport(models.Model):
                 client_container_to_save.append(row)
 
             ClientContainerRow.objects.bulk_create(client_container_to_save)
-
-    def update_files_by_hand(self, client_doc_text=None,area_doc_text=None):
-        if client_doc_text:
-            self.client_container_doc.add_hand_text(client_doc_text)
-            self.find_n_save_rows()
-        if area_doc_text:
-            self.area_doc.add_hand_text(area_doc_text)
-            self.add_area_data()
+        self.add_area_data()
 
     def add_area_data(self):
         if self.area_doc:
             containers_area = self.area_doc.get_data()
+            print('AREA len', len(containers_area))
             rows = ClientContainerRow.objects.filter(document=self)
             for row in rows:
                 row.area = 0
