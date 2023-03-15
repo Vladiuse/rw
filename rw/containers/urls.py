@@ -10,6 +10,7 @@ urlpatterns = [
     path('create_client', views.create_client, name='create_client_doc'),
     path('client/<int:document_id>', views.client, name='show_client'),
     path('delete/<int:document_id>', views.delete, name='document_delete'),
+    path('client_check_docs/<int:client_report_id>', views.client_check_docs, name='client_check_docs'),
 
     path('add_hand_text_to_docs/<int:document_id>', views.add_hand_text_to_docs, name='add_hand_text_to_docs'),
     path('files_no_data_rows/<int:file_id>', views.files_no_data_rows, name='files_no_data_rows'),

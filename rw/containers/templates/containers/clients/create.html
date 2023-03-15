@@ -27,24 +27,27 @@
                             {{ client_form.document_date }}
                         </div>
                         <div class="field-wrap">
-                          {{ client_form.client_row_pos.errors }}
-                          <label for="{{ client_form.client_row_pos.id_for_label }}">{{client_form.client_row_pos.label}}:</label>
-                          {{ client_form.client_row_pos }}
+                          {{ client_form.description.errors }}
+                          <label for="{{ client_form.description.id_for_label }}">{{client_form.description.label}}:</label>
+                          {{ client_form.description }}
                       </div>
                         <div class="field-wrap">
                             <button class="btn btn-primary" type="submit">Сохранить</button>
-                        </div>
-                        
+                        </div>                       
                         <!-- LEFT --> 
                     </div>
-                    <div class="col-8">
-                        <!-- RIGHT -->
-                        one
-                        {{client_container_file_form}}
-                        two
-                        {{area_container_file_form}}
-                        <!-- RIGHT -->
-                    </div>
+                        <div class="col-4">
+                          {% if not client_doc.client_container_doc.is_read%}
+                          <p>Текст для "Клиент-Контейнеры"</p>
+                          {{client_container_text_form}}
+                          {%endif%}
+                        </div>
+                      <div class="col-4">
+                          {% if not client_doc.area_doc.is_read%}
+                          <p>Текст для "Участки"</p>
+                            {{area_text_form}}
+                            {%endif%}             
+                      </div>
                 </div>
                         <!-- CLIENT FROM  -->
     </form>

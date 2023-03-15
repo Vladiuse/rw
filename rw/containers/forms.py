@@ -54,8 +54,8 @@ class WordDocForm(forms.ModelForm):
 class ClientDocFileForm(WordDocForm):
     class Meta(WordDocForm.Meta):
         model = ClientDocFile
-        # fields = ['type', 'word_doc_file']
-        exclude = ['hand_text']
+        fields = ['type', 'word_doc_file']
+        # exclude = ['hand_text']
 
 
 class AreaDocFileForm(WordDocForm):

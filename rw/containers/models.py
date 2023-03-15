@@ -280,6 +280,12 @@ class ClientsReport(models.Model):
             rows = dictfetchall(cursor)
         return rows
 
+    def docs_can_be_checked(self):
+        if self.client_container_doc and self.area_doc:
+            if self.client_container_doc.can_be_read() and self.area_doc.can_be_read():
+                return True
+        return False
+
 
 class ClientContainerRow(models.Model):
     document = models.ForeignKey(ClientsReport, on_delete=models.CASCADE, related_query_name='row', related_name='rows')

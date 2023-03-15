@@ -85,6 +85,20 @@ def client(request, document_id):
     return render(request, 'containers/clients/client.html', content)
 
 
+def client_check_docs(request, client_report_id):
+    client_report = ClientsReport.objects.get(pk=client_report_id)
+    reader = ContainerReader(
+        file_text_1=client_report.client_container_doc.get_text(),
+        file_text_2=client_report.area_doc.get_text(),
+    )
+    content = {
+        'file_name_1': 'Файл клиенты контейнеры',
+        'file_name_2': 'Файл контейнеры участки',
+        'reader': reader
+    }
+    return render(request, 'containers/new_result.html', content)
+
+
 
 def add_hand_text_to_docs(request, document_id):
     clients = ClientsReport.objects.get(pk=document_id)
@@ -135,8 +149,8 @@ def create_client(request):
             return redirect('containers:clients')
         content = {
             'client_form': client_form,
-            'client_container_file_form': client_container_file_form,
-            'area_container_file_form': area_container_file_form,
+            'client_container_text_form': client_container_file_form,
+            'area_text_form': area_container_file_form,
         }
         return render(request, 'containers/clients/create.html', content)
     else:
@@ -145,8 +159,8 @@ def create_client(request):
         area_container_file_form = AreaDocFileForm(prefix='area_contaienr', empty_permitted=True, use_required_attribute=False)
         content = {
             'client_form': client_form,
-            'client_container_file_form': client_container_file_form,
-            'area_container_file_form': area_container_file_form,
+            'client_container_text_form': client_container_file_form,
+            'area_text_form': area_container_file_form,
         }
         return render(request, 'containers/clients/create.html', content)
 
