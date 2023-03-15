@@ -81,6 +81,12 @@
   <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
     <i class="fa-solid fa-pen-to-square"></i> Редактировать
   </button>
+    {%if client_doc.docs_can_be_checked %}
+     <a class="btn btn-primary" href="{%url 'containers:client_check_docs' client_doc.pk %}" target="_blank">
+         <i class="fa-solid fa-magnifying-glass"></i>
+         Сравнить
+     </a>
+    {%endif%}
   <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
   <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDELETE"><i class="fa-solid fa-trash"></i>Удалить</button>
 </div>
