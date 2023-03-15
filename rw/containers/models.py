@@ -109,8 +109,6 @@ class ClientDocFile(WordDoc):
     )
 
     def get_data(self) -> list:
-        if not self.can_be_read():
-            return list()
         text = self.get_text()
         client_container_data = list()
         rows_without_data = []
@@ -146,8 +144,6 @@ class AreaDocFile(WordDoc):
     )
 
     def get_data(self) -> dict:
-        if not self.can_be_read:
-            return dict()
         text = self.get_text()
         area_data = {}
         rows_without_data = []
@@ -193,8 +189,6 @@ class ClientsReport(models.Model):
         '93:109': 'Наличие по получателям',
         '48:75': 'Автовывоз',
     }
-    #     ('93:109', 'Книга выгрузки'),
-    #     ('48:75', 'Книга вывоза'),
 
     CLIENT_POS_IN_ROW = (
         ('Книга выгрузки', 'Книга выгрузки'),
@@ -215,12 +209,7 @@ class ClientsReport(models.Model):
         blank=True,
         verbose_name='Отписание'
     )
-    client_row_pos = models.CharField(
-        max_length=20,
-        choices=CLIENT_POS_IN_ROW,
-        default='93:109',
-        verbose_name='Тип загржаемого файла'
-    )
+
     client_container_doc = models.OneToOneField(
         ClientDocFile,
         on_delete=models.SET_NULL,
@@ -242,8 +231,6 @@ class ClientsReport(models.Model):
 
     def save(self, **kwargs):
         if not self.pk:
-            # print('CLIENT')
-            # print(self.client_container_doc)
             super().save()
             self.find_n_save_rows()
             if self.area_doc:
@@ -252,7 +239,7 @@ class ClientsReport(models.Model):
             super().save()
 
     def find_n_save_rows(self):
-        if self.client_container_doc:
+        if self.client_container_doc and self.client_container_doc.can_be_read():
             client_container_data = self.client_container_doc.get_data()
             client_container_to_save = list()
             for item in client_container_data:
@@ -268,7 +255,7 @@ class ClientsReport(models.Model):
         self.add_area_data()
 
     def add_area_data(self):
-        if self.area_doc:
+        if self.area_doc and self.area_doc.can_be_read():
             containers_area = self.area_doc.get_data()
             print('AREA len', len(containers_area))
             rows = ClientContainerRow.objects.filter(document=self)
