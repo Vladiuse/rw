@@ -2,8 +2,8 @@ import unittest
 # from rw.containers.containers.client_counter import *
 
 from datetime import datetime, date, timedelta
-from client_counter import ClientReader, ClientContainer, Client
-from containers_reader import Container
+from rw.containers.containers.client_counter import ClientReader, ClientContainer, Client
+from rw.containers.containers.containers_reader import Container
 
 DATE_FORMAT = '%d.%m.%Y'
 

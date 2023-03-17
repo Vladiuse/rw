@@ -1,5 +1,5 @@
 import unittest
-from .containers_reader import Container, ContainerFile, ContainerList, NotContainerError
+from rw.containers.containers.containers_reader import Container, ContainerFile, ContainerList, NotContainerError
 
 A = 'AAAA1234567'
 B = 'BBBB1234567'
