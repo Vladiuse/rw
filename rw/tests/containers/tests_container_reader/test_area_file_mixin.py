@@ -1,5 +1,5 @@
 import unittest
-from rw.containers.containers.file import AreaFileMixin, AreaFile
+from rw.containers.containers.file_mixins import AreaFileMixin, AreaFile, ExistBookFileMixin
 from rw.containers.containers.errors import AreaFileError
 
 
@@ -68,6 +68,32 @@ class AreaFileMixinTest(unittest.TestCase):
         text_rows_count = len(self.area_file.get_text().split('\n'))
         self.assertEqual(len(rows_without_data), text_rows_count - len(area_data))
 
+
+
+class ExistBookFileMixinTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.row = ' 21164 95236196 31046586     ДОСТЫК (ЭКСП)  MZWU2146680/99 РАДИОДЕТАЛИ           7494        УП ЗЭБТ ГОРИЗОН 05.10.2022 Паламар Е.А. '
+
+    def test_find_client(self):
+        client = ExistBookFileMixin.client(self.row)
+        self.assertEqual(client, 'УП ЗЭБТ ГОРИЗОН ')
+
+    def test_find_nn(self):
+        nn = ExistBookFileMixin.nn(self.row)
+        self.assertEqual(nn, 21164)
+
+    def test_nn_is_int(self):
+        nn = ExistBookFileMixin.nn(self.row)
+        self.assertTrue(isinstance(nn,int))
+
+    def test_send_number(self):
+        send_number = ExistBookFileMixin.send_number(self.row)
+        self.assertEqual(send_number, 31046586)
+
+    def test_send_number_is_int(self):
+        send_number = ExistBookFileMixin.send_number(self.row)
+        self.assertTrue(isinstance(send_number,int))
 
 
 
