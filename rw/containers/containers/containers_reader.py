@@ -33,11 +33,14 @@ class Container:
         return {'id': self.id, 'text_line': self.text_line}
 
     @staticmethod
-    def find_container_number(text_line):
+    def find_container_number(text_line, pretty=False):
         """Поиск в строке номера контейнера"""
         v_number = re.search('[A-zА-я]{4}\s{0,4}0{0,2}\d{7}', text_line)
         if v_number:
-            return v_number.group(0)
+            container = v_number.group(0)
+            if pretty:
+                container = Container.prettify_container_number(container)
+            return container
         return None
 
 
@@ -214,9 +217,9 @@ class ContainerFile:
             self.text_file = self.text_file.replace(char, '\n')
 
         for line in self.text_file.split('\n'):
-            container_number = Container.find_container_number(line)
+            container_number = Container.find_container_number(line, pretty=True)
             if container_number:
-                container_number = Container.prettify_container_number(container_number)
+                # container_number = Container.prettify_container_number(container_number)
                 container = Container(container_number, source_text_line=line)
                 self.containers.append(container)
             else:
