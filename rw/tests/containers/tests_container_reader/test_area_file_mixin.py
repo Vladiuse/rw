@@ -1,5 +1,6 @@
 import unittest
 from rw.containers.containers.file import AreaFileMixin, AreaFile
+from rw.containers.containers.errors import AreaFileError
 
 
 
@@ -33,6 +34,12 @@ class AreaFileMixinTest(unittest.TestCase):
         row = '49 341 GAWU7005200 /99 пор.  '
         self.assertEqual(AreaFileMixin.get_area(row),49)
 
+    def test_raise_error_incorrect_area(self):
+        row = '49341GAWU7005200 /99 пор.  '
+        with self.assertRaises(AreaFileError):
+            self.area_file.get_area(row)
+
+
     def test_get_data_from_row_valid_type(self):
         line = ' 1 111 DLRU0108549 /99 груж. 081895                   005208'
         is_valid_data = AreaFileMixin.get_data_from_row(line)
@@ -61,5 +68,10 @@ class AreaFileMixinTest(unittest.TestCase):
         text_rows_count = len(self.area_file.get_text().split('\n'))
         self.assertEqual(len(rows_without_data), text_rows_count - len(area_data))
 
+
+
+
+if __name__ == '__main__':
+    unittest.main()
 
 

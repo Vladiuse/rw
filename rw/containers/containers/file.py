@@ -1,4 +1,5 @@
 from .containers_reader import Container
+from .errors import AreaFileError
 
 
 class File:
@@ -63,8 +64,11 @@ class AreaFileMixin:
 
     @staticmethod
     def get_area(row:str) -> int:
-        area, *other = row.split()
-        return int(area)
+        try:
+            area, *other = row.split()
+            return int(area)
+        except ValueError as error:
+            raise AreaFileError('Неудалось найти номер участка', str(error))
 
 
 class AreaFile(File, AreaFileMixin):
