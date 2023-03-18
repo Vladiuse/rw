@@ -48,6 +48,9 @@ class Container:
         date = re.search(r'\d\d\.\d\d.\d{2,4}', self.text_line)
         if date:
             self.date = date.group(0)
+
+
+
     @staticmethod
     def prettify_container_number(container_number):
         """Уюирает 00 или 0 у номера контейнера и убирает пробелы"""
