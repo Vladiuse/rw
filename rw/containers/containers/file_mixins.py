@@ -73,8 +73,6 @@ class AreaFileMixin:
     }
 
 
-
-
 class ExistBookFileMixin:
     """Книга выгрузки"""
 
@@ -87,13 +85,17 @@ class ExistBookFileMixin:
         'client': [93, 109],
         'nn':  [0, 6],
         'send_number': [16, 28],
-        'data':[15,25],
+        'data':[109,119],
     }
 
-    EXAMPLE_ROW = ' 21164 95236196 31046586     ДОСТЫК (ЭКСП)  MZWU2146680/99 РАДИОДЕТАЛИ           7494        УП ЗЭБТ ГОРИЗОН 05.10.2022 Паламар Е.А. '
-    CLIENT_POS = [93, 109]
-    NN = [0, 6]
-    SEND_NUMBER = [16, 28]
-    DATA = [15,25]
 
-
+class CallBookFileMixin:
+    """Книга вывоза"""
+    DETECT_VALID_FUNCS = [
+        Container.find_container_number,
+        find_date_in_row,
+    ]
+    ADDITIONAL_DATA = {
+        'client': [48, 75],
+        'data':[15,25],
+    }
