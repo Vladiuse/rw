@@ -9,6 +9,7 @@ from unidecode import unidecode
 from django.core.validators import MaxValueValidator
 from django.core.files.base import ContentFile
 from .word_doc_reader import read_word_doc
+from .containers.file_mixins import AreaFileMixin
 
 
 def remove_if_exists(path):
@@ -133,7 +134,7 @@ class ClientDocFile(WordDoc):
         return client_container_data
 
 
-class AreaDocFile(WordDoc):
+class AreaDocFile(WordDoc,AreaFileMixin):
     AREA_TYPE = 'Номера участков'
 
     type = models.CharField(
@@ -144,19 +145,17 @@ class AreaDocFile(WordDoc):
     )
 
     def get_data(self) -> dict:
-        text = self.get_text()
-        area_data = {}
-        rows_without_data = []
-        for line in text.split('\n'):
-            cont = Container.find_container_number(line)
-            if cont:
-                area, *other = line.split()
-                area_data[cont] = area
-            else:
-                rows_without_data.append(line)
-        self.add_rows_without_data('\n'.join(rows_without_data))
+        result_data = self.get_data_from_text()
+        # text = self.get_text()
+        containers_area = result_data['data']
+        container_area_dict = {}
+        for item in containers_area:
+            container_area_dict.update({
+                item['container']: item['area']
+            })
+        self.add_rows_without_data('\n'.join(result_data['rows_without_data']))
         self.save()
-        return area_data
+        return container_area_dict
 
 
 def dictfetchall(cursor):
@@ -233,8 +232,6 @@ class ClientsReport(models.Model):
         if not self.pk:
             super().save()
             self.find_n_save_rows()
-            if self.area_doc:
-                self.add_area_data()
         else:
             super().save()
 
@@ -257,7 +254,7 @@ class ClientsReport(models.Model):
     def add_area_data(self):
         if self.area_doc and self.area_doc.can_be_read():
             containers_area = self.area_doc.get_data()
-            print('AREA len', len(containers_area))
+            print('add_area_data AREA len', len(containers_area))
             rows = ClientContainerRow.objects.filter(document=self)
             for row in rows:
                 row.area = 0

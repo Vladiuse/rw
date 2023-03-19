@@ -3,7 +3,6 @@ from .errors import AreaFileError
 import re
 
 
-
 def find_date_in_row(row):
     return bool(re.search(r'\d\d\.\d\d.\d{4}', row))
 
@@ -22,9 +21,7 @@ class File:
         return self.get_rows_without_date
 
 
-
 class ContainerFileMixin:
-
     ADDITIONAL_DATA = {
 
     }
@@ -36,44 +33,42 @@ class ContainerFileMixin:
     def get_data_from_text(self):
         text = self.get_text()
         rows_without_data = []
-        datas = []
+        container_area_list = []
         for line in text.split('\n'):
             if self._is_row_valid(line):
                 container = Container.find_container_number(line)
                 data = self._get_data_from_row(line)
                 data['container'] = container
-                datas.append(data)
+                container_area_list.append(data)
             else:
                 rows_without_data.append(line)
         result = {
             'rows_without_data': rows_without_data,
-            'data': data
+            'data': container_area_list
         }
         return result
 
     def _is_row_valid(self, row):
         return all([func(row) for func in self.DETECT_VALID_FUNCS])
 
-    def _get_data_from_row(self, row) ->dict:
+    def _get_data_from_row(self, row) -> dict:
         for key_name, pos in self.ADDITIONAL_DATA.items():
             start, end = pos
             return {
-                key_name: row[start:pos].strip()
+                key_name: row[start:end].strip()
             }
 
 
-
-
-class AreaFileMixin:
+class AreaFileMixin(ContainerFileMixin):
     EXAMPLE_ROW = ' 1 111 DLRU0108549 /99 груж. 081895                   005208'
-    AREA_POS = [0,2]
+    AREA_POS = [0, 2]
 
     ADDITIONAL_DATA = {
         'area': [0, 2],
     }
 
 
-class ExistBookFileMixin:
+class ExistBookFileMixin(ContainerFileMixin):
     """Книга выгрузки"""
 
     DETECT_VALID_FUNCS = [
@@ -83,13 +78,14 @@ class ExistBookFileMixin:
 
     ADDITIONAL_DATA = {
         'client': [93, 109],
-        'nn':  [0, 6],
+        'nn': [0, 6],
         'send_number': [16, 28],
-        'data':[109,119],
+        'data': [109, 119],
+        'weight': [77, 85],
     }
 
 
-class CallBookFileMixin:
+class CallBookFileMixin(ContainerFileMixin):
     """Книга вывоза"""
     DETECT_VALID_FUNCS = [
         Container.find_container_number,
@@ -97,5 +93,15 @@ class CallBookFileMixin:
     ]
     ADDITIONAL_DATA = {
         'client': [48, 75],
-        'data':[15,25],
+        'data': [15, 25],
     }
+
+class ClientContainerTypeMixin:
+
+    def get_data_from_text(self):
+        self.DETECT_VALID_FUNCS = ExistBookFileMixin.DETECT_VALID_FUNCS
+        if self.type == 'Книга выгрузки':
+            self.ADDITIONAL_DATA = ExistBookFileMixin.ADDITIONAL_DATA
+        if self.type == 'Книга вывоза':
+            self.ADDITIONAL_DATA = CallBookFileMixin.ADDITIONAL_DATA
+        return super().get_data_from_text()
