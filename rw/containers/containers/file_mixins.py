@@ -52,11 +52,13 @@ class ContainerFileMixin:
         return all([func(row) for func in self.DETECT_VALID_FUNCS])
 
     def _get_data_from_row(self, row) -> dict:
+        data_from_row = dict()
         for key_name, pos in self.ADDITIONAL_DATA.items():
             start, end = pos
-            return {
-                key_name: row[start:end].strip()
-            }
+            data_from_row.update(
+                {key_name: row[start:end].strip()}
+            )
+        return data_from_row
 
 
 class AreaFileMixin(ContainerFileMixin):
@@ -77,10 +79,10 @@ class ExistBookFileMixin(ContainerFileMixin):
     ]
 
     ADDITIONAL_DATA = {
-        'client': [93, 109],
+        'client_name': [93, 109],
         'nn': [0, 6],
         'send_number': [16, 28],
-        'data': [109, 119],
+        'date': [109, 119],
         'weight': [77, 85],
     }
 
@@ -92,14 +94,15 @@ class CallBookFileMixin(ContainerFileMixin):
         find_date_in_row,
     ]
     ADDITIONAL_DATA = {
-        'client': [48, 75],
-        'data': [15, 25],
+        'client_name': [48, 75],
+        'date': [15, 25],
     }
 
-class ClientContainerTypeMixin:
+class ClientContainerTypeMixin(ContainerFileMixin):
 
     def get_data_from_text(self):
         self.DETECT_VALID_FUNCS = ExistBookFileMixin.DETECT_VALID_FUNCS
+        print('type', self.type)
         if self.type == 'Книга выгрузки':
             self.ADDITIONAL_DATA = ExistBookFileMixin.ADDITIONAL_DATA
         if self.type == 'Книга вывоза':

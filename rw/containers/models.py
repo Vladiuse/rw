@@ -9,7 +9,8 @@ from unidecode import unidecode
 from django.core.validators import MaxValueValidator
 from django.core.files.base import ContentFile
 from .word_doc_reader import read_word_doc
-from .containers.file_mixins import AreaFileMixin
+from .containers.file_mixins import AreaFileMixin, ClientContainerTypeMixin
+from django.conf import settings
 
 
 def remove_if_exists(path):
@@ -89,7 +90,7 @@ class WordDoc(models.Model):
         return text
 
 
-class ClientDocFile(WordDoc):
+class ClientDocFile(WordDoc, ClientContainerTypeMixin):
     BOOK_STORE = 'Книга выгрузки'
     BOOK_CALL = 'Книга вывоза'
     DOC_TYPES = (
@@ -110,28 +111,11 @@ class ClientDocFile(WordDoc):
     )
 
     def get_data(self) -> list:
-        text = self.get_text()
-        client_container_data = list()
-        rows_without_data = []
-        start = ClientDocFile.CLIENT_NAME_POSITION[self.type][0]
-        end = ClientDocFile.CLIENT_NAME_POSITION[self.type][1]
-        for line in text.split('\n'):
-            container = Container.find_container_number(line)
-            date = re.search(r'\d\d\.\d\d.\d{4}', line)
-            client_name = ClientContainer.get_client_name_from_row(line, (start, end))
-            if container and date:
-                date = datetime.strptime(date.group(0), '%d.%m.%Y').date()
-                dic = {
-                    'container': container,
-                    'client_name': client_name,
-                    'date': date
-                }
-                client_container_data.append(dic)
-            else:
-                rows_without_data.append(line)
-        self.add_rows_without_data('\n'.join(rows_without_data))
+        result = self.get_data_from_text()
+        containers_rows = result['data']
+        self.add_rows_without_data('\n'.join(result['rows_without_data']))
         self.save()
-        return client_container_data
+        return containers_rows
 
 
 class AreaDocFile(WordDoc,AreaFileMixin):
@@ -240,11 +224,12 @@ class ClientsReport(models.Model):
             client_container_data = self.client_container_doc.get_data()
             client_container_to_save = list()
             for item in client_container_data:
+                date = datetime.strptime(item['date'], '%d.%m.%Y').date()
                 row = ClientContainerRow(
                     document=self,
                     container=item['container'],
                     client_name=item['client_name'],
-                    date=item['date']
+                    date=date,
                 )
                 client_container_to_save.append(row)
 
