@@ -198,31 +198,43 @@
         </tbody>
       </table>
 
+      <!-- DATA ROW -->
       <table class="table table-striped" id="client_rows" style="display: none;">
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Клиент</th>
             <th scope="col">Контейнер</th>
-            <th scope="col">Дата</th>
-            <th scope="col">Простой</th>
             <th scope="col">Участок</th>
+            <th scope="col">Отправка</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Масса</th>
+            <th scope="col">N/N</th>
+            <th scope="col">Клиент</th>
+            <th scope="col">Простой</th>
+
           </tr>
         </thead>
         <tbody>
             {%for row in rows%}
           <tr>
+            
             <th scope="row">{{row.pk}}</th>
-            <td class="client_name">{{row.client_name}}</td>
             <td>{{row.container}}</td>
-            <td>{{row.date}}</td>
-            <td>{{row.past}}</td>
             <td>{%if row.area%}{{row.area}}{%endif%}</td>
+            <th>{{row.send_number}}</th>
+            <td>{{row.date}}</td>
+            <td>{{row.weight}}</td>
+            <th>{{row.nn}}</th>
+            <td class="client_name">{{row.client_name}}</td>
+            <td>{{row.past}}</td>
+
           </tr>
           {%endfor%}
         </tbody>
       </table>
+      <!-- DATA ROW -->
 
+      <!-- NO AREA TALBE -->
       <table class="table table-striped" id="client_rows_no_area" style="display: none;">
         <thead>
           <tr>
@@ -243,21 +255,7 @@
           {%endfor%}
         </tbody>
       </table>
-      
-      <!-- <table class="table table-striped" id="document_text_rows" style="display: none;">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-          </tr>
-        </thead>
-        <tbody>
-            {%for row in client_doc.document_text_rows%}
-          <tr>
-            <td>{{row}}</td>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table> -->
+            <!-- NO AREA TALBE -->
 
     </div>
   </div>

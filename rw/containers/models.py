@@ -230,6 +230,9 @@ class ClientsReport(models.Model):
                     container=item['container'],
                     client_name=item['client_name'],
                     date=date,
+                    nn=item['nn'],
+                    weight=item['weight'],
+                    send_number=item['send_number'],
                 )
                 client_container_to_save.append(row)
 
@@ -270,11 +273,22 @@ class ClientsReport(models.Model):
 
 
 class ClientContainerRow(models.Model):
+    nn = models.CharField(max_length=5)
+    send_number = models.CharField(max_length=10)
+    weight = models.CharField(max_length=5)
     document = models.ForeignKey(ClientsReport, on_delete=models.CASCADE, related_query_name='row', related_name='rows')
     container = models.CharField(max_length=11, )
     client_name = models.CharField(max_length=30)
     date = models.DateField()
     area = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(99)])
+
+
+    def save(self, **kwargs):
+        self.nn = self.nn.strip()
+        self.send_number = self.send_number.strip()
+        self.weight = self.weight.strip()
+        super().save()
+
 
     class Meta:
         ordering = ['client_name', 'date']
