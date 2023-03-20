@@ -11,6 +11,7 @@ from django.core.files.base import ContentFile
 from .word_doc_reader import read_word_doc
 from .containers.file_mixins import AreaFileMixin, ClientContainerTypeMixin
 from django.conf import settings
+from datetime import timedelta
 
 
 def remove_if_exists(path):
@@ -295,3 +296,6 @@ class ClientContainerRow(models.Model):
 
     def __str__(self):
         return f'{self.client_name}{self.container}'
+
+    def time_delta_past(self):
+        return str(timezone.now().date() - self.date + timedelta(days=1)).split(',')[0]

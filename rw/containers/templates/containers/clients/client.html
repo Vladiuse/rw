@@ -203,14 +203,15 @@
         <thead>
           <tr>
             <th scope="col">#</th>
+            <th scope="col">Клиент</th>
             <th scope="col">Контейнер</th>
             <th scope="col">Участок</th>
             <th scope="col">Отправка</th>
             <th scope="col">Дата</th>
+            <th scope="col">Простой</th>
             <th scope="col">Масса</th>
             <th scope="col">N/N</th>
-            <th scope="col">Клиент</th>
-            <th scope="col">Простой</th>
+
 
           </tr>
         </thead>
@@ -219,15 +220,14 @@
           <tr>
             
             <th scope="row">{{row.pk}}</th>
+            <td class="client_name">{{row.client_name}}</td>
             <td>{{row.container}}</td>
             <td>{%if row.area%}{{row.area}}{%endif%}</td>
             <th>{{row.send_number}}</th>
-            <td>{{row.date}}</td>
+            <td>{{row.date|date:"d.m.Y"}}</td>
+            <td>{{row.time_delta_past}}</td>
             <td>{{row.weight}}</td>
             <th>{{row.nn}}</th>
-            <td class="client_name">{{row.client_name}}</td>
-            <td>{{row.past}}</td>
-
           </tr>
           {%endfor%}
         </tbody>
