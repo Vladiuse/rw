@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
-@login_required
+
 def index(requet):
     if requet.method == 'POST':
         file_name_1 = requet.POST['file_name_1']
@@ -31,7 +31,7 @@ def index(requet):
     else:
         return render(requet, 'containers/index.html')
 
-@login_required
+
 def result(request):
     return render(request, 'containers/new_result.html')
 
