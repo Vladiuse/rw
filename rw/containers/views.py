@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
 from .forms import ClientContainer, WordDocForm, ClientDocFileForm, AreaDocFileForm
-from .models import ClientsReport, ClientContainerRow, WordDoc
+from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser
 from django.db.models import F
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
@@ -50,7 +50,7 @@ def people_count(requests):
         return render(requests, 'containers/clients/people_count.html', content)
 
 @login_required
-def clients(request):
+def clients_documents(request):
     clients_docs = ClientsReport.objects.select_related('client_container_doc').select_related('area_doc').all()
     content = {
         'clients_docs': clients_docs
@@ -58,7 +58,10 @@ def clients(request):
     return render(request, 'containers/clients/clients.html', content)
 
 @login_required
-def client(request, document_id):
+def clients_document(request, document_id):
+    if not request.user.groups.filter(name='Админы').exists():
+        return HttpResponseRedirect(
+            reverse('containers:client_document', args=(document_id,)))
     client_doc = ClientsReport.objects.get(pk=document_id)
     rows = ClientContainerRow.objects.filter(document=client_doc).annotate(past=client_doc.document_date - F('date'))
     rows_no_area = [row for row in rows if row.area == 0]
@@ -84,6 +87,16 @@ def client(request, document_id):
     }
     return render(request, 'containers/clients/client.html', content)
 
+@login_required
+def client_document(request, document_id):
+    client_user = ClientUser.objects.get(user=request.user)
+    client_doc = ClientsReport.objects.get(pk=document_id)
+    rows = ClientContainerRow.objects.filter(document=client_doc, client_name=client_user.client_filter).annotate(past=client_doc.document_date - F('date'))
+    content = {
+        'rows': rows,
+        'client_user':client_user,
+    }
+    return render(request, 'containers/clients/one_client.html', content)
 
 def client_check_docs(request, client_report_id):
     client_report = ClientsReport.objects.get(pk=client_report_id)
