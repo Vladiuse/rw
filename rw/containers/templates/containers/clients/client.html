@@ -161,11 +161,11 @@
           <a class="nav-link active" aria-current="true" id="tab-client_count" data-table="client_count">Наличие по клиентам</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span></span></a>
+          <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span id="client_rows_count">({{rows|length}})</span></a>
         </li>
        {%if client_doc.area_doc.can_be_read%}
        <li class="nav-item">
-        <a class="nav-link" id="tab-client_rows" data-table="client_rows_no_area">Строки без участков ({{rows_no_area|length}})<span></span></a>
+        <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без участков ({{rows_no_area|length}})<span></span></a>
       </li>
        {%endif%}
         <!-- <li class="nav-item">
@@ -290,7 +290,9 @@
 
 
 
-<script>  var current_table_id = 'client_count'
+<script>  
+var rowsCount  = {{rows|length}}
+var current_table_id = 'client_count'
   $('#result-tables .nav a').click(function(e){
     e.preventDefault()
     let table_to_show = $(this).data('table')
@@ -313,13 +315,19 @@
     }
     showButtonFilter(client_name)
     markTabFilter(client_name)
-    
+    var clientRowCount = 0;
     rows.each(function(){
       let client_cell = $(this).find('.client_name')
       if (client_cell.text()== client_name)
-      {$(this).show()} else {$(this).hide()}
+      {
+        $(this).show();
+        clientRowCount ++;
+      } else {$(this).hide()}
     })
+    $('#client_rows_count').text(clientRowCount)
   }
+
+
   function markTabFilter(text){
     $('#tab-client_rows span').text(text)
   }
@@ -331,6 +339,7 @@
     $('#client_filter').hide()
     markTabFilter('')
     filterCliendTable(null)
+    $('#client_rows_count').text(rowsCount)
   }
 
   $('a.client-filter').click(function(e){
