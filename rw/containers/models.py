@@ -12,6 +12,7 @@ from .word_doc_reader import read_word_doc
 from .containers.file_mixins import AreaFileMixin, ClientContainerTypeMixin
 from django.conf import settings
 from datetime import timedelta
+from django.contrib.auth.models import User
 
 
 def remove_if_exists(path):
@@ -209,6 +210,7 @@ class ClientsReport(models.Model):
         verbose_name='Файл с номерами участков',
         related_name='area_doc',
     )
+    clients = models.ManyToManyField('ClientUser', blank=True)
 
     class Meta:
         ordering = ['-document_date', '-pk']
@@ -299,3 +301,12 @@ class ClientContainerRow(models.Model):
 
     def time_delta_past(self):
         return str(timezone.now().date() - self.date + timedelta(days=1)).split(',')[0]
+
+
+class ClientUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    client_name = models.CharField(max_length=60, unique=True)
+    client_filter = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        return self.client_name

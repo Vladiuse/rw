@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ClientsReport, WordDoc
+from .models import ClientsReport, WordDoc, ClientUser
 
 
 class ClientDocAdmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ class WordDocAdmin(admin.ModelAdmin):
 
 admin.site.register(ClientsReport, ClientDocAdmin)
 admin.site.register(WordDoc, WordDocAdmin)
+admin.site.register(ClientUser)
