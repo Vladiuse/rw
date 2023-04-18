@@ -51,7 +51,12 @@ def people_count(requests):
 
 @login_required
 def clients_documents(request):
-    clients_docs = ClientsReport.objects.select_related('client_container_doc').select_related('area_doc').all()
+    if request.user.groups.filter(name='Админы').exists():
+        clients_docs = ClientsReport.objects.select_related('client_container_doc').select_related('area_doc').all()
+    else:
+        client_user = ClientUser.objects.get(user=request.user)
+        # clients_docs = ClientsReport.objects.select_related('client_container_doc').select_related('area_doc')
+        clients_docs = client_user.clientsreport_set.select_related('client_container_doc').select_related('area_doc')
     content = {
         'clients_docs': clients_docs
     }

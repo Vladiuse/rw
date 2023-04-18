@@ -7,88 +7,98 @@
 
 {%block content%}
 <style>
-  table td,table th{
+  table td,
+  table th {
     text-align: left;
   }
-  .container{
+
+  .container {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-  ul > li {
+
+  ul>li {
     list-style-type: none;
   }
-  #site-message{
+
+  #site-message {
     margin-bottom: 5px;
   }
 
-  .fa-solid.success{
+  .fa-solid.success {
     color: green;
   }
-  .fa-solid.danger{
+
+  .fa-solid.danger {
     color: red;
   }
 </style>
 
-<div class="toast align-items-center text-white bg-primary border-0 position-fixed bottom-0 end-0"
- role="alert" aria-live="assertive" aria-atomic="true" id="site-message" style="z-index: 11" data-bs-deley="5000">
-    <div class="d-flex">
-      <div class="toast-body">
-        Скопировано
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+<div class="toast align-items-center text-white bg-primary border-0 position-fixed bottom-0 end-0" role="alert"
+  aria-live="assertive" aria-atomic="true" id="site-message" style="z-index: 11" data-bs-deley="5000">
+  <div class="d-flex">
+    <div class="toast-body">
+      Скопировано
     </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+      aria-label="Close"></button>
   </div>
+</div>
 
 
 <div class="container">
   {%if client_doc.client_container_doc%}
-    <h2>Документ: {{client_doc.name}}</h2>
-    <p>Дата: {{client_doc.document_date}}</p>
-    <p><b>Файл клиенты</b>: {{client_doc.client_container_doc.word_doc_file.name}}
-    </p>
-    <p>Статус:
-      {% if client_doc.client_container_doc.can_be_read%}
-      <i class="fa-solid fa-circle-check success"></i>
-      Прочитан
-      {%else%}
-      <i class="fa-solid fa-circle-exclamation danger"></i>
-      Ошибка чтения
-      {%endif%}
-    </p>
-    <p>Строки  <a href="{%url 'containers:files_no_data_rows' client_doc.client_container_doc.pk %}" target="_blank">без данных</a></p>
-{%endif%}
-
-    {%if client_doc.area_doc%}
-    <p><b>Файл участки</b>: {{client_doc.area_doc.word_doc_file.name}}
-    </p>
-    <p>Статус:
-      {% if client_doc.area_doc.can_be_read%}
-      <i class="fa-solid fa-circle-check success"></i>
-      Прочитан
-      {%else%}
-      <i class="fa-solid fa-circle-exclamation danger"></i>
-      Ошибка чтения
-      {%endif%}
-    </p>
-    <p>Строки  <a href="{%url 'containers:files_no_data_rows' client_doc.area_doc.pk %}" target="_blank">без данных</a></p>
+  <h2>Документ: {{client_doc.name}}</h2>
+  <p>Дата: {{client_doc.document_date}}</p>
+  <p><b>Файл клиенты</b>: {{client_doc.client_container_doc.word_doc_file.name}}
+  </p>
+  <p>Статус:
+    {% if client_doc.client_container_doc.can_be_read%}
+    <i class="fa-solid fa-circle-check success"></i>
+    Прочитан
+    {%else%}
+    <i class="fa-solid fa-circle-exclamation danger"></i>
+    Ошибка чтения
     {%endif%}
+  </p>
+  <p>Строки <a href="{%url 'containers:files_no_data_rows' client_doc.client_container_doc.pk %}" target="_blank">без
+      данных</a></p>
+  {%endif%}
+
+  {%if client_doc.area_doc%}
+  <p><b>Файл участки</b>: {{client_doc.area_doc.word_doc_file.name}}
+  </p>
+  <p>Статус:
+    {% if client_doc.area_doc.can_be_read%}
+    <i class="fa-solid fa-circle-check success"></i>
+    Прочитан
+    {%else%}
+    <i class="fa-solid fa-circle-exclamation danger"></i>
+    Ошибка чтения
+    {%endif%}
+  </p>
+  <p>Строки <a href="{%url 'containers:files_no_data_rows' client_doc.area_doc.pk %}" target="_blank">без данных</a></p>
+  {%endif%}
 
 </div>
 <!-- Button trigger modal -->
 
 <div class="container"></i>
-  <a class="btn btn-primary" href="{%url 'containers:clients'%}" role="button"><i class="fa-solid fa-list"> </i>Все документы</a>
-  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  <a class="btn btn-primary" href="{%url 'containers:clients'%}" role="button"><i class="fa-solid fa-list"> </i>Все
+    документы</a>
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+    aria-expanded="false" aria-controls="collapseExample">
     <i class="fa-solid fa-pen-to-square"></i> Редактировать
   </button>
-    {%if client_doc.docs_can_be_checked %}
-     <a class="btn btn-primary" href="{%url 'containers:client_check_docs' client_doc.pk %}" target="_blank">
-         <i class="fa-solid fa-magnifying-glass"></i>
-         Сравнить
-     </a>
-    {%endif%}
+  {%if client_doc.docs_can_be_checked %}
+  <a class="btn btn-primary" href="{%url 'containers:client_check_docs' client_doc.pk %}" target="_blank">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    Сравнить
+  </a>
+  {%endif%}
   <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
-  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDELETE"><i class="fa-solid fa-trash"></i>Удалить</button>
+  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDELETE"><i
+      class="fa-solid fa-trash"></i>Удалить</button>
 </div>
 
 
@@ -97,57 +107,63 @@
   <div class="collapse {%if form_show%}show{%endif%}" id="collapseExample">
     <div class="card card-body">
 
-                <div class="row">
-                  
-                    <div class="col-4 left">
-                      <form method="POST" id="client-form" enctype="multipart/form-data">
-                        {%csrf_token%}
-                                <!-- CLIENT FROM  -->
-                                {{ form.non_field_errors }}
-                        <!-- LEFT -->
-                        <div class="field-wrap">
-                            {{ form.name.errors }}
-                            <label for="{{ form.name.id_for_label }}">{{form.name.label}}:</label>
-                            {{ form.name }}
-                        </div>
-                        <div class="field-wrap">
-                            {{ form.document_date.errors }}
-                            <label for="{{ form.document_date.id_for_label }}">{{form.document_date.label}}:</label>
-                            {{ form.document_date }}
-                        </div>
-                        <div class="field-wrap">
-                          {{ form.description.errors }}
-                          <label for="{{ form.description.id_for_label }}">{{form.description.label}}:</label>
-                          {{ form.description }}
-                      </div>
-                        <div class="field-wrap">
-                            <button class="btn btn-primary" type="submit">Сохранить</button>
-                        </div>
-                        
-                        <!-- LEFT --> 
-                      </form>
-                    </div>
-                 
-                    <div class="col-8">
+      <div class="row">
 
-                        <!-- RIGHT -->
-                        <form method="POST"  action="{%url 'containers:add_hand_text_to_docs' client_doc.pk %}" enctype="multipart/form-data">
-                          {%csrf_token%}
-                        {% if not client_doc.client_container_doc.is_read%}
-                        <p>Текст для "Клиент-Контейнеры"</p>
-                        {{client_container_text_form}}
-                        {%endif%}
-                        
-                        {% if not client_doc.area_doc.is_read%}
-                        <p>Текст для "Участки"</p>
-                          {{area_text_form}}
-                          {%endif%}
-                        <!-- RIGHT -->
-                        <button type="submit" class="btn btn-primary">Сохранить документы</button>         
-                      </form>
-                    </div>
-                </div>
-                        <!-- CLIENT FROM  -->
+        <div class="col-4 left">
+          <form method="POST" id="client-form" enctype="multipart/form-data">
+            {%csrf_token%}
+            <!-- CLIENT FROM  -->
+            {{ form.non_field_errors }}
+            <!-- LEFT -->
+            <div class="field-wrap">
+              {{ form.name.errors }}
+              <label for="{{ form.name.id_for_label }}">{{form.name.label}}:</label>
+              {{ form.name }}
+            </div>
+            <div class="field-wrap">
+              {{ form.document_date.errors }}
+              <label for="{{ form.document_date.id_for_label }}">{{form.document_date.label}}:</label>
+              {{ form.document_date }}
+            </div>
+            <div class="field-wrap">
+              {{ form.description.errors }}
+              <label for="{{ form.description.id_for_label }}">{{form.description.label}}:</label>
+              {{ form.description }}
+            </div>
+            <div class="field-wrap">
+              {{ form.clients.errors }}
+              <label for="{{ form.clients.id_for_label }}">{{form.clients.label}}:</label>
+              {{ form.clients }}
+            </div>
+            <div class="field-wrap">
+              <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+
+            <!-- LEFT -->
+          </form>
+        </div>
+
+        <div class="col-8">
+
+          <!-- RIGHT -->
+          <form method="POST" action="{%url 'containers:add_hand_text_to_docs' client_doc.pk %}"
+            enctype="multipart/form-data">
+            {%csrf_token%}
+            {% if not client_doc.client_container_doc.is_read%}
+            <p>Текст для "Клиент-Контейнеры"</p>
+            {{client_container_text_form}}
+            {%endif%}
+
+            {% if not client_doc.area_doc.is_read%}
+            <p>Текст для "Участки"</p>
+            {{area_text_form}}
+            {%endif%}
+            <!-- RIGHT -->
+            <button type="submit" class="btn btn-primary">Сохранить документы</button>
+          </form>
+        </div>
+      </div>
+      <!-- CLIENT FROM  -->
 
     </div>
   </div>
@@ -158,23 +174,27 @@
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="true" id="tab-client_count" data-table="client_count">Наличие по клиентам</a>
+          <a class="nav-link active" aria-current="true" id="tab-client_count" data-table="client_count">Наличие по
+            клиентам</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span id="client_rows_count">({{rows|length}})</span></a>
+          <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span
+              id="client_rows_count">({{rows|length}})</span></a>
         </li>
-       {%if client_doc.area_doc.can_be_read%}
-       <li class="nav-item">
-        <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без участков ({{rows_no_area|length}})<span></span></a>
-      </li>
-       {%endif%}
+        {%if client_doc.area_doc.can_be_read%}
+        <li class="nav-item">
+          <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без участков
+            ({{rows_no_area|length}})<span></span></a>
+        </li>
+        {%endif%}
         <!-- <li class="nav-item">
           <a class="nav-link" id="tab-document_text_rows" data-table="document_text_rows">Текст документа</a>
         </li> -->
       </ul>
     </div>
     <div class="card-body">
-      <button class="btn btn-secondary" id="client_filter" onclick="dropFilter()" style="display: none;">Сбросить фильтр:<span></span></button>
+      <button class="btn btn-secondary" id="client_filter" onclick="dropFilter()" style="display: none;">Сбросить
+        фильтр:<span></span></button>
       <table class="table table-striped" id="client_count">
         <thead>
           <tr>
@@ -186,7 +206,7 @@
           </tr>
         </thead>
         <tbody>
-            {%for row in client_doc.client_count%}
+          {%for row in client_doc.client_count%}
           <tr>
             <td><a href="#" class="client-filter">{{row.client_name}}</a></td>
             <td>{{row.count}}</td>
@@ -216,9 +236,9 @@
           </tr>
         </thead>
         <tbody>
-            {%for row in rows%}
+          {%for row in rows%}
           <tr>
-            
+
             <th scope="row">{{row.pk}}</th>
             <td class="client_name">{{row.client_name}}</td>
             <td>{{row.container}}</td>
@@ -245,7 +265,7 @@
           </tr>
         </thead>
         <tbody>
-            {%for row in rows_no_area%}
+          {%for row in rows_no_area%}
           <tr>
             <th scope="row">{{row.pk}}</th>
             <td class="client_name">{{row.client_name}}</td>
@@ -255,7 +275,7 @@
           {%endfor%}
         </tbody>
       </table>
-            <!-- NO AREA TALBE -->
+      <!-- NO AREA TALBE -->
 
     </div>
   </div>
@@ -270,7 +290,8 @@
 
 
 <!-- Modal DELETE-->
-<div class="modal fade" id="exampleModalDELETE" tabindex="-1" aria-labelledby="exampleModalDELETELabel" aria-hidden="true">
+<div class="modal fade" id="exampleModalDELETE" tabindex="-1" aria-labelledby="exampleModalDELETELabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -290,98 +311,98 @@
 
 
 
-<script>  
-var rowsCount  = {{rows|length}}
-var current_table_id = 'client_count'
-  $('#result-tables .nav a').click(function(e){
+<script>
+  var rowsCount = {{ rows| length}}
+  var current_table_id = 'client_count'
+  $('#result-tables .nav a').click(function (e) {
     e.preventDefault()
     let table_to_show = $(this).data('table')
     showTable(table_to_show)
   })
-  function showTable(table_id){
+  function showTable(table_id) {
     $('#result-tables .card-header a').removeClass('active')
-    $('#result-tables .card-header a').each(function(){
-      if ($(this).data('table')==table_id){$(this).addClass('active')}
+    $('#result-tables .card-header a').each(function () {
+      if ($(this).data('table') == table_id) { $(this).addClass('active') }
     })
     $('#result-tables table').hide()
-    $('#'+table_id).show()
+    $('#' + table_id).show()
     current_table_id = table_id;
   }
-  function filterCliendTable(client_name){
+  function filterCliendTable(client_name) {
     let rows = $('#client_rows tbody tr')
-    if (client_name == null){
+    if (client_name == null) {
       rows.show();
       return
     }
     showButtonFilter(client_name)
     markTabFilter(client_name)
     var clientRowCount = 0;
-    rows.each(function(){
+    rows.each(function () {
       let client_cell = $(this).find('.client_name')
-      if (client_cell.text()== client_name)
-      {
+      if (client_cell.text() == client_name) {
         $(this).show();
-        clientRowCount ++;
-      } else {$(this).hide()}
+        clientRowCount++;
+      } else { $(this).hide() }
     })
     $('#client_rows_count').text(clientRowCount)
   }
 
 
-  function markTabFilter(text){
+  function markTabFilter(text) {
     $('#tab-client_rows span').text(text)
   }
-  function showButtonFilter(text){
+  function showButtonFilter(text) {
     $('#client_filter span').text(text)
     $('#client_filter').show()
   }
-  function dropFilter(){
+  function dropFilter() {
     $('#client_filter').hide()
     markTabFilter('')
     filterCliendTable(null)
     $('#client_rows_count').text(rowsCount)
   }
 
-  $('a.client-filter').click(function(e){
-      e.preventDefault();
-      var client_name = $(this).text()
-      console.log(client_name)
-      showTable('client_rows')
-      filterCliendTable(client_name)
-    })
-  </script>
-  <script>
-    function selectElementContents(el) {
+  $('a.client-filter').click(function (e) {
+    e.preventDefault();
+    var client_name = $(this).text()
+    console.log(client_name)
+    showTable('client_rows')
+    filterCliendTable(client_name)
+  })
+</script>
+<script>
+  function selectElementContents(el) {
     var body = document.body, range, sel;
     if (document.createRange && window.getSelection) {
-        range = document.createRange();
-        sel = window.getSelection();
-        sel.removeAllRanges();
-        try {
-            range.selectNodeContents(el);
-            sel.addRange(range);
-        } catch (e) {
-            range.selectNode(el);
-            sel.addRange(range);
-        }
+      range = document.createRange();
+      sel = window.getSelection();
+      sel.removeAllRanges();
+      try {
+        range.selectNodeContents(el);
+        sel.addRange(range);
+      } catch (e) {
+        range.selectNode(el);
+        sel.addRange(range);
+      }
     } else if (body.createTextRange) {
-        range = body.createTextRange();
-        range.moveToElementText(el);
-        range.select();
+      range = body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
     }
-    document.execCommand("Copy");}
-    
+    document.execCommand("Copy");
+  }
 
-    $('#copy_table').click(function(){
-      let table_to_copy = current_table_id;
-      let elem = document.getElementById(table_to_copy)
-      selectElementContents(elem)
-      $('.toast').toast('show');
-    })
-    
 
-  </script>
-  <script>
-  
-  </script>
+  $('#copy_table').click(function () {
+    let table_to_copy = current_table_id;
+    let elem = document.getElementById(table_to_copy)
+    selectElementContents(elem)
+    $('.toast').toast('show');
+  })
+
+
+</script>
+<script>
+
+</script>
 {%endblock%}
