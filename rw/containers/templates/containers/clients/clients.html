@@ -39,7 +39,7 @@
         <th scope="col">Имя</th>
         <th scope="col">Описание</th>
         <th scope="col">Файл клиенты</th>
-        <th scope="col">Файл участки</th>
+        <th scope="col">Контейнеров</th>
       </tr>
     </thead>
     <tbody>
@@ -66,11 +66,10 @@
               {%endif%}
             </td>
             <td>
-              {%if cliend_doc.area_doc%}
-              <a href="{{cliend_doc.area_doc.url}}" class="btn btn-secondary">
-                {{cliend_doc.area_doc}}
-                <i class="fa-solid fa-download"></i>
-              </a>
+              {%if cliend_doc.container_count%}
+                {{cliend_doc.container_count}}  
+              {%else%}
+              -
               {%endif%}
             </td>
           </tr>

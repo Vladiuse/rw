@@ -84,6 +84,7 @@ class ExistBookFileMixin(ContainerFileMixin):
         'send_number': [16, 28],
         'date': [109, 119],
         'weight': [77, 85],
+        'area': [87, 89],
     }
 
 
@@ -102,7 +103,6 @@ class ClientContainerTypeMixin(ContainerFileMixin):
 
     def get_data_from_text(self):
         self.DETECT_VALID_FUNCS = ExistBookFileMixin.DETECT_VALID_FUNCS
-        print('type', self.type)
         if self.type == 'Книга выгрузки':
             self.ADDITIONAL_DATA = ExistBookFileMixin.ADDITIONAL_DATA
         if self.type == 'Книга вывоза':

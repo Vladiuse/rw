@@ -1,5 +1,5 @@
 from django import forms
-from .models import ClientsReport, WordDoc, ClientDocFile, AreaDocFile
+from .models import ClientsReport, WordDoc, ClientDocFile
 from django.contrib.admin.widgets import AdminDateWidget
 from django.forms.widgets import DateInput
 from django.core.files.base import ContentFile
@@ -58,8 +58,8 @@ class ClientDocFileForm(WordDocForm):
         # exclude = ['hand_text']
 
 
-class AreaDocFileForm(WordDocForm):
-    class Meta(WordDocForm.Meta):
-        model = AreaDocFile
+# class AreaDocFileForm(WordDocForm):
+#     class Meta(WordDocForm.Meta):
+#         model = AreaDocFile
 
 

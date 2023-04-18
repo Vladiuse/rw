@@ -65,21 +65,6 @@
       данных</a></p>
   {%endif%}
 
-  {%if client_doc.area_doc%}
-  <p><b>Файл участки</b>: {{client_doc.area_doc.word_doc_file.name}}
-  </p>
-  <p>Статус:
-    {% if client_doc.area_doc.can_be_read%}
-    <i class="fa-solid fa-circle-check success"></i>
-    Прочитан
-    {%else%}
-    <i class="fa-solid fa-circle-exclamation danger"></i>
-    Ошибка чтения
-    {%endif%}
-  </p>
-  <p>Строки <a href="{%url 'containers:files_no_data_rows' client_doc.area_doc.pk %}" target="_blank">без данных</a></p>
-  {%endif%}
-
 </div>
 <!-- Button trigger modal -->
 
@@ -90,12 +75,12 @@
     aria-expanded="false" aria-controls="collapseExample">
     <i class="fa-solid fa-pen-to-square"></i> Редактировать
   </button>
-  {%if client_doc.docs_can_be_checked %}
+  <!-- {%if client_doc.docs_can_be_checked %}
   <a class="btn btn-primary" href="{%url 'containers:client_check_docs' client_doc.pk %}" target="_blank">
     <i class="fa-solid fa-magnifying-glass"></i>
     Сравнить
   </a>
-  {%endif%}
+  {%endif%} -->
   <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
   <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDELETE"><i
       class="fa-solid fa-trash"></i>Удалить</button>
@@ -154,10 +139,10 @@
             {{client_container_text_form}}
             {%endif%}
 
-            {% if not client_doc.area_doc.is_read%}
+            <!-- {% if not client_doc.area_doc.is_read%}
             <p>Текст для "Участки"</p>
             {{area_text_form}}
-            {%endif%}
+            {%endif%} -->
             <!-- RIGHT -->
             <button type="submit" class="btn btn-primary">Сохранить документы</button>
           </form>
@@ -181,12 +166,10 @@
           <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span
               id="client_rows_count">({{rows|length}})</span></a>
         </li>
-        {%if client_doc.area_doc.can_be_read%}
         <li class="nav-item">
           <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без участков
             ({{rows_no_area|length}})<span></span></a>
         </li>
-        {%endif%}
         <!-- <li class="nav-item">
           <a class="nav-link" id="tab-document_text_rows" data-table="document_text_rows">Текст документа</a>
         </li> -->
@@ -231,8 +214,6 @@
             <th scope="col">Простой</th>
             <th scope="col">Масса</th>
             <th scope="col">N/N</th>
-
-
           </tr>
         </thead>
         <tbody>
