@@ -120,30 +120,6 @@ class ClientDocFile(WordDoc, ClientContainerTypeMixin):
         return containers_rows
 
 
-# class AreaDocFile(WordDoc,AreaFileMixin):
-#     AREA_TYPE = 'Номера участков'
-#
-#     type = models.CharField(
-#         max_length=30,
-#         verbose_name='Тип документа',
-#         default=AREA_TYPE,
-#         editable=False,
-#     )
-#
-#     def get_data(self) -> dict:
-#         result_data = self.get_data_from_text()
-#         # text = self.get_text()
-#         containers_area = result_data['data']
-#         container_area_dict = {}
-#         for item in containers_area:
-#             container_area_dict.update({
-#                 item['container']: item['area']
-#             })
-#         self.add_rows_without_data('\n'.join(result_data['rows_without_data']))
-#         self.save()
-#         return container_area_dict
-
-
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
     columns = [col[0] for col in cursor.description]
@@ -202,14 +178,6 @@ class ClientsReport(models.Model):
         null=True,
         related_name='client_container_doc',
     )
-    # area_doc = models.OneToOneField(
-    #     AreaDocFile,
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    #     verbose_name='Файл с номерами участков',
-    #     related_name='area_doc',
-    # )
     clients = models.ManyToManyField('ClientUser', blank=True)
 
     class Meta:
@@ -245,39 +213,14 @@ class ClientsReport(models.Model):
                 client_container_to_save.append(row)
 
             ClientContainerRow.objects.bulk_create(client_container_to_save)
-        # self.add_area_data()
-
-    # def add_area_data(self):
-    #     if self.area_doc and self.area_doc.can_be_read():
-    #         containers_area = self.area_doc.get_data()
-    #         print('add_area_data AREA len', len(containers_area))
-    #         rows = ClientContainerRow.objects.filter(document=self)
-    #         for row in rows:
-    #             row.area = 0
-    #         ClientContainerRow.objects.bulk_update(rows, ['area'])
-    #         updates_rows = list()
-    #         for client_container_row in rows:
-    #             try:
-    #                 area = containers_area[client_container_row.container]
-    #                 client_container_row.area = area
-    #                 updates_rows.append(client_container_row)
-    #             except KeyError:
-    #                 pass
-    #         ClientContainerRow.objects.bulk_update(updates_rows, ['area'])
 
     def client_count(self):
         with connection.cursor() as cursor:
             result_query = self.QUERY % (self.document_date, self.document_date, self.document_date, self.pk)
             cursor.execute(result_query)
-            # rows = cursor.fetchall()
             rows = dictfetchall(cursor)
         return rows
 
-    # def docs_can_be_checked(self):
-    #     if self.client_container_doc and self.area_doc:
-    #         if self.client_container_doc.can_be_read() and self.area_doc.can_be_read():
-    #             return True
-    #     return False
 
 
 class ClientContainerRow(models.Model):

@@ -55,7 +55,6 @@ def clients_documents(request):
         clients_docs = ClientsReport.objects.select_related('client_container_doc').annotate(container_count=Count('row'))
     else:
         client_user = ClientUser.objects.get(user=request.user)
-        # clients_docs = ClientsReport.objects.select_related('client_container_doc').select_related('area_doc')
         clients_docs = client_user.clientsreport_set.select_related('client_container_doc').annotate(container_count=Count('row'))
     content = {
         'clients_docs': clients_docs
@@ -126,23 +125,10 @@ def add_hand_text_to_docs(request, document_id):
         prefix='client_container',
         instance=clients.client_container_doc,
     )
-    # area_text_form = AreaDocFileForm(
-    #     request.POST,
-    #     request.FILES,
-    #     prefix='area',
-    #     instance=clients.area_doc,
-    # )
     if client_container_text_form.is_valid():
         client_container_text_form.save()
         if client_container_text_form.has_changed():
             clients.find_n_save_rows()
-    # if area_text_form.is_valid():
-    #     area_text_form.save()
-    #     if not clients.area_doc:
-    #         clients.area_doc = area_text_form.instance
-    #         clients.save()
-    #     if area_text_form.has_changed():
-    #         clients.add_area_data()
     return HttpResponseRedirect(
         reverse('containers:show_client', args=(document_id,)))
 
@@ -154,31 +140,23 @@ def create_client(request):
     if request.method == 'POST':
         client_form = ClientContainer(request.POST, prefix='client_form')
         client_container_file_form = ClientDocFileForm(request.POST, request.FILES,prefix='client_container')
-        # area_container_file_form = AreaDocFileForm(request.POST, request.FILES,prefix='area_contaienr')
         if client_container_file_form.is_valid():
             client_container_file_form.save()
             client_form.instance.client_container_doc = client_container_file_form.instance
-        # if area_container_file_form.is_valid():
-        #     print('AREA FORM VALID')
-        #     area_container_file_form.save()
-        #     client_form.instance.area_doc = area_container_file_form.instance
         if client_form.is_valid():
             client_form.save()
             return redirect('containers:clients')
         content = {
             'client_form': client_form,
             'client_container_text_form': client_container_file_form,
-            # 'area_text_form': area_container_file_form,
         }
         return render(request, 'containers/clients/create.html', content)
     else:
         client_form = ClientContainer(prefix='client_form')
         client_container_file_form = ClientDocFileForm(prefix='client_container',empty_permitted=True, use_required_attribute=False)
-        # area_container_file_form = AreaDocFileForm(prefix='area_contaienr', empty_permitted=True, use_required_attribute=False)
         content = {
             'client_form': client_form,
             'client_container_text_form': client_container_file_form,
-            # 'area_text_form': area_container_file_form,
         }
         return render(request, 'containers/clients/create.html', content)
 
@@ -228,7 +206,6 @@ def test(request):
 
     content = {
         'client_container_form': ClientDocFileForm(),
-        # 'area_form': AreaDocFileForm(),
     }
     return render(request, 'containers/test.html', content)
 

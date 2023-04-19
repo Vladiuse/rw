@@ -1,19 +1,14 @@
 from django import forms
 from .models import ClientsReport, WordDoc, ClientDocFile
-from django.contrib.admin.widgets import AdminDateWidget
 from django.forms.widgets import DateInput
-from django.core.files.base import ContentFile
 from django.core.exceptions import ValidationError
 
 
 class ClientContainer(forms.ModelForm):
     template_name = "containers/clients/client_form.html"
 
-    # form_template_name = "vagons/base1.html"
-    # document_date = forms.DateField(label='Дата документа', required=False, widget=AdminDateWidget)
     class Meta:
         model = ClientsReport
-        # fields = '__all__'
         exclude = ['client_container_doc', 'area_doc']
         widgets = {
             # 'document_date': AdminDateWidget,
@@ -55,11 +50,6 @@ class ClientDocFileForm(WordDocForm):
     class Meta(WordDocForm.Meta):
         model = ClientDocFile
         fields = ['type', 'word_doc_file']
-        # exclude = ['hand_text']
 
-
-# class AreaDocFileForm(WordDocForm):
-#     class Meta(WordDocForm.Meta):
-#         model = AreaDocFile
 
 
