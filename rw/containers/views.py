@@ -197,9 +197,10 @@ class WordDocUpdate(UpdateView):
 
 
 def print_document(request, client_container_id):
-    client_container_id = ClientContainerRow.objects.get(pk=client_container_id)
+    row = ClientContainerRow.objects.get(pk=client_container_id)
     content = {
-        'client_container_id': client_container_id,
+        'row': row,
+        'text': 'Some text',
     }
     return render(request, 'containers/print/document.html', content)
 
