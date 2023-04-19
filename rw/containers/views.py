@@ -216,11 +216,19 @@ class WordDocUpdate(UpdateView):
     success_url = reverse_lazy('containers:word_docs')
 
 
+def print_document(request, client_container_id):
+    client_container_id = ClientContainerRow.objects.get(pk=client_container_id)
+    content = {
+        'client_container_id': client_container_id,
+    }
+    return render(request, 'containers/print/document.html', content)
+
+
 def test(request):
 
     content = {
         'client_container_form': ClientDocFileForm(),
-        'area_form': AreaDocFileForm(),
+        # 'area_form': AreaDocFileForm(),
     }
     return render(request, 'containers/test.html', content)
 

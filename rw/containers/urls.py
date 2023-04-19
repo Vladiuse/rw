@@ -14,10 +14,12 @@ urlpatterns = [
     path('client_check_docs/<int:client_report_id>', views.client_check_docs, name='client_check_docs'),
     path('add_hand_text_to_docs/<int:document_id>', views.add_hand_text_to_docs, name='add_hand_text_to_docs'),
     path('files_no_data_rows/<int:file_id>', views.files_no_data_rows, name='files_no_data_rows'),
+    path('print_document/<int:client_container_id>', views.print_document, name='print_document'),
 
     path('word_docs', views.WordDocView.as_view(), name='word_docs'),
     path('word_docs/create', views.WordDocCreate.as_view(), name='word_doc_create'),
     path('word_docs/update/<int:pk>', views.WordDocUpdate.as_view(), name='update'),
+
 
     path('test', views.test, name='test'),
 
