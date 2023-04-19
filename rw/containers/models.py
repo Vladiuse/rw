@@ -178,7 +178,7 @@ class ClientsReport(models.Model):
         null=True,
         related_name='client_container_doc',
     )
-    clients = models.ManyToManyField('ClientUser', blank=True)
+    clients = models.ManyToManyField('ClientUser', blank=True, related_name='reports', related_query_name='report')
 
     class Meta:
         ordering = ['-document_date', '-pk']

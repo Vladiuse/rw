@@ -18,8 +18,6 @@
 
 </style>
 <h1>Наличие по клиeнтaм</h1>
-
-
 {%endblock%}
 
 
@@ -40,12 +38,13 @@
         <th scope="col">Описание</th>
         <th scope="col">Файл клиенты</th>
         <th scope="col">Контейнеров</th>
+        <th scope="col">Доступен</th>
       </tr>
     </thead>
     <tbody>
       {%for mounth in cliend_doc_mounth%}
       <tr>
-        <td colspan="5" class="table-info">{{mounth.grouper}}</td>
+        <td colspan="7" class="table-info">{{mounth.grouper}}</td>
       </tr>
           {%for cliend_doc in mounth.list %}
           
@@ -71,6 +70,11 @@
               {%else%}
               -
               {%endif%}
+            </td>
+            <td>
+              {%for client in cliend_doc.clients.all%}
+              <span>{{client}}</span>
+              {%endfor%}
             </td>
           </tr>
           {%endfor%}

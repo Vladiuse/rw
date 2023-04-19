@@ -2,7 +2,7 @@ from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
 from .forms import ClientContainer, WordDocForm, ClientDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser
-from django.db.models import F, Count
+from django.db.models import F, Count, Q
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http import HttpResponseBadRequest
@@ -52,10 +52,12 @@ def people_count(requests):
 @login_required
 def clients_documents(request):
     if request.user.groups.filter(name='Админы').exists():
-        clients_docs = ClientsReport.objects.select_related('client_container_doc').annotate(container_count=Count('row'))
+        clients_docs = ClientsReport.objects.select_related('client_container_doc').prefetch_related('clients').\
+            annotate(container_count=Count('row'))
     else:
         client_user = ClientUser.objects.get(user=request.user)
-        clients_docs = client_user.clientsreport_set.select_related('client_container_doc').annotate(container_count=Count('row'))
+        clients_docs = client_user.reports.select_related('client_container_doc')\
+            .annotate(container_count=Count('row',Q(row__client_name=client_user.client_filter)))
     content = {
         'clients_docs': clients_docs
     }
