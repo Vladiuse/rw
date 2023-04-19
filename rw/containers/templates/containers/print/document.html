@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <style>
     @font-face {
@@ -50,9 +51,16 @@
 
     #tool-bar{
         position: fixed;
-        right: 30px;
-        top: 30px;
-        border: 2px red solid;
+        right: 60px;
+        top: 80px;
+        border: 2px rgb(119, 119, 119) solid;
+        border-radius: 8px;
+        background-color: rgb(184, 184, 184);
+        padding: 20px;
+
+    }
+    #tool-bar select{
+        font-size: 20px;
     }
     .print #tool-bar{
         display: none;
@@ -61,6 +69,12 @@
 <body>
 <div id="tool-bar">
     <h1>Some text</h1>
+    <select>
+        {%for face in faces%}
+        <option data-name="{{face.name_dash}}" id="{{forloop.counter}}" value="{{forloop.counter}}" data-attorney="{{face.attorney_dash}}" {%if forloop.counter == 1%}selected{%endif%}>{{face.name}}</option>
+        {%endfor%}
+    </select>
+    <br>
     <button>123</button>
 </div>
 <div class="print-doc" contentEditable="true">
@@ -94,14 +108,14 @@
                                         (фамилия, инициалы)
 Получателю       ____________________________________________________________ 
                                 (наименование организации)
-Доверенность N _______________________ или договор N ________________________
+Доверенность N <span id="face-attorney">_______________________</span> или договор N ________________________
 Шоферу-экспедитору                     
 фамилия, инициалы)                     Автомобиль N
 
 Контейнер выдан <1>       "___" ____ месяца    ____ч. ____мин.
 
 Представитель перевозчика                Лицо, получившее контейнер
-____ __________________________________   __________________________________
+____ __________________________________   <span id="face-name">__________________________________</span>
 (подпись, фамилия, инициалы)           (подпись, фамилия, инициалы)
 
 Контейнер возвращен <2>  "___" ____ месяца    ____ч. ____мин.
@@ -138,15 +152,16 @@ __________
 </body>
 </html>
 <script>
-// collapse.addEventListener('click', turnPlayer);
-// next.addEventListener('click', nextStation);
-// prev.addEventListener('click', prevStation);
-// tabOpen.addEventListener('click', openList);
-// chanelList.addEventListener('click', listClickPlay);
-// button.addEventListener('click', startPlay);
-// functions = [collapse, next, prev, tabOpen]
-// for (func in functions){
-//     func.
-// }
+function addCurrFace(){
+    let currOption = $("select option:selected")
+    $('#face-attorney').text(currOption.attr('data-attorney'))
+    $('#face-name').text(currOption.attr('data-name'))
+}
+addCurrFace()
+
+$('#tool-bar select').change(function(){
+    addCurrFace()
+    console.log('click')
+})
 </script>
     

@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
 from .forms import ClientContainer, WordDocForm, ClientDocFileForm
-from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser
+from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, FaceProxy
 from django.db.models import F, Count, Q
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
@@ -198,9 +198,14 @@ class WordDocUpdate(UpdateView):
 
 def print_document(request, client_container_id):
     row = ClientContainerRow.objects.get(pk=client_container_id)
+    faces = FaceProxy.objects.all()
+    for face in faces:
+        face.name_dash = f'{face.name:_<34}'
+        face.attorney_dash = f'{face.attorney:_<23}'
     content = {
         'row': row,
         'text': 'Some text',
+        'faces': faces,
     }
     return render(request, 'containers/print/document.html', content)
 

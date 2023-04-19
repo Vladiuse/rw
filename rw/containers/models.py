@@ -262,3 +262,11 @@ class ClientUser(models.Model):
 
     def __str__(self):
         return self.client_name
+
+
+class FaceProxy(models.Model):
+    name = models.CharField(max_length=30)
+    attorney = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
