@@ -1,5 +1,5 @@
 {% extends 'containers/base.html'%}
-
+{%load client%}
 {%block page-name%}
 <style>
 
@@ -15,7 +15,10 @@
       align-items: center;
       justify-content: center;
     }
-
+    .client_name{
+      font-size: 15px;
+      margin: 2px 0;
+    }
 </style>
 <h1>Наличие по клиeнтaм</h1>
 {%endblock%}
@@ -23,9 +26,12 @@
 
 {%block content%}
 
+
+{%if user|has_group:"Админы"%}
 <div class="container">
   <a href="{%url 'containers:create_client_doc' %}" class="btn btn-success">Создать новый <i class="fa-solid fa-file-circle-plus"></i></a>
 </div>
+{%endif%}
 
 <br>
 <div class="container">
@@ -36,7 +42,6 @@
         <th scope="col">Дата</th>
         <th scope="col">Имя</th>
         <th scope="col">Описание</th>
-        <th scope="col">Файл клиенты</th>
         <th scope="col">Контейнеров</th>
         <th scope="col">Доступен</th>
       </tr>
@@ -57,14 +62,6 @@
             </td>
             <td>{{cliend_doc.description}}</td>
             <td>
-              {%if cliend_doc.client_container_doc%}
-              <a href="{{cliend_doc.client_container_doc.url}}" class="btn btn-secondary">
-                {{cliend_doc.client_container_doc}}
-                <i class="fa-solid fa-download"></i>
-              </a>
-              {%endif%}
-            </td>
-            <td>
               {%if cliend_doc.container_count%}
                 {{cliend_doc.container_count}}  
               {%else%}
@@ -73,7 +70,7 @@
             </td>
             <td>
               {%for client in cliend_doc.clients.all%}
-              <span>{{client}}</span>
+              <p class="client_name">{{client}}</p>
               {%endfor%}
             </td>
           </tr>

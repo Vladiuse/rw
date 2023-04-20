@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{%static 'containers/styles.css'%}">
+    <!--ICONS-->
+<script src="https://kit.fontawesome.com/da43c2ea11.js" crossorigin="anonymous"></script>
 </head>
 <style>
     @font-face {
@@ -51,7 +54,9 @@
 
     #tool-bar{
         position: fixed;
-        right: 60px;
+        display: flex;
+        flex-direction: column;
+        left: calc(210mm + 20mm);
         top: 80px;
         border: 2px rgb(119, 119, 119) solid;
         border-radius: 8px;
@@ -61,6 +66,7 @@
     }
     #tool-bar select{
         font-size: 20px;
+        margin: 10px 0;
     }
     .print #tool-bar{
         display: none;
@@ -68,16 +74,17 @@
 </style>
 <body>
 <div id="tool-bar">
-    <h1>Some text</h1>
+    <h3>Выбор контрагента</h3>
     <select>
         {%for face in faces%}
         <option data-name="{{face.name_dash}}" id="{{forloop.counter}}" value="{{forloop.counter}}" data-attorney="{{face.attorney_dash}}" {%if forloop.counter == 1%}selected{%endif%}>{{face.name}}</option>
         {%endfor%}
     </select>
-    <br>
-    <button>123</button>
+    <button id="print" class="pure-material-button-contained"><i class="fa-solid fa-print"></i> Печать</button>
 </div>
-<div class="print-doc" contentEditable="true">
+
+
+<div class="print-doc" contentEditable="false">
 
 <div class="head" >
     <div class="text">
@@ -99,7 +106,7 @@
 
 "____" _________________ 22__ г.
 
-Контейнер гружёный  <1> N{{row.container|left:"20"}} масса брутто {{row.weight|left:"18"}}
+Контейнер гружёный  <1> N_{{row.container|left:"19"}} масса брутто {{row.weight|left:"18"}}
 порожний
 Собственник контейнера ______________________________________________________
                           (цифровой код ж.д. - собственницы или приватный)
@@ -152,6 +159,7 @@ __________
 </body>
 </html>
 <script>
+    var toolBar = $('#tool-bar')
 function addCurrFace(){
     let currOption = $("select option:selected")
     $('#face-attorney').text(currOption.attr('data-attorney'))
@@ -163,5 +171,16 @@ $('#tool-bar select').change(function(){
     addCurrFace()
     console.log('click')
 })
+
+$('#print').click(function(){
+    toolBar.hide()
+    window.print()
+})
+$('body').keyup(function(e){
+    console.log(e, e.key)
+    if(e.key === "Escape"){
+        toolBar.fadeIn(200)
+    }
+});
 </script>
     
