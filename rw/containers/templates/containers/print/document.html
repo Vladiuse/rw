@@ -21,7 +21,10 @@
         --paddings: 20mm;
     }
     .print-doc{
-        background-color: aquamarine;
+        border: 2px rgb(0, 132, 255, 0.5) solid;
+    }
+    .print-doc.print{
+        border: none;
     }
     body{
         margin: 0;
@@ -173,6 +176,7 @@ $('#tool-bar select').change(function(){
 })
 
 $('#print').click(function(){
+    $('.print-doc').addClass('print')
     toolBar.hide()
     window.print()
 })
@@ -180,6 +184,7 @@ $('body').keyup(function(e){
     console.log(e, e.key)
     if(e.key === "Escape"){
         toolBar.fadeIn(200)
+        $('.print-doc').removeClass('print')
     }
 });
 </script>
