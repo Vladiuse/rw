@@ -105,6 +105,7 @@ def client_document(request, document_id):
     return render(request, 'containers/clients/one_client.html', content)
 
 def client_check_docs(request, client_report_id):
+    """Сравнить документы"""
     client_report = ClientsReport.objects.get(pk=client_report_id)
     reader = ContainerReader(
         file_text_1=client_report.client_container_doc.get_text(),
@@ -120,6 +121,7 @@ def client_check_docs(request, client_report_id):
 
 
 def add_hand_text_to_docs(request, document_id):
+    """Добавить в документ текст руками"""
     clients = ClientsReport.objects.get(pk=document_id)
     client_container_text_form = ClientDocFileForm(
         request.POST,
@@ -139,6 +141,7 @@ def add_hand_text_to_docs(request, document_id):
 
 @login_required
 def create_client(request):
+    """Создать отчет по клиентам"""
     if request.method == 'POST':
         client_form = ClientContainer(request.POST, prefix='client_form')
         client_container_file_form = ClientDocFileForm(request.POST, request.FILES,prefix='client_container')
@@ -173,27 +176,6 @@ def delete(request, document_id):
     doc = ClientsReport.objects.get(pk=document_id)
     doc.delete()
     return redirect('containers:clients')
-
-
-
-class WordDocView(ListView):
-    model = WordDoc
-    context_object_name = 'word_docs'
-    template_name = 'containers/word_docs/word_docs.html'
-
-
-class WordDocCreate(CreateView):
-    model = WordDoc
-    form_class = WordDocForm
-    template_name = 'containers/word_docs/create.html'
-    success_url = reverse_lazy('containers:word_docs')
-
-
-class WordDocUpdate(UpdateView):
-    model = WordDoc
-    form_class = WordDocForm
-    template_name = 'containers/word_docs/create.html'
-    success_url = reverse_lazy('containers:word_docs')
 
 
 def print_document(request, client_container_id):
