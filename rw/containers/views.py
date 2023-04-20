@@ -104,21 +104,6 @@ def client_document(request, document_id):
     }
     return render(request, 'containers/clients/one_client.html', content)
 
-def client_check_docs(request, client_report_id):
-    """Сравнить документы"""
-    client_report = ClientsReport.objects.get(pk=client_report_id)
-    reader = ContainerReader(
-        file_text_1=client_report.client_container_doc.get_text(),
-        file_text_2=client_report.area_doc.get_text(),
-    )
-    content = {
-        'file_name_1': 'Файл клиенты контейнеры',
-        'file_name_2': 'Файл контейнеры участки',
-        'reader': reader
-    }
-    return render(request, 'containers/new_result.html', content)
-
-
 
 def add_hand_text_to_docs(request, document_id):
     """Добавить в документ текст руками"""
