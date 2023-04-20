@@ -1,14 +1,10 @@
 from django.shortcuts import render, reverse, redirect
 from .containers import ContainerReader, ClientReader
-from .forms import ClientContainer, WordDocForm, ClientDocFileForm
+from .forms import ClientContainer, ClientDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, FaceProxy
 from django.db.models import F, Count, Q
-from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
-from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 
 
 def index(requet):
@@ -52,12 +48,14 @@ def people_count(requests):
 @login_required
 def clients_documents(request):
     if request.user.groups.filter(name='Админы').exists():
-        clients_docs = ClientsReport.objects.select_related('client_container_doc').prefetch_related('clients').\
-            annotate(container_count=Count('row'))
+        clients_docs = ClientsReport.objects.prefetch_related('clients').\
+            annotate(container_count=Count('row')).order_by('-document_date')
     else:
         client_user = ClientUser.objects.get(user=request.user)
-        clients_docs = client_user.reports.select_related('client_container_doc')\
-            .annotate(container_count=Count('row',Q(row__client_name=client_user.client_filter)))
+        clients_docs = client_user.reports\
+            .annotate(container_count=Count(
+            'row',Q(row__client_name=client_user.client_filter)
+        )).order_by('-document_date')
     content = {
         'clients_docs': clients_docs
     }
@@ -89,7 +87,6 @@ def clients_document(request, document_id):
         'form': form,
         'form_show': form_show,
         'client_container_text_form': ClientDocFileForm(prefix='client_container',instance=client_doc.client_container_doc),
-        # 'area_text_form': AreaDocFileForm(prefix='area',instance=client_doc.area_doc),
     }
     return render(request, 'containers/clients/client.html', content)
 
@@ -143,7 +140,7 @@ def create_client(request):
         return render(request, 'containers/clients/create.html', content)
     else:
         client_form = ClientContainer(prefix='client_form')
-        client_container_file_form = ClientDocFileForm(prefix='client_container',empty_permitted=True, use_required_attribute=False)
+        client_container_file_form = ClientDocFileForm(prefix='client_container')
         content = {
             'client_form': client_form,
             'client_container_text_form': client_container_file_form,
