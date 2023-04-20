@@ -103,27 +103,29 @@ WSGI_APPLICATION = 'rw.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 # for MySql database remote
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': get_secret('db_name'),
-#         'USER': get_secret('db_login'),
-#         'PASSWORD': get_secret('db_pass'),
-#         'HOST': 'vladiuse.beget.tech',
-#         'PORT': '3306',
-#     }
-# }
-# for MySql database local
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_secret('db_local_name'),
-        'USER': get_secret('db_local_login'),
-        'PASSWORD': get_secret('db_local_pass'),
-        'HOST': 'localhost',
+        'NAME': get_secret('db_name'),
+        'USER': get_secret('db_login'),
+        'PASSWORD': get_secret('db_pass'),
+        'HOST': 'vladiuse.beget.tech',
         'PORT': '3306',
     }
 }
+
+
+# for MySql database local
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': get_secret('db_local_name'),
+#         'USER': get_secret('db_local_login'),
+#         'PASSWORD': get_secret('db_local_pass'),
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
