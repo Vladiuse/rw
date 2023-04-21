@@ -116,16 +116,16 @@ DATABASES = {
 
 
 # for MySql database local
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_secret('db_local_name'),
-        'USER': get_secret('db_local_login'),
-        'PASSWORD': get_secret('db_local_pass'),
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': get_secret('db_local_name'),
+#         'USER': get_secret('db_local_login'),
+#         'PASSWORD': get_secret('db_local_pass'),
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation

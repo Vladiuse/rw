@@ -1,0 +1,3 @@
+{%for user in users%}
+<p><a href="{%url 'containers:change_user' user.pk %}">{{user}}</a></p>
+{%endfor%}
