@@ -43,7 +43,6 @@
         <th scope="col">Имя</th>
         <th scope="col">Описание</th>
         <th scope="col">Контейнеров</th>
-        <th scope="col">Доступен</th>
       </tr>
     </thead>
     <tbody>
@@ -67,11 +66,6 @@
               {%else%}
               -
               {%endif%}
-            </td>
-            <td>
-              {%for client in cliend_doc.clients.all%}
-              <p class="client_name">{{client}}</p>
-              {%endfor%}
             </td>
           </tr>
           {%endfor%}

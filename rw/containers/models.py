@@ -178,7 +178,7 @@ class ClientsReport(models.Model):
         null=True,
         related_name='client_container_doc',
     )
-    clients = models.ManyToManyField('ClientUser', blank=True, related_name='reports', related_query_name='report')
+    # clients = models.ManyToManyField('ClientUser', blank=True, related_name='reports', related_query_name='report')
 
     class Meta:
         ordering = ['-document_date', '-pk']
@@ -257,8 +257,12 @@ class ClientContainerRow(models.Model):
 
 class ClientUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    client_name = models.CharField(max_length=60, unique=True)
-    client_filter = models.CharField(max_length=30, unique=True)
+    client_name = models.CharField(max_length=60, unique=True, verbose_name='Полное имя')
+    client_filter = models.CharField(max_length=30, unique=True, verbose_name='Искать по')
+
+    class Meta:
+        verbose_name = 'Клиент'
+        verbose_name_plural = 'Клиенты'
 
     def __str__(self):
         return self.client_name
@@ -267,6 +271,16 @@ class ClientUser(models.Model):
 class FaceProxy(models.Model):
     name = models.CharField(max_length=30)
     attorney = models.CharField(max_length=30)
+    client = models.ForeignKey(ClientUser, on_delete=models.SET_NULL,
+                               null=True,
+                               blank=True,
+                               related_name='faces',
+                               related_query_name='face',
+                               )
+
+    class Meta:
+        verbose_name = 'Контрагент'
+        verbose_name_plural = 'Контрагент'
 
     def __str__(self):
         return self.name

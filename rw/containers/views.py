@@ -5,6 +5,27 @@ from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, Face
 from django.db.models import F, Count, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
+from django.contrib.auth import logout, login
+from django.contrib.auth.models import User
+
+
+def month_text(month_num):
+    data = {
+        '1': 'января',
+        '2': 'декабря',
+        '3': 'марта',
+        '4': 'апреля',
+        '5': 'мая',
+        '6': 'июня',
+        '7': 'июля',
+        '8': 'августа',
+        '9': 'сентября',
+        '10': 'октября',
+        '11': 'ноября',
+        '12': 'декабря',
+    }
+    return data[str(month_num)]
 
 
 def index(requet):
@@ -48,11 +69,11 @@ def people_count(requests):
 @login_required
 def clients_documents(request):
     if request.user.groups.filter(name='Админы').exists():
-        clients_docs = ClientsReport.objects.prefetch_related('clients').\
+        clients_docs = ClientsReport.objects.\
             annotate(container_count=Count('row')).order_by('-document_date')
     else:
         client_user = ClientUser.objects.get(user=request.user)
-        clients_docs = client_user.reports\
+        clients_docs = ClientsReport.objects\
             .annotate(container_count=Count(
             'row',Q(row__client_name=client_user.client_filter)
         )).order_by('-document_date')
@@ -162,19 +183,38 @@ def delete(request, document_id):
 
 def print_document(request, client_container_id):
     row = ClientContainerRow.objects.get(pk=client_container_id)
-    faces = FaceProxy.objects.all()
     client_user = ClientUser.objects.get(user=request.user)
+    faces = FaceProxy.objects.filter(client=client_user)
     for face in faces:
         face.name_dash = f'{face.name:_<34}'
         face.attorney_dash = f'{face.attorney:_<23}'
     content = {
         'row': row,
         'text': 'Some text',
-        'faces': faces,
         'client_user': client_user,
+        'faces': faces,
+        'today': datetime.today().date(),
+        'month_text': month_text(datetime.today().month),
     }
     return render(request, 'containers/print/document.html', content)
 
+
+def users(request):
+    users = User.objects.all()
+    content = {
+        'users': users,
+    }
+    return render(request, 'containers/users.html', content)
+
+
+def change_user(request, user_id):
+    if request.user.is_authenticated:
+        logout(request)
+
+    user = User.objects.get(pk=user_id)
+    login(request, user)
+    return HttpResponseRedirect(
+        reverse('containers:clients'))
 
 def test(request):
 

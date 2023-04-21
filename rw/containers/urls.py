@@ -15,5 +15,9 @@ urlpatterns = [
     path('files_no_data_rows/<int:file_id>', views.files_no_data_rows, name='files_no_data_rows'),
     path('print_document/<int:client_container_id>', views.print_document, name='print_document'),
 
+
+    path('users', views.users, name='users'),
+    path('change_user/<int:user_id>', views.change_user, name='change_user'),
+
     path('test', views.test, name='test'),
 ]
