@@ -163,6 +163,7 @@ def delete(request, document_id):
 def print_document(request, client_container_id):
     row = ClientContainerRow.objects.get(pk=client_container_id)
     faces = FaceProxy.objects.all()
+    client_user = ClientUser.objects.get(user=request.user)
     for face in faces:
         face.name_dash = f'{face.name:_<34}'
         face.attorney_dash = f'{face.attorney:_<23}'
@@ -170,6 +171,7 @@ def print_document(request, client_container_id):
         'row': row,
         'text': 'Some text',
         'faces': faces,
+        'client_user': client_user,
     }
     return render(request, 'containers/print/document.html', content)
 
