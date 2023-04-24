@@ -20,7 +20,11 @@
       margin: 2px 0;
     }
 </style>
+{%if user.clientuser%}
+<h1>Наличие КТК на ГС Колядичи<br>{{user.clientuser.client_name}} </h1>
+{%else%}
 <h1>Наличие по клиeнтaм</h1>
+{%endif%}
 {%endblock%}
 
 
@@ -51,7 +55,7 @@
         <td colspan="7" class="table-info">{{mounth.grouper}}</td>
       </tr>
           {%for cliend_doc in mounth.list %}
-          
+          {%if cliend_doc.container_count%}
           <tr class="client_link" href="{%url 'containers:show_client' cliend_doc.pk %}">
             <td >
               {{cliend_doc.document_date}}
@@ -68,6 +72,7 @@
               {%endif%}
             </td>
           </tr>
+          {%endif%}
           {%endfor%}
       {%endfor%}
     </tbody>

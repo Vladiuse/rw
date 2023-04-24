@@ -17,11 +17,14 @@ class FaceClientInline(admin.TabularInline):
 
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['client_name', ]
+    list_display = ['client_name', 'user', 'client_filter']
     inlines = [FaceClientInline,]
+
+class FaceProxyAdmin(admin.ModelAdmin):
+    list_display = ['name', 'attorney', 'client']
 
 
 admin.site.register(ClientsReport, ClientDocAdmin)
 admin.site.register(WordDoc, WordDocAdmin)
 admin.site.register(ClientUser, ClientAdmin)
-admin.site.register(FaceProxy)
+admin.site.register(FaceProxy, FaceProxyAdmin)
