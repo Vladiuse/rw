@@ -26,3 +26,8 @@ def has_group(user,group):
     if Group.objects.get(name=group) in user.groups.all():
         return True
     return False
+
+
+@register.inclusion_tag('containers/clients/row_table.html')
+def row_table(rows, id="None"):
+    return {'rows': rows, 'id': id}

@@ -1,5 +1,5 @@
 {% extends 'containers/base.html'%}
-
+{%load client%}
 {%block page-name%}
 <h1>Наличие по клиентам</h1>
 {%endblock%}
@@ -118,7 +118,6 @@
             <div class="field-wrap">
               <button class="btn btn-primary" type="submit">Сохранить</button>
             </div>
-
             <!-- LEFT -->
           </form>
         </div>
@@ -134,10 +133,6 @@
             {{client_container_text_form}}
             {%endif%}
 
-            <!-- {% if not client_doc.area_doc.is_read%}
-            <p>Текст для "Участки"</p>
-            {{area_text_form}}
-            {%endif%} -->
             <!-- RIGHT -->
             <button type="submit" class="btn btn-primary">Сохранить документы</button>
           </form>
@@ -165,9 +160,10 @@
           <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без участков
             ({{rows_no_area|length}})<span></span></a>
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" id="tab-document_text_rows" data-table="document_text_rows">Текст документа</a>
-        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" id="tab-incorrect_containers" data-table="incorrect_containers">Некоррекнтые номера
+            ({{rows_cont_number_error|length}})<span></span></a>
+        </li>
       </ul>
     </div>
     <div class="card-body">
@@ -195,63 +191,12 @@
           {%endfor%}
         </tbody>
       </table>
-
       <!-- DATA ROW -->
-      <table class="table table-striped" id="client_rows" style="display: none;">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Клиент</th>
-            <th scope="col">Контейнер</th>
-            <th scope="col">Участок</th>
-            <th scope="col">Отправка</th>
-            <th scope="col">Дата</th>
-            <th scope="col">Простой</th>
-            <th scope="col">Масса</th>
-            <th scope="col">N/N</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%for row in rows%}
-          <tr>
-
-            <th scope="row">{{row.pk}}</th>
-            <td class="client_name">{{row.client_name}}</td>
-            <td>{{row.container}}</td>
-            <td>{%if row.area%}{{row.area}}{%endif%}</td>
-            <th>{{row.send_number}}</th>
-            <td>{{row.date|date:"d.m.Y"}}</td>
-            <td>{{row.time_delta_past}}</td>
-            <td>{{row.weight}}</td>
-            <th>{{row.nn}}</th>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table>
-      <!-- DATA ROW -->
-
+      {% row_table rows id='client_rows'%}
       <!-- NO AREA TALBE -->
-      <table class="table table-striped" id="client_rows_no_area" style="display: none;">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Клиент</th>
-            <th scope="col">Контейнер</th>
-            <th scope="col">Участок</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%for row in rows_no_area%}
-          <tr>
-            <th scope="row">{{row.pk}}</th>
-            <td class="client_name">{{row.client_name}}</td>
-            <td>{{row.container}}</td>
-            <td>{%if row.area%}{{row.area}}{%endif%}</td>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table>
-      <!-- NO AREA TALBE -->
+      {% row_table rows_no_area id='client_rows_no_area'%}
+      <!-- INCORRECT CONT NUMBER -->
+      {% row_table rows_cont_number_error id='incorrect_containers' %}
 
     </div>
   </div>

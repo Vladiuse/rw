@@ -90,6 +90,7 @@ def clients_document(request, document_id):
     client_doc = ClientsReport.objects.get(pk=document_id)
     rows = ClientContainerRow.objects.filter(document=client_doc).annotate(past=client_doc.document_date - F('date'))
     rows_no_area = [row for row in rows if row.area == 0]
+    rows_cont_number_error = [row for row in rows if not row.container_number_correct()]
     if request.method == 'POST':
         form = ClientContainer(request.POST, request.FILES,instance=client_doc)
         if form.is_valid():
@@ -105,6 +106,7 @@ def clients_document(request, document_id):
         'client_doc': client_doc,
         'rows': rows,
         'rows_no_area': rows_no_area,
+        'rows_cont_number_error': rows_cont_number_error,
         'form': form,
         'form_show': form_show,
         'client_container_text_form': ClientDocFileForm(prefix='client_container',instance=client_doc.client_container_doc),

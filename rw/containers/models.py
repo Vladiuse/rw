@@ -233,6 +233,9 @@ class ClientContainerRow(models.Model):
     date = models.DateField()
     area = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(99)])
 
+    class Meta:
+        ordering = ['client_name', 'date']
+
 
     def save(self, **kwargs):
         self.nn = self.nn.strip()
@@ -244,9 +247,9 @@ class ClientContainerRow(models.Model):
             self.area = None
         super().save()
 
-
-    class Meta:
-        ordering = ['client_name', 'date']
+    def container_number_correct(self):
+        container = Container(str(self.container))
+        return container.is_container_number_correct()
 
     def __str__(self):
         return f'{self.client_name}{self.container}'
