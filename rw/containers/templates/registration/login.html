@@ -8,7 +8,7 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    background-color: black;
+    /* background-color: black; */
 }
     #pulp {
     width: 80%;
@@ -26,9 +26,38 @@
 .for-form p {
     color: white;
 }
+body{
+    background-image: url(https://tablogix.ru/upload/images/rail%20icon.jpg);
+    /* background-image: url(https://creditportal.by/images/kontejnernye-perevozki-zhd.jpg); */
+    /* background-image: url(https://logistt.ru/wp-content/uploads/2022/07/containers.jpg); */
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    color: rgb(0, 0, 0);
+    align-items: center;
+    font-size: 26px;
+}
+form input{
+    margin: 5px;
+}
+
 </style>
-<div id="pulp-wrapper">
-    <img src="{% static 'pulp.jpg' %}" alt="pulp" id="pulp">
+<div style="display: flex; align-items: center; justify-content: center;height: 100vh;">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% csrf_token %}
+        {{ form }}
+        <div id="button-login">
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+        </div>
+    </form>
+</div>
+<!-- <div id="pulp-wrapper">
+    <img src="https://tablogix.ru/upload/images/rail%20icon.jpg" alt="pulp" id="pulp">
         <div class="for-form">
             <form method="post">
                 {% csrf_token %}
@@ -40,5 +69,5 @@
                 </div>
                 </form>
         </div>
-</div>
+</div> -->
 {% endblock %}

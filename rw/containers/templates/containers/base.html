@@ -129,10 +129,10 @@ footer a{
         <a href="{%url 'containers:clients'%}" target="_top">Наличие по клиeнтaм</a> &nbsp; 
                     <!-- КОМУ доступен -->
 
-                    {%if user|has_group:"Админы"%}
-                    | &nbsp;
-        <a href="{%url 'containers:users'%}" target="_top">Пользователи</a> &nbsp;
-        {%endif%}
+      {%if user.is_superuser%}
+                  | &nbsp;
+      <a href="{%url 'containers:users'%}" target="_top">Пользователи</a> &nbsp;
+      {%endif%}
     </footer>
     <script>
       function copyTextCode(elem){
