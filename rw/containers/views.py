@@ -69,14 +69,10 @@ def people_count(requests):
 @login_required
 def clients_documents(request):
     if request.user.groups.filter(name='Админы').exists():
-        clients_docs = ClientsReport.objects.\
-            annotate(container_count=Count('row')).order_by('-document_date')
+        clients_docs = ClientsReport.get_admin_reports()
     else:
         client_user = ClientUser.objects.get(user=request.user)
-        clients_docs = ClientsReport.objects\
-            .annotate(container_count=Count(
-            'row',Q(row__client_name=client_user.client_filter)
-        )).order_by('-document_date')
+        clients_docs = ClientsReport.get_client_reports(client_user)
     content = {
         'clients_docs': clients_docs
     }

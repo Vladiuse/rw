@@ -13,6 +13,8 @@ from .containers.file_mixins import AreaFileMixin, ClientContainerTypeMixin
 from django.conf import settings
 from datetime import timedelta
 from django.contrib.auth.models import User
+from django.db.models import Count, Q
+
 
 
 def remove_if_exists(path):
@@ -222,6 +224,17 @@ class ClientsReport(models.Model):
             cursor.execute(result_query)
             rows = dictfetchall(cursor)
         return rows
+
+    @staticmethod
+    def get_admin_reports():
+        return ClientsReport.objects.\
+            annotate(container_count=Count('row')).order_by('-document_date')
+
+    @staticmethod
+    def get_client_reports(client_user):
+        return ClientsReport.objects.annotate(container_count=Count(
+            'row', Q(row__client_name=client_user.client_filter)
+        )).order_by('-document_date')
 
 
 
