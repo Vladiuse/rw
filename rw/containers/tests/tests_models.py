@@ -13,7 +13,7 @@ from copy import copy
 TEST_FILES_PATH = '/home/vlad/PycharmProjects/rw/rw/media/test/'
 
 
-def write_log(obj):
+def WRITE_LOG(obj):
     with open('/home/vlad/PycharmProjects/rw/x.txt', 'a') as file:
         if isinstance(obj, (list, set,dict)):
             for i in obj:
@@ -189,7 +189,6 @@ class ClientsReportTest(TestCase):
             d = datetime.today().date() - timedelta(days=id +1)
             item['date'] = d.strftime(ClientDocFile.DATEFORMAT)
         #
-
         mock = MagicMock(return_value=fake_data)
         self.word_doc.get_data = mock
         # create report
@@ -197,9 +196,6 @@ class ClientsReportTest(TestCase):
         client_report.save()
         client_group = client_report.client_count()
         row = client_group[0]
-        write_log(fake_data)
-        write_log(client_group)
-
         self.assertEqual(row['past'], 2)
         self.assertEqual(row['max'], '3')
         self.assertEqual(row['min'], '1')

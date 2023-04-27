@@ -1,3 +1,14 @@
+<h3>Пользователи</h3>
+
 {%for user in users%}
+{%if not user.clientuser%}
 <p><a href="{%url 'containers:change_user' user.pk %}">{{user}}</a></p>
+{%endif%}
+{%endfor%}
+
+<h3>Клиенты</h3>
+{%for user in users%}
+{%if user.clientuser%}
+<p><a href="{%url 'containers:change_user' user.pk %}">{{user}}</a></p>
+{%endif%}
 {%endfor%}
