@@ -95,6 +95,8 @@ class WordDoc(models.Model):
 class ClientDocFile(WordDoc, ClientContainerTypeMixin):
     BOOK_STORE = 'Книга выгрузки'
     BOOK_CALL = 'Книга вывоза'
+    DATEFORMAT = '%d.%m.%Y'
+
     DOC_TYPES = (
         (BOOK_STORE, BOOK_STORE),
         (BOOK_CALL, BOOK_CALL),
@@ -195,7 +197,7 @@ class ClientsReport(models.Model):
             client_container_data = self.client_container_doc.get_data()
             client_container_to_save = list()
             for item in client_container_data:
-                date = datetime.strptime(item['date'], '%d.%m.%Y').date()
+                date = datetime.strptime(item['date'],ClientDocFile.DATEFORMAT).date()
                 try:
                     area = int(item['area'])
                 except ValueError:
