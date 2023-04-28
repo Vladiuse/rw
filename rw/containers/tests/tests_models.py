@@ -1,5 +1,5 @@
 from django.test import TestCase
-from containers.models import WordDoc, ClientsReport, ClientContainerRow, ClientDocFile
+from containers.models import WordDoc, ClientsReport, ClientContainerRow, ClientDocFile, ClientUser
 from django.core.files import File
 from django.core.files.base import ContentFile
 import shutil
@@ -9,6 +9,8 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from pprint import pprint
 from copy import copy
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 TEST_FILES_PATH = '/home/vlad/PycharmProjects/rw/rw/media/test/'
 
@@ -204,5 +206,72 @@ class ClientsReportTest(TestCase):
     def tearDown(self):
         if os.path.exists(TEST_FILES_PATH):
             shutil.rmtree(TEST_FILES_PATH)
+
+
+class ClientReportUserAccess(TestCase):
+
+    def setUp(self):
+        self.create_users()
+        self.create_client_reports()
+
+    def create_users(self):
+        self.super_admin = User.objects.create_superuser(username='super', password='0000')
+        self.admin = User.objects.create_user(username='admin', password='0000')
+        self.cli_user_1 = User.objects.create_user(username='client_1', password='0000')
+        self.cli_user_2 = User.objects.create_user(username='client_2', password='0000')
+        self.cli_user_3 = User.objects.create_user(username='client_3', password='0000')
+        self.client_1 = ClientUser.objects.create(user=self.cli_user_1, client_name='XXX', client_filter='XXX')
+        self.client_2 = ClientUser.objects.create(user=self.cli_user_2, client_name='YYY', client_filter='YYY')
+        self.client_3 = ClientUser.objects.create(user=self.cli_user_3, client_name='ZZZ', client_filter='ZZZ')
+        self.admin_group = Group.objects.create(name='Админы')
+        self.admin.groups.add(self.admin_group)
+
+    def create_client_reports(self):
+        self.file_1 = ClientDocFile.objects.create(word_doc_file='')
+        self.report_1 = ClientsReport.objects.create(client_container_doc=self.file_1)
+
+        self.file_2 = ClientDocFile.objects.create(word_doc_file='')
+        self.report_2 = ClientsReport.objects.create(client_container_doc=self.file_2)
+
+        client_rows_reports = []
+        for document in self.report_1, self.report_2:
+            for client_name in ['XXX', 'XXX', 'YYY']:
+                row = ClientContainerRow(
+                    document=document,
+                    container='ABCD1234567',
+                    client_name=client_name,
+                    date='2020-10-10',
+                    nn='123',
+                    weight='123',
+                    send_number='123',
+                    area='12',
+                )
+                client_rows_reports.append(row)
+        ClientContainerRow.objects.bulk_create(client_rows_reports)
+
+    def test_check(self):
+        self.assertEqual(User.objects.count(), 4)
+        self.assertEqual(ClientDocFile.objects.count(),2)
+        self.assertEqual(ClientsReport.objects.count(),2)
+        self.assertEqual(ClientContainerRow.objects.count(),6)
+
+    def test_admin_reports(self):
+        reports = ClientsReport.get_admin_reports()
+        self.assertEqual(len(reports), 2)
+        for report in reports:
+            self.assertEqual(report.container_count,3)
+
+    def test_client_1_reports(self):
+        reports = ClientsReport.get_client_reports(self.client_1)
+        self.assertEqual(len(reports), 2)
+        for report in reports:
+            self.assertEqual(report.container_count,2)
+
+    def test_client_2_reports(self):
+        reports = ClientsReport.get_client_reports(self.client_2)
+        self.assertEqual(len(reports), 2)
+        for report in reports:
+            self.assertEqual(report.container_count, 1)
+
 
 
