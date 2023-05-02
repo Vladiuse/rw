@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from .containers import ContainerReader, ClientReader
 from .forms import ClientContainer, ClientDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, FaceProxy
@@ -66,6 +66,7 @@ def people_count(requests):
         }
         return render(requests, 'containers/clients/people_count.html', content)
 
+
 @login_required
 def clients_documents(request):
     if request.user.groups.filter(name='Админы').exists():
@@ -78,9 +79,10 @@ def clients_documents(request):
     }
     return render(request, 'containers/clients/clients.html', content)
 
+
 @login_required
 def clients_document(request, document_id):
-    if not request.user.groups.filter(name='Админы').exists():
+    if not (request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
         return HttpResponseRedirect(
             reverse('containers:client_document', args=(document_id,)))
     client_doc = ClientsReport.objects.get(pk=document_id)
@@ -109,9 +111,11 @@ def clients_document(request, document_id):
     }
     return render(request, 'containers/clients/client.html', content)
 
+
 @login_required
 def client_document(request, document_id):
-    client_user = ClientUser.objects.get(user=request.user)
+    client_user = get_object_or_404(ClientUser, user=request.user)
+    # client_user = ClientUser.objects.get(user=request.user)
     client_doc = ClientsReport.objects.get(pk=document_id)
     rows = ClientContainerRow.objects.filter(document=client_doc, client_name=client_user.client_filter).annotate(past=client_doc.document_date - F('date'))
     content = {

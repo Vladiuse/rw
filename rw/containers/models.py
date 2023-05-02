@@ -274,6 +274,7 @@ class ClientContainerRow(models.Model):
 
 
 class ClientUser(models.Model):
+    #TODO переписать через наследование
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     client_name = models.CharField(max_length=60, unique=True, verbose_name='Полное имя')
     client_filter = models.CharField(max_length=30, unique=True, verbose_name='Искать по')
