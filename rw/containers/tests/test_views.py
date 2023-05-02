@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.conf import settings
-from containers.models import WordDoc, ClientsReport, ClientContainerRow, ClientDocFile, ClientUser
+from containers.models import WordDoc, ClientsReport, ClientContainerRow, ClientDocFile, ClientUser,FaceProxy
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from unittest.mock import MagicMock, patch
@@ -13,6 +13,7 @@ class TestViews(TestCase):
     def setUp(self):
         self.create_users()
         self.create_client_reports()
+        self.test_create_face_proxy()
 
     def create_users(self):
         self.super_admin = User.objects.create_superuser(username='super', password='0000')
@@ -49,13 +50,20 @@ class TestViews(TestCase):
                 client_rows_reports.append(row)
         ClientContainerRow.objects.bulk_create(client_rows_reports)
 
+    def test_create_face_proxy(self):
+        self.face_1 = FaceProxy.objects.create(name='1',attorney='1', client=self.client_1)
+        self.face_2 = FaceProxy.objects.create(name='2',attorney='2', client=self.client_1)
+        self.face_3 = FaceProxy.objects.create(name='3',attorney='3', client=self.client_2)
+
     def test_check(self):
         self.assertEqual(User.objects.count(), 5)
         self.assertEqual(ClientDocFile.objects.count(),2)
         self.assertEqual(ClientsReport.objects.count(),2)
         self.assertEqual(ClientContainerRow.objects.count(),6)
+        self.assertEqual(FaceProxy.objects.count(),3)
 
         self.admin.groups.filter(name='Админы').exists()
+
 
     def test_client_docs_list_not_login(self):
         res = self.client.get(reverse('containers:clients'))
@@ -156,10 +164,43 @@ class TestViews(TestCase):
         res = self.client.get(reverse('containers:show_client', args=[self.report_1.pk]), follow=True)
         self.assertEqual(len(res.context['rows']), 0)
 
-    # def test_admin_view_doc(self):
-    #     self.client.login(
-    #         username=self.admin.username, password='0000'
-    #     )
-    #     res = self.client.get(reverse('containers:client_document', args=[self.report_1.pk]))
-    #     self.assertEqual(res.status_code, 404)
+    def test_print_document(self):
+        self.client.login(
+            username=self.cli_user_1.username, password='0000'
+        )
+        client_row_data = {
+            'container' : 'ABCD1234567',
+            'nn' : 'NN',
+            'weight' : '999',
+            'area' : '13',
+        }
+        row = ClientContainerRow.objects.create(
+                    document=self.report_1,
+                    client_name='client_name',
+                    date= '2020-10-10',
+                    send_number= '666',
+                    **client_row_data
+                )
+        res = self.client.get(reverse('containers:print_document', args=[row.pk]))
+        for val in client_row_data.values():
+            self.assertContains(res, val)
+
+    def test_document_print_face_proxy(self):
+        for user in [self.cli_user_1, self.cli_user_2, self.cli_user_3]:
+            self.client.login(
+                username=user.username, password='0000'
+            )
+            row = ClientContainerRow.objects.last()
+            res = self.client.get(reverse('containers:print_document', args=[row.pk]))
+            faces = res.context['faces']
+            client = ClientUser.objects.get(user=user)
+            self.assertQuerysetEqual(faces, client.faces.all())
+
+
+    def test_admin_view_doc(self):
+        self.client.login(
+            username=self.admin.username, password='0000'
+        )
+        res = self.client.get(reverse('containers:client_document', args=[self.report_1.pk]))
+        self.assertEqual(res.status_code, 404)
 
