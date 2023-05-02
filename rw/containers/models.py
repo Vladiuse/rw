@@ -298,6 +298,7 @@ class FaceProxy(models.Model):
                                )
 
     class Meta:
+        ordering = ['-pk']
         verbose_name = 'Контрагент'
         verbose_name_plural = 'Контрагент'
 
