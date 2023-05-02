@@ -250,7 +250,7 @@ class ClientReportUserAccess(TestCase):
         ClientContainerRow.objects.bulk_create(client_rows_reports)
 
     def test_check(self):
-        self.assertEqual(User.objects.count(), 4)
+        self.assertEqual(User.objects.count(), 5)
         self.assertEqual(ClientDocFile.objects.count(),2)
         self.assertEqual(ClientsReport.objects.count(),2)
         self.assertEqual(ClientContainerRow.objects.count(),6)
