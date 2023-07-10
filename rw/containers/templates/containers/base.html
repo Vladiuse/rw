@@ -113,10 +113,26 @@ footer a{
     background-color: #2196f3;
     border-color: #2196f3;
   }
+
+  #logout{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 1.2rem 2.4rem;
+    margin-bottom: 20px;
+  }
+  #logout a{
+    color: white;
+  }
 </style>
 
 </head>
 <body>
+  {%if user.is_authenticated%}
+  <div id="logout">
+    <a href="{%url 'logout' %}">{{user.username}}: Выйти</a>
+  </div>
+  {%endif%}
     <header>
       {%block page-name%}
         <h1>Сверка списков <br>номеров контейнеров</h1>
