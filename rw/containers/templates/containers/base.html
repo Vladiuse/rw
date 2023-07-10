@@ -86,6 +86,7 @@ footer {
     font-size: 1rem;
 }
 footer a{
+  text-align: center;
   color: #5e5e5e;
 }
 .for-buttons{
@@ -125,7 +126,8 @@ footer a{
     {%block content%}
     {%endblock%}
     <footer class="position-fixed">
-      <a href="{%url 'containers:index'%}" target="_top">Сверка номеров контейнеров</a> &nbsp; | &nbsp;
+      <a href="{%url 'containers:compare_8'%}" target="_top">Проверка контрольного<br> числа вагона</a> &nbsp; | &nbsp;
+      <a href="{%url 'containers:index'%}" target="_top">Сверка номеров <br>контейнеров</a> &nbsp; | &nbsp;
         <a href="{%url 'containers:clients'%}" target="_top">Наличие по клиeнтaм</a> &nbsp; 
                     <!-- КОМУ доступен -->
 

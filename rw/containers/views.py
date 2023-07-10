@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
-from .containers import ContainerReader, ClientReader
+from .containers import ContainerReader, ClientReader, Container8Reader
 from .forms import ClientContainer, ClientDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, FaceProxy
 from django.db.models import F, Count, Q
@@ -47,6 +47,22 @@ def index(requet):
         return render(requet, 'containers/new_result.html', content)
     else:
         return render(requet, 'containers/index.html')
+
+def compare_8(request):
+    if request.method == 'POST':
+        file_name_1 = request.POST['file_name_1']
+        file_name_2 = request.POST['file_name_2']
+        file_text_1 = request.POST['file_text_1']
+        file_text_2 = request.POST['file_text_2']
+        if file_text_1 == file_text_2:
+            error_text = f'Текст файла {file_name_1} и {file_name_2} одинаковы!'
+            return render(request, 'containers/compare_8/new_compare.html', {'error_text': error_text})
+        reader = Container8Reader(file_text_1, file_text_2)
+        content = {
+            'reader': reader,
+        }
+        return render(request, 'containers/compare_8/compare_result.html', content)
+    return render(request, 'containers/compare_8/new_compare.html')
 
 
 def result(request):

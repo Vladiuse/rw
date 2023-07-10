@@ -4,6 +4,7 @@ from . import views
 app_name = 'containers'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('compare_8/', views.compare_8, name='compare_8'),
     path('result', views.result, name='result'),
     path('people_count', views.people_count, name='people_count'),
     path('clients', views.clients_documents, name='clients'),
