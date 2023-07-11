@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from django.views.generic import TemplateView
 app_name = 'containers'
 urlpatterns = [
     path('', views.index, name='index'),
@@ -15,6 +15,8 @@ urlpatterns = [
     path('add_hand_text_to_docs/<int:document_id>', views.add_hand_text_to_docs, name='add_hand_text_to_docs'),
     path('files_no_data_rows/<int:file_id>', views.files_no_data_rows, name='files_no_data_rows'),
     path('print_document/<int:client_container_id>', views.print_document, name='print_document'),
+
+    path('new_print/', TemplateView.as_view(template_name='containers/print/new_print.html'),),
 
 
     path('users', views.users, name='users'),

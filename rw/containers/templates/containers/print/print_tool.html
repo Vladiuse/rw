@@ -1,0 +1,58 @@
+<style>
+        #tool-bar{
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        left: calc(210mm + 20mm);
+        top: 80px;
+        border: 2px rgb(119, 119, 119) solid;
+        border-radius: 8px;
+        background-color: rgb(184, 184, 184);
+        padding: 20px;
+
+    }
+    #tool-bar select{
+        font-size: 20px;
+        margin: 10px 0;
+    }
+    .print #tool-bar{
+        display: none;
+    }
+</style>
+<div id="tool-bar">
+    <h3>Выбор контрагента</h3>
+    <select>
+        {%for face in faces%}
+        <option data-name="{{face.name_dash}}" id="{{forloop.counter}}" value="{{forloop.counter}}" data-attorney="{{face.attorney_dash}}" {%if forloop.counter == 1%}selected{%endif%}>{{face.name}}</option>
+        {%endfor%}
+    </select>
+    <button id="print" class="pure-material-button-contained"><i class="fa-solid fa-print"></i> Печать</button>
+</div>
+<script>
+    var toolBar = $('#tool-bar')
+function addCurrFace(){
+    let currOption = $("select option:selected")
+    $('#face-attorney').text(currOption.attr('data-attorney'))
+    $('#face-name').text(currOption.attr('data-name'))
+}
+addCurrFace()
+
+$('#tool-bar select').change(function(){
+    addCurrFace()
+    console.log('click')
+})
+
+$('#print').click(function(){
+    $('.print-doc').addClass('print')
+    toolBar.hide()
+    window.print()
+    // window.onfocus=function(){ window.close;}
+})
+$('body').keyup(function(e){
+    console.log(e, e.key)
+    if(e.key === "Escape"){
+        toolBar.fadeIn(200)
+        $('.print-doc').removeClass('print')
+    }
+});
+</script>

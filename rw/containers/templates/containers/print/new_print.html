@@ -1,0 +1,784 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 7.3.7.2 (Linux)"/>
+	<meta name="author" content="goblinspk@gmail.com"/>
+	<meta name="created" content="2023-07-08T19:25:00"/>
+	<meta name="changed" content="2023-07-11T23:39:22.602881931"/>
+	<meta name="AppVersion" content="14.0000"/>
+	<meta name="Company" content="Microsoft"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{%static 'containers/styles.css'%}?0.1">
+    <!--ICONS-->
+<script src="https://kit.fontawesome.com/da43c2ea11.js" crossorigin="anonymous"></script>
+	<style type="text/css">
+		@page { margin-left: 1cm; margin-right: 1cm; margin-top: 2cm; margin-bottom: 1cm }
+		p { line-height: 115%; text-align: left; orphans: 2; widows: 2; margin-bottom: 0.25cm; direction: ltr }
+	</style>
+    <style>
+
+            html, body{
+        font-family: myFirstFont;
+        font-size: 4mm;
+        height: 297mm;
+        width: 210mm;
+        font-size: 4mm;
+    }
+        body{
+            /* display: flex;
+            flex-direction: column;
+            align-items: center; 
+            padding-top: 15mm; */
+        }
+        .center{
+            text-align: center;
+        }
+        .left{
+            text-align: left;
+        }
+        .right{
+            text-align: right;
+        }
+        p{
+            margin: 0;
+        }
+        .print-doc{
+        border: 2px rgb(0, 132, 255, 0.5) solid;
+        margin-bottom: 3px;
+        width: 100%;
+
+        display: flex;
+            flex-direction: column;
+            align-items: center; 
+            padding-top: 0mm;
+            /* height: 297mm; */
+    }
+    .print-doc.print{
+        border: none;
+
+    }
+
+
+    @font-face {
+  font-family: myFirstFont;
+  src: url({%static 'containers/fonts/cour.ttf' %});
+        }
+
+        table{
+            border: 2px solid black;
+        }
+    </style>
+
+</head>
+<body lang="ru-RU" dir="ltr">
+
+    {% include "containers/print/print_tool.html" %}
+
+
+    <div class="print-doc center">
+<div class="left">
+    <p  style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
+        <font face="Times New Roman, serif">Приложение 5</font></p>
+        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
+        <font face="Times New Roman, serif">к приказу первого</font></p>
+        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
+        <font face="Times New Roman, serif">заместителя Начальника</font></p>
+        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
+        <font face="Times New Roman, serif">Белорусской железной
+        дороги</font></p>
+</div>
+<p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p align="justify" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif">Станция___________________________
+                                                                     
+                   Форма КЭУ-16</font></p>
+<p align="justify" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>НАРЯД №_________</b></font></p>
+<p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>«__»____________________20__г.</b></font></p>
+<p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>Контейнер №
+__________________ Код размера и типа контейнера
+(масса брутто) __________________</b></font></p>
+<p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>Собственник
+контейнера
+_____________________________________________________________________</b></font></p>
+<p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(для
+контейнеров перевозчика - цифровой код
+ж.д. администрации-собственницы,</font></font></p>
+<p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">для
+контейнеров грузоотправителя,
+грузополучателя – «П»)</font></font></p>
+<p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>Место погрузки
+(выгрузки) груза в (из) контейнер:</b></font></p>
+<p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif">железнодорожный
+путь необщего пользования с выгрузкой
+контейнера перевозчика из вагона /</font></p>
+<p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif">место общего
+пользования / у отправителя (получателя)
+при завозе (вывозе) контейнера со станции</font></p>
+<p align="center" class="" style="margin-right: -0cm; margin-bottom: 0cm"><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
+зачеркнуть)</font></font></p>
+<p align="center" style="margin-right: -0cm; margin-bottom: 0cm"><br/>
+
+</p>
+<ol>
+	<li><p style="margin-right: -0cm; margin-bottom: 0cm"><font face="Times New Roman, serif"><b>Выдача
+	контейнера</b></font></p>
+</ol>
+<table width="711" cellpadding="7" cellspacing="0">
+	<col width="344"/>
+
+	<col width="337"/>
+
+	<tr valign="top">
+		<td width="344" height="44" style="border-top: 1px solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Контейнер
+			</b></font><font face="Times New Roman, serif">груженый
+			/порожний</font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			                      <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
+			зачеркнуть)</font></font></p>
+		</td>
+		<td width="337" style="border-top: 1px solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Уведомление
+			о прибытии контейнера</b></font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			  <font size="2" style="font-size: 11pt"><font face="Times New Roman, serif">«__»
+			____________ 20__ г. _______час ______ мин.</font></font></p>
+			<p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(дата
+			и время)</font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Отправитель
+			/получатель</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 2.25pt solid #000000; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			        <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
+			зачеркнуть)</font></font></p>
+		</td>
+		<td width="337" style="border-top: 2.25pt solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(наименование
+			отправителя/ получателя)</font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>«__»
+			________________ 20__ г. ______ час_____ мин.</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Автомобиль
+			№ ____________________</b></font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(дата
+			и время выдачи)</font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Представитель</b></font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm"><font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>перевозчика</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Лицо,</b></font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm"><font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>получившее
+			контейнер</b></font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" height="23" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif">Доверенность
+			№ ____________ от ________________</font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>______________________________________________</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>______________________________________________</b></font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(подпись,
+			должность служащего, ини</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">ци</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">алы,
+			фамилия)</font></font></p>
+			<p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1px solid #000000; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(подпись,
+			ини</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">ци</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">алы,
+			фамилия)</font></font></p>
+		</td>
+	</tr>
+</table>
+<p style="margin-right: -0cm; margin-bottom: 0cm"><br/>
+
+</p>
+<ol start="2">
+	<li><p style="margin-right: -0cm; margin-bottom: 0cm"><font face="Times New Roman, serif"><b>Прием
+	контейнера</b></font></p>
+</ol>
+<table width="711" cellpadding="7" cellspacing="0">
+	<col width="344"/>
+
+	<col width="337"/>
+
+	<tr valign="top">
+		<td width="344" height="44" style="border-top: 1px solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Контейнер
+			</b></font><font face="Times New Roman, serif">груженый
+			/порожний</font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			                      <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
+			зачеркнуть)</font></font></p>
+		</td>
+		<td width="337" style="border-top: 1px solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Отправитель
+			/получатель</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 2.25pt solid #000000; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			        <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
+			зачеркнуть)</font></font></p>
+		</td>
+		<td width="337" style="border-top: 2.25pt solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(наименование
+			отправителя/ получателя)</font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>«__»
+			________________ 20__ г. ______ час_____ мин.</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Автомобиль
+			№ ____________________</b></font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(дата
+			и время выдачи)</font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Представитель</b></font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm"><font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>перевозчика</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Лицо,</b></font></font></p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm"><font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>возвратившее
+			контейнер</b></font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" height="23" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif">Доверенность
+			№ ____________ от ________________</font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>______________________________________________</b></font></font></p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>______________________________________________</b></font></font></p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr></tr>
+	<tr valign="top">
+		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(подпись,
+			должность служащего, ини</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">ци</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">алы,
+			фамилия)</font></font></p>
+			<p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<br/>
+
+			</p>
+		</td>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1px solid #000000; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
+			<font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(подпись,
+			ини</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">ци</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">алы,
+			фамилия)</font></font></p>
+		</td>
+	</tr>
+</table>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-bottom: 0.35cm"><br/>
+<br/>
+
+</p>
+
+<ol start="3">
+	<li><p style="margin-right: -0cm; margin-bottom: 0cm; page-break-before: always">
+	<font face="Times New Roman, serif"><b>Отметки перевозчика
+	</b></font>
+	</p>
+</ol>
+<table width="699" cellpadding="7" cellspacing="0" >
+	<col width="683"/>
+
+	<tr>
+		<td width="683" valign="top" style="border: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<br/>
+
+			</p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<br/>
+
+			</p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<br/>
+
+			</p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<br/>
+
+			</p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<br/>
+
+			</p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
+			<br/>
+
+			</p>
+			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm"><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<ol start="4">
+	<li><p style="margin-right: -0cm; margin-bottom: 0cm"><font face="Times New Roman, serif"><b>Время
+	пользования контейнером перевозчика
+	________________</b></font><font face="Times New Roman, serif">час_________мин.</font></p>
+</ol>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>Время нахождения
+контейнера отправителя, получателя
+______</b></font><font face="Times New Roman, serif">час_________мин.</font></p>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>Хранение груза
+</b></font><font face="Times New Roman, serif">_______ сут.</font></p>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-left: 0.5cm; margin-right: -0cm; margin-bottom: 0cm">
+<font face="Times New Roman, serif"><b>Представитель
+перевозчика
+________________________________________________</b></font></p>
+<p align="center" style="margin-right: -0cm; margin-bottom: 0.35cm"> 
+         <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(подпись,
+должность служащего, ини</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">ци</font></font><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">алы,
+фамилия)</font></font></p>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm">
+<br/>
+
+</p>
+<p style="margin-left: 1.75cm; margin-right: -0cm; margin-bottom: 0cm"><a name="_GoBack"></a>
+<br/>
+
+</p>
+    </div>
+
+</body>
+</html>
