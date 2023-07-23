@@ -204,8 +204,8 @@ def print_document(request, client_container_id):
     client_user = ClientUser.objects.get(user=request.user)
     faces = FaceProxy.objects.filter(client=client_user)
     for face in faces:
-        face.name_dash = f'{face.name:_<34}'
-        face.attorney_dash = f'{face.attorney:_<23}'
+        face.name_dash = f'{face.name:_<45}'
+        face.attorney_dash = f'{face.attorney:_<12}'
     content = {
         'row': row,
         'text': 'Some text',
@@ -214,6 +214,7 @@ def print_document(request, client_container_id):
         'today': datetime.today().date(),
         'month_text': month_text(datetime.today().month),
     }
+    return render(request, 'containers/print/new_print.html', content)
     return render(request, 'containers/print/document.html', content)
 
 

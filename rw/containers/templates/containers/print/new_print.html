@@ -1,5 +1,5 @@
 {%load static%}
-
+{%load client%}
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,12 +71,16 @@
         table{
             border: 2px solid black;
         }
+
+        #face-name{
+        white-space: nowrap;
+        }
     </style>
 
 </head>
 <body lang="ru-RU" dir="ltr">
 
-    {% include "containers/print/print_tool.html" %}
+
 
 
     <div class="print-doc center">
@@ -95,26 +99,26 @@
 <br/>
 
 </p>
-<p align="justify" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
+<p align="justify" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm;    width: 190mm;">
 <font face="Times New Roman, serif">Станция___________________________
                                                                      
-                   Форма КЭУ-16</font></p>
+                   Форма КЭУ-16 </font></p>
 <p align="justify" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <br/>
 
 </p>
 <p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
-<font face="Times New Roman, serif"><b>НАРЯД №_________</b></font></p>
+<font face="Times New Roman, serif"><b>НАРЯД №_______/{{row.nn|left:"5"}}</b></font></p>
 <p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
-<font face="Times New Roman, serif"><b>«__»____________________20__г.</b></font></p>
+<font face="Times New Roman, serif"><b>«{{today.day|center_dash:"2"}}»_{{month_text|center_dash:"18"}}_{{today.year}}г.</b></font></p>
 <p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <br/>
 
 </p>
 <p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <font face="Times New Roman, serif"><b>Контейнер №
-__________________ Код размера и типа контейнера
-(масса брутто) __________________</b></font></p>
+{{row.container|left:"18"}} Код размера и типа контейнера
+(масса брутто) «45G1_{{row.weight|left:"11"}}»</b></font></p>
 <p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <br/>
 
@@ -122,7 +126,7 @@ __________________ Код размера и типа контейнера
 <p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <font face="Times New Roman, serif"><b>Собственник
 контейнера
-_____________________________________________________________________</b></font></p>
+______________П______________________________________________________</b></font></p>
 <p align="center" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(для
 контейнеров перевозчика - цифровой код
@@ -139,12 +143,14 @@ _____________________________________________________________________</b></font>
 <font face="Times New Roman, serif"><b>Место погрузки
 (выгрузки) груза в (из) контейнер:</b></font></p>
 <p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
-<font face="Times New Roman, serif">железнодорожный
+<font face="Times New Roman, serif"  style="text-decoration: line-through">железнодорожный
 путь необщего пользования с выгрузкой
 контейнера перевозчика из вагона /</font></p>
 <p style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
-<font face="Times New Roman, serif">место общего
-пользования / у отправителя (получателя)
+<font face="Times New Roman, serif">
+<span style="text-decoration: line-through">	\место общего
+пользования</span>
+	у отправителя (получателя)
 при завозе (вывозе) контейнера со станции</font></p>
 <p align="center" class="" style="margin-right: -0cm; margin-bottom: 0cm"><font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
 зачеркнуть)</font></font></p>
@@ -164,7 +170,8 @@ _____________________________________________________________________</b></font>
 		<td width="344" height="44" style="border-top: 1px solid #000000; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm; margin-bottom: 0cm">
 			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Контейнер
 			</b></font><font face="Times New Roman, serif">груженый
-			/порожний</font></font></p>
+			<span style="text-decoration: line-through">/порожний</span>
+			</font></font></p>
 			<p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
 			                      <font face="Times New Roman, serif"><font size="2" style="font-size: 9pt">(ненужное
 			зачеркнуть)</font></font></p>
@@ -201,12 +208,14 @@ _____________________________________________________________________</b></font>
 	<tr></tr>
 	<tr valign="top">
 		<td width="344" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1px solid #000000; border-right: 1.00pt solid #ffffff; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
-			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>Отправитель
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b><span style="text-decoration:line-through ">Отправитель</span>
 			/получатель</b></font></font></p>
 		</td>
-		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 2.25pt solid #000000; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="center" style="orphans: 2; widows: 2; margin-right: -0cm">
-			<br/>
+		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 2.25pt solid #000000; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm">
+			<p align="center" style="orphans: 2; widows: 2; margin-right: -0cm;white-space: nowrap;font-weight: 900;">
 
+<!--			<br/>-->
+{{client_user.client_name|left:"1"}}
 			</p>
 		</td>
 	</tr>
@@ -355,7 +364,7 @@ _____________________________________________________________________</b></font>
 		</td>
 		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
 			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif">Доверенность
-			№ ____________ от ________________</font></font></p>
+			№ <span id="face-attorney"> ____________</span></font></font></p>
 		</td>
 	</tr>
 	<tr></tr>
@@ -382,7 +391,7 @@ _____________________________________________________________________</b></font>
 			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>______________________________________________</b></font></font></p>
 		</td>
 		<td width="337" style="border-top: 1.00pt solid #ffffff; border-bottom: 1.00pt solid #ffffff; border-left: 1.00pt solid #ffffff; border-right: 1px solid #000000; padding: 0cm 0.19cm"><p align="left" style="orphans: 2; widows: 2; margin-right: -0cm">
-			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b>______________________________________________</b></font></font></p>
+			<font size="2" style="font-size: 11pt"><font face="Times New Roman, serif"><b><span id="face-name">_____________________________________________</span></b></font></font></p>
 		</td>
 	</tr>
 	<tr></tr>
@@ -779,6 +788,6 @@ ________________________________________________</b></font></p>
 
 </p>
     </div>
-
+ {% include "containers/print/print_tool.html" %}
 </body>
 </html>

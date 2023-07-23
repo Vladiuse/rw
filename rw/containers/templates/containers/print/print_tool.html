@@ -35,7 +35,6 @@ function addCurrFace(){
     $('#face-attorney').text(currOption.attr('data-attorney'))
     $('#face-name').text(currOption.attr('data-name'))
 }
-addCurrFace()
 
 $('#tool-bar select').change(function(){
     addCurrFace()
@@ -55,4 +54,6 @@ $('body').keyup(function(e){
         $('.print-doc').removeClass('print')
     }
 });
+addCurrFace()
+
 </script>
