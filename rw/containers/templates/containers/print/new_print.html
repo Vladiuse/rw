@@ -84,17 +84,17 @@
 
 
     <div class="print-doc center">
-<div class="left">
-    <p  style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
-        <font face="Times New Roman, serif">Приложение 5</font></p>
-        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
-        <font face="Times New Roman, serif">к приказу первого</font></p>
-        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
-        <font face="Times New Roman, serif">заместителя Начальника</font></p>
-        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
-        <font face="Times New Roman, serif">Белорусской железной
-        дороги</font></p>
-</div>
+<!--<div class="left">-->
+<!--    <p  style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">-->
+<!--        <font face="Times New Roman, serif">Приложение 5</font></p>-->
+<!--        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">-->
+<!--        <font face="Times New Roman, serif">к приказу первого</font></p>-->
+<!--        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">-->
+<!--        <font face="Times New Roman, serif">заместителя Начальника</font></p>-->
+<!--        <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">-->
+<!--        <font face="Times New Roman, serif">Белорусской железной-->
+<!--        дороги</font></p>-->
+<!--</div>-->
 <p style="margin-left: 13.75cm; margin-right: -0cm; margin-bottom: 0cm">
 <br/>
 
@@ -103,6 +103,12 @@
 <font face="Times New Roman, serif">Станция___________________________
                                                                      
                    Форма КЭУ-16 </font></p>
+		<div class="left">
+				<p style=" margin-right: -0cm; margin-bottom: 0cm;width: 190mm;
+    text-align: right;">
+        <font face="Times New Roman, serif">Координаты: {%if row.area%}{{row.area|right:"2"}}{%else%}__{%endif%}</font>
+		</p>
+		</div>
 <p align="justify" style="margin-right: -0cm; text-indent: 0.5cm; margin-bottom: 0cm">
 <br/>
 
