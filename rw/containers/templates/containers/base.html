@@ -142,8 +142,10 @@ footer a{
     {%block content%}
     {%endblock%}
     <footer class="position-fixed">
+      {%if not user.clientuser%}
       <a href="{%url 'containers:compare_8'%}" target="_top">Сверка номеров <br>вагонов</a> &nbsp; | &nbsp;
       <a href="{%url 'containers:index'%}" target="_top">Сверка номеров <br>контейнеров</a> &nbsp; | &nbsp;
+      {%endif%}
         <a href="{%url 'containers:clients'%}" target="_top">Наличие по клиeнтaм</a> &nbsp; 
                     <!-- КОМУ доступен -->
 
