@@ -22,6 +22,51 @@
     <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" hreflang="en" />
     <link rel="schema.DCTYPE" href="http://purl.org/dc/dcmitype/" hreflang="en" />
     <link rel="schema.DCAM" href="http://purl.org/dc/dcam/" hreflang="en" />
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{%static 'containers/styles.css'%}?0.1">
+    <!--ICONS-->
+<script src="https://kit.fontawesome.com/da43c2ea11.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            /* max-width:21.001cm; */
+            
+            /* margin-bottom:1.27cm;
+            margin-left:2cm; 
+            margin-right:1.27cm; */
+        }
+html, body{
+        font-family: myFirstFont;
+        font-size: 4mm;
+        height: 297mm;
+        width: 210mm;
+        font-size: 4mm;
+    }
+    .print-doc{
+        border: 2px rgb(0, 132, 255, 0.5) solid;
+        margin-bottom: 3px;
+        width: 100%;
+
+        display: flex;
+            flex-direction: column;
+            align-items: center; 
+            padding-top:1.27cm; 
+            /* height: 297mm; */
+    }
+    .print-doc.print{
+        border: none;
+
+    }
+
+
+    @font-face {
+  font-family: myFirstFont;
+  src: url({%static 'containers/fonts/cour.ttf' %});
+        }
+    </style>
     <style>
         table {
             border-collapse: collapse;
@@ -119,17 +164,17 @@
     </style>
 </head>
 
-<body dir="ltr"
-    style="max-width:21.001cm;margin-top:1.27cm; margin-bottom:1.27cm; margin-left:2cm; margin-right:1.27cm; ">
+<body dir="ltr" class="print-doc"
+    style="">
     <p class="P1"> </p>
     <p class="Plain_20_Text"><span class="T1">Станция КОЛЯДИЧИ БЕЛ                                            Форма
             КЭУ-16</span></p>
     <p class="Plain_20_Text"><span class="T1">                             НАРЯД N     /</span><span
-            class="T2">5338</span><span class="T1">                </span><span class="T2">Координаты: 65</span></p>
-    <p class="Plain_20_Text"><span class="T1">                             </span><span class="T2">18.03.2022</span></p>
+            class="T2">{{row.nn|left:"5"}}</span><span class="T1">                </span><span class="T2">Координаты: {%if row.area%}{{row.area|right:"2"}}{%else%}__{%endif%}</span></p>
+    <p class="Plain_20_Text"><span class="T1">                             </span><span class="T2">{{today|date:"d.m.Y"}}</span></p>
     <p class="P1"> </p>
-    <p class="Plain_20_Text"><span class="T1">Контейнер № </span><span class="T2">TKRU4569263</span><span class="T1">
-            45G1, масса брутто </span><span class="T2">21367</span><span class="T1"> кг</span></p>
+    <p class="Plain_20_Text"><span class="T1">Контейнер № </span><span class="T2">{{row.container|left:"11"}}</span><span class="T1">
+            45G1, масса брутто </span><span class="T2">{{row.weight|left:"2"}}</span><span class="T1"> кг</span></p>
     <p class="Plain_20_Text"><span class="T1">Собственник контейнера П</span></p>
     <p class="P1"> </p>
     <p class="Plain_20_Text"><span class="T1">Место выгрузки груза из контейнера: у получателя при вывозе контейнера со
@@ -145,8 +190,7 @@
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
-    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">ООО
-            "ОФС-ЭКСПОРТ"</span><span class="T1">                     │</span></p>
+    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">{{client_user.client_name|left:"1"}}</span><span class="T1">                     │</span></p>
     <p class="Plain_20_Text"><span class="T1">│"__"________2023г.____час ____мин.  Автомобиль №                        
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
@@ -154,12 +198,12 @@
     <p class="Plain_20_Text"><span class="T1">│Представитель перевозчика           Лицо, получившее контейнер          
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                    Доверенность № </span><span
-            class="T2">_</span><span class="T3">123 от 12.07.2023__</span><span class="T2">_</span><span class="T1">
+            class="T2">_</span><span class="T3"><span id="face-attorney"> ____________</span></span><span class="T2">_</span><span class="T1">
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│___________________________________</span><a id="_GoBack" /><span
-            class="T1"> __________________</span><span class="T3">Крупенько К.С.____</span><span class="T1">  │</span>
+            class="T1"> __________________</span><span class="T3"><span id="face-name"> ____________</span></span><span class="T1">  │</span>
     </p>
     <p class="Plain_20_Text"><span class="T1">│     (подпись, фамилия, инициалы)       (подпись, фамилия, инициалы)    
              │</span></p>
@@ -173,8 +217,8 @@
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
-    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">ООО
-            "ОФС-ЭКСПОРТ"</span><span class="T1">                     │</span></p>
+    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">{{client_user.client_name|left:"1"}}
+            </span><span class="T1">                     │</span></p>
     <p class="Plain_20_Text"><span class="T1">│"__"________2023г.____час ____мин.  Автомобиль № _______________________
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
