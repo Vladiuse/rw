@@ -234,6 +234,13 @@ def change_user(request, user_id):
     return HttpResponseRedirect(
         reverse('containers:clients'))
 
+def container_dislocation(request):
+    last_client_report = ClientsReport.objects.latest('document_date', '-pk')
+    content = {
+        'report': last_client_report,
+    }
+    return render(request, 'containers/container_dislocation.html', content)
+
 def test(request):
 
     content = {
