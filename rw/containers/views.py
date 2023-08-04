@@ -214,8 +214,7 @@ def print_document(request, client_container_id):
         'today': datetime.today().date(),
         'month_text': month_text(datetime.today().month),
     }
-    return render(request, 'containers/print/new_print.html', content)
-    return render(request, 'containers/print/document.html', content)
+    return render(request, 'containers/print/document_3.html', content)
 
 
 def users(request):
