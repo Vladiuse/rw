@@ -29,32 +29,34 @@
         text-align: center;
         width: 100%;
     }
-    .result{
+    #result{
         margin-top: 50px;
         color: red;
+        height: 50px;
     }
-    .result h3{
+    #result h3{
         border: 3px solid red;
-    display: inline;
-    padding: 4px 12px;
+        display: inline;
+        padding: 4px 12px;
+
     }
 </style>
 <h4 class="text-center">Последний документ: {{report.name}} за {{report.document_date|date:"d.m.Y"}}</h4>
 <div class="container">
-    <div  class="result text-center">
+    <div  id="result" class="text-center">
         <h3>45 участок</h3>
     </div>
     <div class="form-wrapper">
         
-        <form>
+        <form method="POST">
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Номер контейнера:</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="ABCD1234567">
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="ABCD1234567" minlength="11" maxlength="11" required name="container">
               <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
             </div>
             <div class="mb-3">
               <label for="exampleInputPassword1" class="form-label">Номер накладной:</label>
-              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="12345678">
+              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="12345678" required name="send_number">
             </div>
             <!-- <div class="mb-3 form-check">
               <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -70,5 +72,13 @@
           </form>
     </div>
 </div>
+<script>
+    $('form').submit(function(event){
+
+        // event.preventDefault()
+        console.log('VALID')
+        console.log(event)
+    })
+</script>
 
 {%endblock%}

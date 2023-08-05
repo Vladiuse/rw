@@ -3,11 +3,12 @@ from .containers import ContainerReader, ClientReader, Container8Reader
 from .forms import ClientContainer, ClientDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, FaceProxy
 from django.db.models import F, Count, Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 
 
 def month_text(month_num):
@@ -234,15 +235,33 @@ def change_user(request, user_id):
     return HttpResponseRedirect(
         reverse('containers:clients'))
 
+@csrf_exempt
 def container_dislocation(request):
-    last_client_report = ClientsReport.objects.latest('document_date', '-pk')
-    content = {
-        'report': last_client_report,
-    }
-    return render(request, 'containers/container_dislocation.html', content)
+    last_client_report = ClientsReport.objects.annotate(container_count=Count('row')).filter(container_count__gt=0).latest('document_date', '-pk')
+    if request.method == 'POST':
+        container = request.POST['container']
+        send_number = request.POST['send_number']
+        try:
+            client_row = ClientContainerRow.objects.get(document=last_client_report,send_number=send_number, container=container)
+            result = {
+               'status': True,
+               'msg': 'Model found',
+                'area': client_row.area
+            }
+        except ClientContainerRow.DoesNotExist as error:
+            result = {
+               'status': False,
+               'msg': 'Model not found',
+                'error_str': str(error),
+            }
+        return JsonResponse(result, safe=True)
+    else:
+        content = {
+            'report': last_client_report,
+        }
+        return render(request, 'containers/container_dislocation.html', content)
 
 def test(request):
-
     content = {
         'client_container_form': ClientDocFileForm(),
     }

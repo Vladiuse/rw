@@ -4,7 +4,7 @@ from .models import ClientsReport, WordDoc, ClientUser, FaceProxy
 
 
 class ClientDocAdmin(admin.ModelAdmin):
-    list_display = ['name', 'document_date', 'description', 'client_container_doc']
+    list_display = ['pk','name', 'document_date', 'description', 'client_container_doc']
     exclude = ['document']
     date_hierarchy = 'document_date'
 
