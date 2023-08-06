@@ -9,6 +9,7 @@ from datetime import datetime
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
+from containers.containers.containers_reader import Container
 
 
 def month_text(month_num):
@@ -49,6 +50,7 @@ def index(requet):
     else:
         return render(requet, 'containers/index.html')
 
+
 def compare_8(request):
     if request.method == 'POST':
         file_name_1 = request.POST['file_name_1']
@@ -68,6 +70,7 @@ def compare_8(request):
 
 def result(request):
     return render(request, 'containers/new_result.html')
+
 
 @login_required
 def people_count(requests):
@@ -107,7 +110,7 @@ def clients_document(request, document_id):
     rows_no_area = [row for row in rows if row.area == 0]
     rows_cont_number_error = [row for row in rows if not row.container_number_correct()]
     if request.method == 'POST':
-        form = ClientContainer(request.POST, request.FILES,instance=client_doc)
+        form = ClientContainer(request.POST, request.FILES, instance=client_doc)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(
@@ -124,7 +127,8 @@ def clients_document(request, document_id):
         'rows_cont_number_error': rows_cont_number_error,
         'form': form,
         'form_show': form_show,
-        'client_container_text_form': ClientDocFileForm(prefix='client_container',instance=client_doc.client_container_doc),
+        'client_container_text_form': ClientDocFileForm(prefix='client_container',
+                                                        instance=client_doc.client_container_doc),
     }
     return render(request, 'containers/clients/client.html', content)
 
@@ -134,10 +138,11 @@ def client_document(request, document_id):
     client_user = get_object_or_404(ClientUser, user=request.user)
     # client_user = ClientUser.objects.get(user=request.user)
     client_doc = ClientsReport.objects.get(pk=document_id)
-    rows = ClientContainerRow.objects.filter(document=client_doc, client_name=client_user.client_filter).annotate(past=client_doc.document_date - F('date'))
+    rows = ClientContainerRow.objects.filter(document=client_doc, client_name=client_user.client_filter).annotate(
+        past=client_doc.document_date - F('date'))
     content = {
         'rows': rows,
-        'client_user':client_user,
+        'client_user': client_user,
     }
     return render(request, 'containers/clients/one_client.html', content)
 
@@ -159,14 +164,12 @@ def add_hand_text_to_docs(request, document_id):
         reverse('containers:show_client', args=(document_id,)))
 
 
-
-
 @login_required
 def create_client(request):
     """Создать отчет по клиентам"""
     if request.method == 'POST':
         client_form = ClientContainer(request.POST, prefix='client_form')
-        client_container_file_form = ClientDocFileForm(request.POST, request.FILES,prefix='client_container')
+        client_container_file_form = ClientDocFileForm(request.POST, request.FILES, prefix='client_container')
         if client_container_file_form.is_valid():
             client_container_file_form.save()
             client_form.instance.client_container_doc = client_container_file_form.instance
@@ -187,11 +190,13 @@ def create_client(request):
         }
         return render(request, 'containers/clients/create.html', content)
 
+
 def files_no_data_rows(request, file_id):
     file = WordDoc.objects.get(pk=file_id)
     text = file.get_no_data_rows()
     text = text.replace('\n', '<br>')
     return HttpResponse(text)
+
 
 @login_required
 def delete(request, document_id):
@@ -235,23 +240,41 @@ def change_user(request, user_id):
     return HttpResponseRedirect(
         reverse('containers:clients'))
 
+
 @csrf_exempt
 def container_dislocation(request):
-    last_client_report = ClientsReport.objects.annotate(container_count=Count('row')).filter(container_count__gt=0).latest('document_date', '-pk')
+    last_client_report = ClientsReport.objects.annotate(container_count=Count('row')).filter(
+        container_count__gt=0).latest('document_date', '-pk')
     if request.method == 'POST':
         container = request.POST['container']
         send_number = request.POST['send_number']
-        try:
-            client_row = ClientContainerRow.objects.get(document=last_client_report,send_number=send_number, container=container)
+        if not Container._is_number_correct(container):
             result = {
-               'status': True,
-               'msg': 'Model found',
-                'area': client_row.area
+                'status': False,
+                'msg': 'Некоректный номер контейнера (не правильная контрольная сумма)'
+            }
+            return JsonResponse(result)
+        try:
+            client_row = ClientContainerRow.objects.get(document=last_client_report, send_number=send_number,
+                                                        container=container)
+            if client_row.area:
+                area_text =  f'{client_row.area}й  участок'
+                if client_row.area < 34:
+                    area_type = 'кран'
+                else:
+                    area_type = 'ричстакер'
+                area_text += f' ({area_type})'
+            else:
+                area_text = 'Участок не указан'
+            result = {
+                'status': True,
+                'msg': 'Model found',
+                'area': area_text,
             }
         except ClientContainerRow.DoesNotExist as error:
             result = {
-               'status': False,
-               'msg': 'Model not found',
+                'status': False,
+                'msg': 'Ошибка, проверьте внесенные данные',
                 'error_str': str(error),
             }
         return JsonResponse(result, safe=True)
@@ -261,10 +284,9 @@ def container_dislocation(request):
         }
         return render(request, 'containers/container_dislocation.html', content)
 
+
 def test(request):
     content = {
         'client_container_form': ClientDocFileForm(),
     }
     return render(request, 'containers/test.html', content)
-
-

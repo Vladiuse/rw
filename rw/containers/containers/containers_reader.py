@@ -66,6 +66,27 @@ class Container:
         """Есть ли в номере контейнера русские буквы"""
         return not bool(re.search('[A-z]{4}\d{7}', self.id))
 
+    @staticmethod
+    def _is_number_correct(container_number):
+        container_number = str(container_number)
+        if not re.match(r'[A-Z]{4}\d{7}', container_number):
+            return False
+        res = 0
+        if not container_number:
+            return False
+        for pos, char in enumerate(container_number[:-1]):
+
+            if pos < 4:
+                number = Container.LETTERS_WEIGHT[char] * 2 ** pos
+            else:
+                number = int(char) * 2 ** pos
+            res += number
+
+        if container_number[-1] == str(res % 11)[-1]:
+            return True
+        else:
+            return False
+
     def is_container_number_correct(self):
         """Явзяеться ли номер контейнера корректным"""
         if self.is_has_ru_letters():

@@ -43,41 +43,60 @@
 </style>
 <h4 class="text-center">Последний документ: {{report.name}} за {{report.document_date|date:"d.m.Y"}}</h4>
 <div class="container">
-    <div  id="result" class="text-center">
-        <h3>45 участок</h3>
+    <div  id="result" class="text-center" >
+        <h3 style="display: none;"></h3>
     </div>
     <div class="form-wrapper">
         
         <form method="POST">
             <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Номер контейнера:</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="ABCD1234567" minlength="11" maxlength="11" required name="container">
-              <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+              <label for="container" class="form-label">Номер контейнера:</label>
+              <input type="text" class="form-control" id="container" aria-describedby="emailHelp" placeholder="ABCD1234567" minlength="11" maxlength="11" required name="container" pattern="[A-Z]{4}\d{7}" title="ABCD1234567">
             </div>
             <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">Номер накладной:</label>
-              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="12345678" required name="send_number">
+              <label for="send_number" class="form-label">Номер накладной:</label>
+              <input type="text" class="form-control" id="send_number" placeholder="12345678" required name="send_number" pattern="\d{8}" title="Номер состоит из 8цифр"/>
             </div>
-            <!-- <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div> -->
             <div class="for-buttons-center mb-3">
                 <button class="pure-material-button-contained" type="submit">Проверить</button>
                 <button class="pure-material-button-text" type="reset">Отчистить</button>
             </div>
             <div class="mb-3">
-                <p class="errors">Some error!</p>
+                <p class="errors" id="error-text"></p>
             </div>
           </form>
     </div>
 </div>
 <script>
+    var error_text = $('#error-text')
+    var area_text = $('#result h3')
+    var find_area_url = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'containers:container_dislocation' %}"
     $('form').submit(function(event){
-
-        // event.preventDefault()
-        console.log('VALID')
-        console.log(event)
+        event.preventDefault()
+        var container = $('#container').val()
+        var send_number = $('#send_number').val()
+        console.log(container, send_number)
+        data = {
+            'container': container,
+            'send_number': send_number,
+        }
+        $.post(find_area_url, data=data,)
+        .done(function(response){
+            if (response['status']){
+                ///    
+                area_text.text(response['area'])
+                area_text.show()
+                error_text.hide()
+            }
+            else{
+                error_text.show()
+                error_text.text(response['msg'])
+                area_text.hide()
+            }
+        })
+        .fail(function(response){
+            error_text.text('Req error!')
+        })
     })
 </script>
 
