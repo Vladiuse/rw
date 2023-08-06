@@ -16,7 +16,8 @@
         max-width: 500px;
         width: 100%;
     }
-    form input{
+
+    form input {
         text-transform: uppercase;
     }
 
@@ -46,15 +47,14 @@
 
     #result h3 {
         border: 3px solid red;
-        display: inline;
+        display: inline-block;
         padding: 4px 12px;
-
+        height: 50px;
+        margin: 0;
     }
 
     canvas {
-        border: 2px solid black;
         width: 100%;
-        color: #b42c2c;
     }
 </style>
 <h4 class="text-center">Последний документ: {{report.name}} за {{report.document_date|date:"d.m.Y"}}</h4>
@@ -81,12 +81,13 @@
                 <button class="pure-material-button-text" type="reset">Отчистить</button>
             </div>
             <div class="mb-3">
-                <p class="errors" id="error-text"></p>
+                <p class="errors" id="error-text" style="display: none;"></p>
             </div>
         </form>
     </div>
     <div class="container">
         <canvas id="myCanvas"></canvas>
+        <h5 class="text-center">Схема участков</h5>
     </div>
 </div>
 <script>
@@ -105,6 +106,7 @@
         $.post(find_area_url, data = data, )
             .done(function (response) {
                 if (response['status']) {
+                    console.log(response)
                     ///    
                     area_text.text(response['area_text'])
                     area_text.show()
@@ -213,18 +215,19 @@
 
     function clear() {
         context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+        draw_cran_area()
+        add_thrach_area()
+        draw_bildings()
     }
 
     function draw_scheme(area) {
-
         var area = area - 1;
-        if (area <= 48) {
-            clear()
-            draw_cran_area(area)
-            add_thrach_area(area)
-            draw_bildings()
-        }
+        clear()
+        draw_cran_area(area)
+        add_thrach_area(area)
+        draw_bildings()
     }
+    draw_scheme()
 </script>
 
 {%endblock%}
