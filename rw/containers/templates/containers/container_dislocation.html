@@ -16,6 +16,9 @@
         max-width: 500px;
         width: 100%;
     }
+    form input{
+        text-transform: uppercase;
+    }
 
     form .mb-3 {
         display: flex;
@@ -66,7 +69,7 @@
                 <label for="container" class="form-label">Номер контейнера:</label>
                 <input type="text" class="form-control" id="container" aria-describedby="emailHelp"
                     placeholder="ABCD1234567" minlength="11" maxlength="11" required name="container"
-                    pattern="[A-Z]{4}\d{7}" title="ABCD1234567">
+                    pattern="[A-Za-z]{4}\d{7}" title="ABCD1234567">
             </div>
             <div class="mb-3">
                 <label for="send_number" class="form-label">Номер накладной:</label>
@@ -92,8 +95,8 @@
     var find_area_url = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'containers:container_dislocation' %}"
     $('form').submit(function (event) {
         event.preventDefault()
-        var container = $('#container').val()
-        var send_number = $('#send_number').val()
+        var container = $('#container').val().toUpperCase()
+        var send_number = $('#send_number').val().toUpperCase()
         console.log(container, send_number)
         data = {
             'container': container,
