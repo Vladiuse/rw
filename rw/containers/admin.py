@@ -17,7 +17,7 @@ class FaceClientInline(admin.TabularInline):
 
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['client_name', 'user', 'client_filter']
+    list_display = ['pk', 'client_name', 'user', 'client_filter']
     inlines = [FaceClientInline,]
 
 class FaceProxyAdmin(admin.ModelAdmin):

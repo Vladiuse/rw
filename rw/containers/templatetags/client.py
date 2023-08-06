@@ -5,21 +5,21 @@ register = template.Library()
 
 
 @register.filter(name='left')
-def left(value, arg):
+def left(value, arg, char='_'):
     leng = int(arg)
-    return f'{value:_<{leng}}'
+    return f'{value:{char}<{leng}}'
 
 
 @register.filter(name='right')
-def right(value, arg):
+def right(value, arg, char='_'):
     leng = int(arg)
-    return f'{value:_>{leng}}'
+    return f'{value:{char}>{leng}}'
 
 
 @register.filter(name='center_dash')
-def center_dash(value, arg):
+def center_dash(value, arg, char='_'):
     leng = int(arg)
-    return f'{value:_^{leng}}'
+    return f'{value:{char}^{leng}}'
 
 @register.filter(name='has_group')
 def has_group(user,group):

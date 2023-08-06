@@ -210,7 +210,7 @@ def print_document(request, client_container_id):
     client_user = ClientUser.objects.get(user=request.user)
     faces = FaceProxy.objects.filter(client=client_user)
     for face in faces:
-        face.attorney_dash = f'{face.attorney:_<19}'
+        face.attorney_dash = f'{face.attorney:_<22}'
         face.name_dash = f'{face.name:_<18}'
     content = {
         'row': row,

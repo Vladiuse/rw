@@ -9,7 +9,7 @@
 
 <head profile="http://dublincore.org/documents/dcmi-terms/">
     <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-    <title xml:lang="en-US">- no title specified</title>
+    <title xml:lang="en-US">Печaть нaрядa</title>
     <meta name="DCTERMS.title" content="" xml:lang="en-US" />
     <meta name="DCTERMS.language" content="en-US" scheme="DCTERMS.RFC4646" />
     <meta name="DCTERMS.source" content="http://xml.openoffice.org/odf2xhtml" />
@@ -171,7 +171,9 @@ html, body{
             КЭУ-16</span></p>
     <p class="Plain_20_Text"><span class="T1">                             НАРЯД N     /</span><span
             class="T2">{{row.nn|left:"5"}}</span><span class="T1">                </span><span class="T2">Координаты: {%if row.area%}{{row.area|right:"2"}}{%else%}__{%endif%}</span></p>
-    <p class="Plain_20_Text"><span class="T1">                             </span><span class="T2">{{today|date:"d.m.Y"}}</span></p>
+    <p class="Plain_20_Text">
+        <!-- <span class="T1">                             </span> -->
+        <span class="T2">{{today|date:"d.m.Y"}}</span></p>
     <p class="P1"> </p>
     <p class="Plain_20_Text"><span class="T1">Контейнер № </span><span class="T2">{{row.container|left:"11"}}</span><span class="T1">
             45G1, масса брутто </span><span class="T2">{{row.weight|left:"2"}}</span><span class="T1"> кг</span></p>
@@ -190,16 +192,16 @@ html, body{
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
-    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">{{client_user.client_name|left:"1"}}</span><span class="T1">                     │</span></p>
+    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">{{client_user.client_name|left:"30"}}</span><span class="T1">        │</span></p>
     <p class="Plain_20_Text"><span class="T1">│"__"________2023г.____час ____мин.  Автомобиль №                        
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│Представитель перевозчика           Лицо, получившее контейнер          
              │</span></p>
-    <p class="Plain_20_Text"><span class="T1">│                                    Доверенность № </span><span
-            class="T2">_</span><span class="T3"><span id="face-attorney"> ____________</span></span><span class="T2">_</span><span class="T1">
-             │</span></p>
+    <p class="Plain_20_Text"><span class="T1">│                                   Доверенность № </span><span
+            class="T2">_</span><span class="T3"><span id="face-attorney"> ____________</span></span><span class="T2"></span><span class="T1">
+            │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│___________________________________</span><a id="_GoBack" /><span
@@ -217,8 +219,8 @@ html, body{
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
              │</span></p>
-    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">{{client_user.client_name|left:"1"}}
-            </span><span class="T1">                     │</span></p>
+    <p class="Plain_20_Text"><span class="T1">│Получатель                          </span><span class="T2">{{client_user.client_name|left:"30"}}
+            </span><span class="T1">        │</span></p>
     <p class="Plain_20_Text"><span class="T1">│"__"________2023г.____час ____мин.  Автомобиль № _______________________
              │</span></p>
     <p class="Plain_20_Text"><span class="T1">│                                                                        
