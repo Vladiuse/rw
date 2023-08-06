@@ -269,7 +269,8 @@ def container_dislocation(request):
             result = {
                 'status': True,
                 'msg': 'Model found',
-                'area': area_text,
+                'area_text': area_text,
+                'area': client_row.area,
             }
         except ClientContainerRow.DoesNotExist as error:
             result = {
