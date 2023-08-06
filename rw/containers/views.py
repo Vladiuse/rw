@@ -258,7 +258,7 @@ def container_dislocation(request):
             client_row = ClientContainerRow.objects.get(document=last_client_report, send_number=send_number,
                                                         container=container)
             if client_row.area:
-                area_text =  f'{client_row.area}й  участок'
+                area_text =  f'{client_row.area} участок'
                 if client_row.area < 34:
                     area_type = 'кран'
                 else:
