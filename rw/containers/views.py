@@ -36,15 +36,21 @@ def month_text(month_num):
     return data[str(month_num)]
 
 
-def index(requet):
-    if requet.method == 'POST':
-        file_name_1 = requet.POST['file_name_1']
-        file_name_2 = requet.POST['file_name_2']
-        file_text_1 = requet.POST['file_text_1']
-        file_text_2 = requet.POST['file_text_2']
+def index(requets):
+    if requets.user and is_client_user(requets.user):
+        return redirect('containers:clients')
+    return redirect('containers:compare-containers')
+
+
+def compare_containers_files(request):
+    if request.method == 'POST':
+        file_name_1 = request.POST['file_name_1']
+        file_name_2 = request.POST['file_name_2']
+        file_text_1 = request.POST['file_text_1']
+        file_text_2 = request.POST['file_text_2']
         if file_text_1 == file_text_2:
             error_text = f'Текст файла {file_name_1} и {file_name_2} одинаковы!'
-            return render(requet, 'containers/index.html', {'error_text': error_text})
+            return render(request, 'containers/index.html', {'error_text': error_text})
         reader = ContainerReader(file_text_1, file_text_2)
         content = {
 
@@ -52,9 +58,9 @@ def index(requet):
             'file_name_2': file_name_2,
             'reader': reader
         }
-        return render(requet, 'containers/new_result.html', content)
+        return render(request, 'containers/new_result.html', content)
     else:
-        return render(requet, 'containers/index.html')
+        return render(request, 'containers/index.html')
 
 
 def compare_8(request):
