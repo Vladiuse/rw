@@ -266,6 +266,12 @@ class ClientContainerRow(models.Model):
         container = Container(str(self.container))
         return container.is_container_number_correct()
 
+    def is_past_30(self):
+        diff  = datetime.now().date()- self.date
+        if diff.days  >= 29:
+            return True
+        return False
+
     def __str__(self):
         return f'{self.client_name}{self.container}'
 

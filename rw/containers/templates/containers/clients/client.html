@@ -161,6 +161,10 @@
             ({{rows_no_area|length}})<span></span></a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" id="tab-incorrect_containers" data-table="rows_cont_past_30">Простой больше 30дн.
+            ({{rows_cont_past_30|length}})<span></span></a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" id="tab-incorrect_containers" data-table="incorrect_containers">Некоррекнтые номера
             ({{rows_cont_number_error|length}})<span></span></a>
         </li>
@@ -197,7 +201,8 @@
       {% row_table rows_no_area id='client_rows_no_area'%}
       <!-- INCORRECT CONT NUMBER -->
       {% row_table rows_cont_number_error id='incorrect_containers' %}
-
+     <!-- PAST 30 -->
+     {% row_table rows_cont_past_30 id='rows_cont_past_30' %}
     </div>
   </div>
 </div>
