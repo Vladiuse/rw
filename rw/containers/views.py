@@ -37,8 +37,9 @@ def month_text(month_num):
 
 
 def index(requets):
-    if requets.user and is_client_user(requets.user):
-        return redirect('containers:clients')
+    if requets.user and requets.user.is_authenticated:
+        if is_client_user(requets.user):
+            return redirect('containers:clients')
     return redirect('containers:compare-containers')
 
 
