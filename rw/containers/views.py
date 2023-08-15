@@ -11,6 +11,12 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from containers.containers.containers_reader import Container
 
+def is_client_user(user):
+    try:
+        user.clientuser
+        return True
+    except ClientUser.DoesNotExist:
+        return False
 
 def month_text(month_num):
     data = {
