@@ -247,13 +247,24 @@ def users(request):
 
 
 def change_user(request, user_id):
-    if request.user.is_authenticated:
+    if request.user.groups.filter(name='Админы').exists() or request.user.is_superuser:
+        if request.user.is_authenticated:
+            logout(request)
+        user = User.objects.get(pk=user_id)
+        login(request, user)
+        return HttpResponseRedirect(
+            reverse('containers:clients'))
+    else:
+        user_to_change = User.objects.get(pk=user_id)
+        current_client_user = request.user.clientuser
+        if user_to_change.clientuser not in current_client_user.available_clients.all():
+            return HttpResponse('Вам не доступен этот клиент')
         logout(request)
+        user = User.objects.get(pk=user_id)
+        login(request, user)
+        return HttpResponseRedirect(
+            reverse('containers:clients'))
 
-    user = User.objects.get(pk=user_id)
-    login(request, user)
-    return HttpResponseRedirect(
-        reverse('containers:clients'))
 
 
 @csrf_exempt

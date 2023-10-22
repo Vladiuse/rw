@@ -30,12 +30,15 @@
 
 {%block content%}
 
-
-{%if user|has_group:"Админы"%}
 <div class="container">
+{%if user|has_group:"Админы"%}
   <a href="{%url 'containers:create_client_doc' %}" class="btn btn-success">Создать новый <i class="fa-solid fa-file-circle-plus"></i></a>
-</div>
+{%else%}
+{%for available_client in user.clientuser.available_clients.all%}
+<a class="btn btn-primary" href="{%url 'containers:change_user' available_client.user.pk %}" role="button">{{available_client}}</a>
+{%endfor%}
 {%endif%}
+</div>
 
 <br>
 <div class="container">
