@@ -153,6 +153,10 @@ footer a{
                   | &nbsp;
       <a href="{%url 'containers:users'%}" target="_top">Пользователи</a> &nbsp;
       {%endif%}
+        {%if user|has_group:"Админы"%}
+         | &nbsp;
+      <a href="{%url 'containers:container_dislocation'%}" target="_top">Дислокация</a> &nbsp;
+        {%endif%}
     </footer>
     <script>
       function copyTextCode(elem){

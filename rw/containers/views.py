@@ -269,6 +269,8 @@ def change_user(request, user_id):
 
 @csrf_exempt
 def container_dislocation(request):
+    if not ( request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
+        return HttpResponse('Недоступно')
     last_client_report = ClientsReport.objects.annotate(container_count=Count('row')).filter(
         container_count__gt=0).latest('document_date', '-pk')
     if request.method == 'POST':
