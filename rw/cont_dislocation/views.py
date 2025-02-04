@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from containers.containers.containers_reader import Container
 from django.db.models import Count
 from containers.models import ClientsReport, ClientContainerRow
 from django.views import View
 from .utils import get_area_type
+from django.urls import reverse
 
 class ContainerDislocationView(View):
     template = 'cont_dislocation/container_dislocation.html'
@@ -14,6 +15,8 @@ class ContainerDislocationView(View):
             container_count__gt=0).latest('document_date', '-pk')
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('login'))
         if not (request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
             return HttpResponse('Недоступно')
         return super().dispatch(request, *args, **kwargs)
