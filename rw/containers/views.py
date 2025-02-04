@@ -315,7 +315,8 @@ def container_dislocation(request):
 
 
 def test(request):
-    content = {
-        'client_container_form': ClientDocFileForm(),
-    }
-    return render(request, 'containers/test.html', content)
+    return HttpResponse('test page')
+    # content = {
+    #     'client_container_form': ClientDocFileForm(),
+    # }
+    # return render(request, 'containers/test.html', content)
