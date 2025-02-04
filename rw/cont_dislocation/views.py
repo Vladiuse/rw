@@ -13,17 +13,18 @@ class ContainerDislocationView(View):
         return ClientsReport.objects.annotate(container_count=Count('row')).filter(
             container_count__gt=0).latest('document_date', '-pk')
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         if not (request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
             return HttpResponse('Недоступно')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
         content = {
             'report': self._get_last_client_report(),
         }
         return render(request, self.template, content)
 
     def post(self, request, *args, **kwargs):
-        if not (request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
-            return HttpResponse('Недоступно')
         last_client_report = self._get_last_client_report()
         container = request.POST['container']
         send_number = request.POST['send_number']
