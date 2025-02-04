@@ -65,6 +65,7 @@
     <div class="form-wrapper">
 
         <form method="POST">
+            {% csrf_token %}  
             <div class="mb-3">
                 <label for="container" class="form-label">Номер контейнера:</label>
                 <input type="text" class="form-control" id="container" aria-describedby="emailHelp"
@@ -93,15 +94,17 @@
 <script>
     var error_text = $('#error-text')
     var area_text = $('#result h3')
-    var find_area_url = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'containers:container_dislocation' %}"
+    var find_area_url = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'cont_dislocation:index' %}"
     $('form').submit(function (event) {
         event.preventDefault()
         var container = $('#container').val().toUpperCase()
         var send_number = $('#send_number').val().toUpperCase()
+        var csrf_token = document.querySelector('input[name=csrfmiddlewaretoken]').value
         console.log(container, send_number)
         data = {
             'container': container,
             'send_number': send_number,
+            'csrfmiddlewaretoken': csrf_token,
         }
         $.post(find_area_url, data = data, )
             .done(function (response) {

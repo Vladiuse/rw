@@ -266,54 +266,6 @@ def change_user(request, user_id):
             reverse('containers:clients'))
 
 
-
-@csrf_exempt
-def container_dislocation(request):
-    if not ( request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
-        return HttpResponse('Недоступно')
-    last_client_report = ClientsReport.objects.annotate(container_count=Count('row')).filter(
-        container_count__gt=0).latest('document_date', '-pk')
-    if request.method == 'POST':
-        container = request.POST['container']
-        send_number = request.POST['send_number']
-        if not Container._is_number_correct(container):
-            result = {
-                'status': False,
-                'msg': 'Некоректный номер контейнера (не правильная контрольная сумма)'
-            }
-            return JsonResponse(result)
-        try:
-            client_row = ClientContainerRow.objects.get(document=last_client_report, send_number=send_number,
-                                                        container=container)
-            if client_row.area:
-                area_text =  f'{client_row.area} участок'
-                if client_row.area < 34:
-                    area_type = 'кран'
-                else:
-                    area_type = 'ричстакер'
-                area_text += f' ({area_type})'
-            else:
-                area_text = 'Участок не указан'
-            result = {
-                'status': True,
-                'msg': 'Model found',
-                'area_text': area_text,
-                'area': client_row.area,
-            }
-        except ClientContainerRow.DoesNotExist as error:
-            result = {
-                'status': False,
-                'msg': 'Ошибка, проверьте внесенные данные',
-                'error_str': str(error),
-            }
-        return JsonResponse(result, safe=True)
-    else:
-        content = {
-            'report': last_client_report,
-        }
-        return render(request, 'containers/container_dislocation.html', content)
-
-
 def test(request):
     return HttpResponse('test page')
     # content = {

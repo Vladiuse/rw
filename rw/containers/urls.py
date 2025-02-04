@@ -18,7 +18,7 @@ urlpatterns = [
     path('print_document/<int:client_container_id>', views.print_document, name='print_document'),
 
     path('new_print/', TemplateView.as_view(template_name='containers/print/new_print.html'),),
-    path('cont-dislocation', views.container_dislocation, name='container_dislocation'),
+    # path('cont-dislocation', views.container_dislocation, name='container_dislocation'),
 
 
     path('users', views.users, name='users'),
