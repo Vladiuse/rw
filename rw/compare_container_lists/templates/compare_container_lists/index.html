@@ -1,0 +1,32 @@
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Поле выбора типа -->
+    <label for="id_type">Тип:</label>
+    <select name="type" id="id_type">
+        <option value="A">A</option>
+        <option value="B">B</option>
+    </select>
+    <br>
+
+    <!-- Поля для названий файлов -->
+    <label for="id_file_name_1">Название файла 1:</label>
+    <input type="text" name="file_name_1" id="id_file_name_1" required>
+    <br>
+
+    <label for="id_file_name_2">Название файла 2:</label>
+    <input type="text" name="file_name_2" id="id_file_name_2" required>
+    <br>
+
+    <!-- Поля для содержимого файлов -->
+    <label for="id_file_text_1">Текст файла 1:</label>
+    <textarea name="file_text_1" id="id_file_text_1" required></textarea>
+    <br>
+
+    <label for="id_file_text_2">Текст файла 2:</label>
+    <textarea name="file_text_2" id="id_file_text_2" required></textarea>
+    <br>
+
+    <!-- Кнопка отправки -->
+    <button type="submit">Сравнить</button>
+</form>

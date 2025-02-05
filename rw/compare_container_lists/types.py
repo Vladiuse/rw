@@ -1,0 +1,2 @@
+VAGONS = 'vagons'
+CONTAINERS = 'cobtainers'
