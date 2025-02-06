@@ -1,0 +1,183 @@
+{% extends 'containers/base.html' %}
+{%block content%}
+<style>
+    .container-fluid{
+        padding: 0 20px;
+    }
+    textarea{
+        width: 100%;
+        height: 250px;
+    }
+    .row.incorrect textarea,
+    .row.ru-letters textarea{
+        height: 130px;
+    }
+    .row.no-containers textarea{
+        margin-bottom: 80px;
+    }
+    .pure-material-switch{
+        margin-bottom: 15px;
+    }
+    textarea.active{
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+    }
+    #copy-chosen{
+        margin-left: 20px;
+    }
+    h5{
+        margin-top: 0.5rem;
+    }
+</style>
+
+<div class="container-fluid">
+    <label class="pure-material-switch" data-bs-toggle="tooltip" data-bs-placement="right" title="Показывать только номера контейнеров, либо всю строку с найденым в ней номером из документа целиком">
+        <input id="spellcheck" type="checkbox" checked>
+        <span>Строки целиком</span>
+    </label>
+    <button class="pure-material-button-contained" id="copy-chosen" style="display: none;">Скопировать выделеные</button>
+    <div class="row">
+        <div class="col">
+            <h3>{{file_name_1}} <br>Найдено: {{reader.file_1.containers|length}}шт.</h3>
+        </div>
+        <div class="col">
+            <!-- NONE -->
+        </div>
+        <div class="col">
+            <h3>{{file_name_2}}<br>Найдено: {{reader.file_2.containers|length}}шт.</h3>
+        </div>
+    </div>
+    <div class="row unique">
+        <div class="col">
+            <h5>
+                Уникальные контейнеры ({{reader.unique_containers_file_1|length}}шт. )</h5>
+            <textarea class="form-control" id="file_1_unique_containers"></textarea>
+        </div>
+        <div class="col">
+            <h5 data-bs-toggle="tooltip" data-bs-placement="top" title="Список обших контейнеров для двух документов (присутствуют в обоих файлах)">
+                Общие контейнеры ({{reader.common_containers|length}}шт.)</h5>
+            <textarea class="form-control" id="common_containers"></textarea>
+        </div>
+        <div class="col">
+            <h5>Уникальные контейнеры ({{reader.unique_containers_file_2|length}}шт.)</h5>
+            <textarea class="form-control" id="file_2_unique_containers"></textarea>
+        </div>
+    </div>
+    <h5 style="text-align: center;" data-bs-toggle="tooltip" data-bs-placement="top" title="Номера контейнеров, чья последняя цифра в номере не правильно расчитана по формуле">
+        Некоректные номера контейнеров</h5>
+    <div class="row incorrect">
+        <div class="col">
+            <textarea class="form-control" id="incorrect_1"></textarea>
+        </div>
+        <div class="col">
+       <textarea class="form-control" id="incorrect_common"></textarea>
+        </div>
+        <div class="col">
+            <textarea class="form-control" id="incorrect_2"></textarea>
+        </div>
+    </div>
+    <h5 style="text-align: center;" data-bs-toggle="tooltip" data-bs-placement="top" title="Койтейнеры, в чьем номере присутствует русская буква, или несколько">
+        Номера с русскими буквами</h5>
+    <div class="row ru-letters">
+        <div class="col">
+            <textarea class="form-control" id="file_1_ru_leters"></textarea>
+        </div>
+        <div class="col">
+       <textarea class="form-control" id="common_ru_leters"></textarea>
+        </div>
+        <div class="col">
+            <textarea class="form-control" id="file_2_ru_leters"></textarea>
+        </div>
+    </div>
+    <h5 style="text-align: center;" data-bs-toggle="tooltip" data-bs-placement="top" title="Строки из файлов в которых нет номеров контейнеров. Наличие номера в тексте говорит об ошибке!">
+        Строки без номеров контейнеров</h5>
+    <div class="row no-containers">
+        <div class="col">
+            <textarea disabled class="form-control" id="file_1_no_conteiner_list"></textarea>
+        </div>
+        <!-- <div class="col">
+       NONE
+        </div> -->
+        <div class="col">
+            <textarea disabled class="form-control" id="file_2_no_conteiner_list"></textarea>
+        </div>
+    </div>
+</div>
+<script>
+    let result_containers = {
+        'file_1_unique_containers': JSON.parse('{{reader.unique_containers_file_1.json|safe}}'),
+        'file_2_unique_containers': JSON.parse('{{reader.unique_containers_file_2.json|safe}}'),
+        'common_containers': JSON.parse('{{reader.common_containers.json|safe}}'),
+        
+        'incorrect_1': JSON.parse('{{reader.incorrect_1|safe}}'),
+        'incorrect_2': JSON.parse('{{reader.incorrect_2|safe}}'),
+        'incorrect_common': JSON.parse('{{reader.common_containers.incorrect_number.json|safe}}'),
+
+        'file_1_ru_leters': JSON.parse('{{reader.file_1.containers.rus_number.json|safe}}'),
+        'file_2_ru_leters': JSON.parse('{{reader.file_1.containers.rus_number.json|safe}}'),
+        'common_ru_leters': JSON.parse('{{reader.common_containers.rus_number.json|safe}}'),
+        
+    };
+    let result_no_containers = {
+        'file_1_no_conteiner_list': JSON.parse('{{reader.file_1.get_no_containers_lines_json|safe}}'),
+        'file_2_no_conteiner_list': JSON.parse('{{reader.file_2.get_no_containers_lines_json|safe}}'),
+    };
+
+    function uploadData(){
+        let flag = 'text_line'
+        if ($('#spellcheck').prop('checked')){flag='id'}
+        for (key in result_containers){
+            let list_data = result_containers[key]
+            let data_to_show = []
+            for (i in list_data){
+                data_to_show.push(list_data[i][flag])
+            }
+            let textarea = $('#'+key)
+            textarea.val(data_to_show.join('\n'));
+        }
+    }
+    uploadData()
+
+    function addNoContainerLines(){
+        // Добавить строки в которых нет номеров контейнеров
+        for (key in result_no_containers){
+            let data = result_no_containers[key].join('\n');
+            let textarea = $('#'+key)
+            textarea.val(data)
+        }
+    }
+    addNoContainerLines()
+
+
+    $('#spellcheck').click(function(){
+        if ($('#spellcheck').prop('checked'))
+        {$('.pure-material-switch span').text('Строки целиком')}
+        else
+        { $('.pure-material-switch span').text('Только номера')}
+        uploadData()
+    })
+
+    $('textarea').filter(function(){
+        if ($(this).val() == '') {return true}
+    }).attr('disabled', 'disabled')
+</script>
+<script>
+    $('body').on('click','textarea',function(){
+        $('#copy-chosen').show()
+        $('textarea').removeClass('active')
+        $(this).addClass('active')
+        $('#copy-chosen').data('copy', $(this).attr('id'))
+    })
+    $('#copy-chosen').click(function(){
+        let text = $('#'+$(this).data('copy')).val();
+        navigator.clipboard.writeText(text)
+        .then(() => {
+            console.log('Text copied to clipboard');
+        })
+        .catch(err => {
+            console.error('Error in copying text: ', err);
+        });
+    })
+</script>
+{%endblock%}

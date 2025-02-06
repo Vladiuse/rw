@@ -1,2 +1,10 @@
+from .readers import ContainerReader, Container8Reader
+
 VAGONS = 'vagons'
-CONTAINERS = 'cobtainers'
+CONTAINERS = 'containers'
+
+
+reader_types = {
+    VAGONS: Container8Reader,
+    CONTAINERS: ContainerReader
+}

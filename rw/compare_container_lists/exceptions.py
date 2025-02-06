@@ -1,0 +1,2 @@
+class NotContainerError(Exception):
+    pass
