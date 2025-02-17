@@ -143,8 +143,8 @@ footer a{
     {%endblock%}
     <footer class="position-fixed">
       {%if not user.clientuser%}
-      <a href="{%url 'containers:compare_8'%}" target="_top">Сверка вагонов</a> &nbsp; | &nbsp;
-      <a href="{%url 'containers:index'%}" target="_top">Сверка контейнеров</a> &nbsp; | &nbsp;
+      <a href="{%url 'compare_container_lists:compare_lists'%}" target="_top">Сверка списков</a> &nbsp; | &nbsp;
+      
       {%endif%}
         <a href="{%url 'containers:clients'%}" target="_top">Наличие по клиeнтaм</a> &nbsp; 
                     <!-- КОМУ доступен -->

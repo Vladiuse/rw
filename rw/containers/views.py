@@ -1,15 +1,14 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
-from .containers import ContainerReader, ClientReader, Container8Reader
+from .containers import ClientReader
 from .forms import ClientContainer, ClientDocFileForm
 from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, FaceProxy
-from django.db.models import F, Count, Q
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.db.models import F
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
-from containers.containers.containers_reader import Container
+
 
 def is_client_user(user):
     try:
@@ -37,52 +36,7 @@ def month_text(month_num):
 
 
 def index(requets):
-    if requets.user and requets.user.is_authenticated:
-        if is_client_user(requets.user):
-            return redirect('containers:clients')
-    return redirect('containers:compare-containers')
-
-
-def compare_containers_files(request):
-    if request.method == 'POST':
-        file_name_1 = request.POST['file_name_1']
-        file_name_2 = request.POST['file_name_2']
-        file_text_1 = request.POST['file_text_1']
-        file_text_2 = request.POST['file_text_2']
-        if file_text_1 == file_text_2:
-            error_text = f'Текст файла {file_name_1} и {file_name_2} одинаковы!'
-            return render(request, 'containers/index.html', {'error_text': error_text})
-        reader = ContainerReader(file_text_1, file_text_2)
-        content = {
-
-            'file_name_1': file_name_1,
-            'file_name_2': file_name_2,
-            'reader': reader
-        }
-        return render(request, 'containers/new_result.html', content)
-    else:
-        return render(request, 'containers/index.html')
-
-
-def compare_8(request):
-    if request.method == 'POST':
-        file_name_1 = request.POST['file_name_1']
-        file_name_2 = request.POST['file_name_2']
-        file_text_1 = request.POST['file_text_1']
-        file_text_2 = request.POST['file_text_2']
-        if file_text_1 == file_text_2:
-            error_text = f'Текст файла {file_name_1} и {file_name_2} одинаковы!'
-            return render(request, 'containers/compare_8/new_compare.html', {'error_text': error_text})
-        reader = Container8Reader(file_text_1, file_text_2)
-        content = {
-            'reader': reader,
-        }
-        return render(request, 'containers/compare_8/compare_result.html', content)
-    return render(request, 'containers/compare_8/new_compare.html')
-
-
-def result(request):
-    return render(request, 'containers/new_result.html')
+    return HttpResponse('Main page')
 
 
 @login_required
@@ -268,7 +222,4 @@ def change_user(request, user_id):
 
 def test(request):
     return HttpResponse('test page')
-    # content = {
-    #     'client_container_form': ClientDocFileForm(),
-    # }
-    # return render(request, 'containers/test.html', content)
+

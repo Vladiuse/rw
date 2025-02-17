@@ -4,5 +4,5 @@ from . import views
 
 app_name = 'compare_container_lists'
 urlpatterns = [
-    path('', views.CompareListsView.as_view(),),
+    path('', views.CompareListsView.as_view(), name='compare_lists'),
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import CompareTwoFileForm
 from django.views import View
-from .utils import get_reader_by_type
+from .types import reader_types
 
 class CompareListsView(View):
     form_template = 'compare_container_lists/compare_files_form.html'
@@ -17,7 +17,7 @@ class CompareListsView(View):
     def post(self, request, *args, **kwargs):
         form = CompareTwoFileForm(request.POST)
         if form.is_valid():
-            reader_class = get_reader_by_type(type=form.cleaned_data['type'])
+            reader_class = reader_types[form.cleaned_data['type']]
             reader = reader_class(
                 form.cleaned_data['file_text_1'],
                 form.cleaned_data['file_text_2'],
