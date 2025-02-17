@@ -36,7 +36,7 @@ def month_text(month_num):
 
 
 def index(requets):
-    return HttpResponse('Main page')
+    return render(requets, 'containers/main.html')
 
 
 @login_required
