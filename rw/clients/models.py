@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.validators import MaxValueValidator
 from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 
 class Book(models.Model):
@@ -12,3 +13,18 @@ class Book(models.Model):
     book_date = models.DateField(default=timezone.now())
     description = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=30, choices=BOOK_TYPES, default=CALL_TO_CLIENTS_BOOK)
+
+
+class Container(models.Model):
+    document = models.ForeignKey(Book, on_delete=models.CASCADE)
+    number = models.CharField(max_length=11)
+    client_name = models.CharField(max_length=30)
+    start_date = models.DateField(default=None, null=True)
+    end_date = models.DateField(default=None, null=True)
+    nn = models.CharField(max_length=5, blank=True)
+    send_number = models.CharField(max_length=10, blank=True)
+    weight = models.CharField(max_length=5, blank=True)
+    area = models.PositiveIntegerField(default=None, null=True, validators=[MaxValueValidator(99)])
+
+    class Meta:
+        ordering = ['client_name', 'start_date']
