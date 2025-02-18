@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.db.models import Count
 from django.http import HttpResponse
 from .forms import TextBookForm
@@ -18,8 +19,9 @@ def load_book_file(request):
     if request.method == 'POST':
         form = TextBookForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return HttpResponse('SUCCESS')
+            book = form.save()
+            messages.success(request, 'Книга создана')
+            return redirect('clients:book_list')
         content = {
             'form': form,
         }
@@ -29,3 +31,15 @@ def load_book_file(request):
         'form': form,
     }
     return render(request, 'clients/create_book_form.html', content)
+
+
+def test(request):
+    content = {}
+    if request.method == 'POST':
+        param = request.POST['param']
+        if param == 'x':
+            messages.success(request,'123')
+        content = {
+            'param': param,
+        }
+    return render(request, 'clients/test.html', content)
