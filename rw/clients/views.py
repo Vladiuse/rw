@@ -21,10 +21,14 @@ def load_book_file(request):
         form = TextBookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save()
-            create_containers(book=book)
-            containers_count = book.containers.count()
-            messages.success(request, f'Книга создана, {containers_count} контейнеров')
-            return redirect('clients:book_list')
+            try:
+                create_containers(book=book)
+            except Exception as error:
+                form.add_error(None, f'Ошибка чтения файла: {type(error)}:{error}')
+            else:
+                containers_count = book.containers.count()
+                messages.success(request, f'Книга создана, {containers_count} контейнеров')
+                return redirect('clients:book_list')
         content = {
             'form': form,
         }
