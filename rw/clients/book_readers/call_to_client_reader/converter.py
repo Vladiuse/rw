@@ -1,4 +1,4 @@
-from .dto import ClientRow
+from .dto import CallClientContainer
 from clients.book_readers.dto import FileContainerExistLines
 from common.containers.utils import is_line_contain_container
 from datetime import datetime, date
