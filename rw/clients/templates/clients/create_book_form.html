@@ -1,0 +1,75 @@
+{% extends 'containers/base.html'%}
+
+{%block page-name%}
+<h1>Загрузка книги с данными</h1>
+{%endblock%}
+
+
+{%block content%}
+<style>
+    #client-form .field-wrap {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #client-form button {
+        margin-top: 10px;
+    }
+
+    #client-form .left {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #client-form label {
+        font-size: 20px;
+    }
+
+    #client-form .file {
+        display: block;
+    }
+
+    textarea {
+        height: 70vh;
+    }
+</style>
+<div class="container">
+    <a class="btn btn-primary" href="{%url 'clients:book_list'%}" role="button"><i class="fa-solid fa-list"> </i>Все
+        документы</a>
+    <form method="POST" id="client-form" enctype="multipart/form-data">
+        {%csrf_token%}
+        {{ form.non_field_errors }}
+        <div class="row">
+            <div class="col-4 left">
+
+                <div class="field-wrap">
+                    {{ form.type.errors }}
+                    <label for="{{ form.type.id_for_label }}">{{form.type.label}}:</label>
+                    {{ form.type }}
+                </div>
+                <div class="field-wrap">
+                    {{ form.book_date.errors }}
+                    <label for="{{ form.book_date.id_for_label }}">{{form.book_date.label}}:</label>
+                    {{ form.book_date }}
+                </div>
+                <div class="field-wrap">
+                    {{ form.description.errors }}
+                    <label for="{{ form.description.id_for_label }}">{{form.description.label}}:</label>
+                    {{ form.description }}
+                </div>
+                <div class="field-wrap">
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+
+            </div>
+            <div class="col-8">
+                <p>Текст для "Клиент-Контейнеры"</p>
+                {{ form.text.errors }}
+                <textarea name="text" id="" required>{{form.text.value}}</textarea>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+{%endblock%}
