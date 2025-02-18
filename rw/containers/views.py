@@ -5,10 +5,12 @@ from .models import ClientsReport, ClientContainerRow, WordDoc, ClientUser, Face
 from django.db.models import F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST, require_GET
 from datetime import datetime
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
 from common import utils as common_utils
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 def index(requets):
@@ -91,7 +93,7 @@ def client_document(request, document_id):
     }
     return render(request, 'containers/clients/one_client.html', content)
 
-
+@require_POST
 def add_hand_text_to_docs(request, document_id):
     """Добавить в документ текст руками"""
     clients = ClientsReport.objects.get(pk=document_id)
@@ -109,10 +111,19 @@ def add_hand_text_to_docs(request, document_id):
         reverse('containers:show_client', args=(document_id,)))
 
 
-@login_required
-def create_client(request):
+class CreateClientView(View, LoginRequiredMixin):
     """Создать отчет по клиентам"""
-    if request.method == 'POST':
+
+    def get(self, request, *args, **kwargs):
+        client_form = ClientContainer(prefix='client_form')
+        client_container_file_form = ClientDocFileForm(prefix='client_container')
+        content = {
+            'client_form': client_form,
+            'client_container_text_form': client_container_file_form,
+        }
+        return render(request, 'containers/clients/create.html', content)
+
+    def post(self, request, *args, **kwargs):
         client_form = ClientContainer(request.POST, prefix='client_form')
         client_container_file_form = ClientDocFileForm(request.POST, request.FILES, prefix='client_container')
         if client_container_file_form.is_valid():
@@ -126,30 +137,23 @@ def create_client(request):
             'client_container_text_form': client_container_file_form,
         }
         return render(request, 'containers/clients/create.html', content)
-    else:
-        client_form = ClientContainer(prefix='client_form')
-        client_container_file_form = ClientDocFileForm(prefix='client_container')
-        content = {
-            'client_form': client_form,
-            'client_container_text_form': client_container_file_form,
-        }
-        return render(request, 'containers/clients/create.html', content)
 
-
+@require_GET
+@login_required
 def files_no_data_rows(request, file_id):
     file = WordDoc.objects.get(pk=file_id)
     text = file.get_no_data_rows()
     text = text.replace('\n', '<br>')
     return HttpResponse(text)
 
-
+@require_POST
 @login_required
 def delete(request, document_id):
     doc = ClientsReport.objects.get(pk=document_id)
     doc.delete()
     return redirect('containers:clients')
 
-
+@login_required
 def print_document(request, client_container_id):
     row = ClientContainerRow.objects.get(pk=client_container_id)
     client_user = ClientUser.objects.get(user=request.user)
@@ -167,7 +171,7 @@ def print_document(request, client_container_id):
     }
     return render(request, 'containers/print/document_3.html', content)
 
-
+@login_required
 def users(request):
     users = User.objects.all()
     content = {
@@ -175,7 +179,7 @@ def users(request):
     }
     return render(request, 'containers/users.html', content)
 
-
+@login_required
 def change_user(request, user_id):
     if request.user.groups.filter(name='Админы').exists() or request.user.is_superuser:
         if request.user.is_authenticated:

@@ -6,7 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('people_count', views.people_count, name='people_count'),
     path('clients', views.clients_documents, name='clients'),
-    path('create_client', views.create_client, name='create_client_doc'),
+    path('create_client', views.CreateClientView.as_view(), name='create_client_doc'),
     path('client/<int:document_id>', views.clients_document, name='show_client'),
     path('client_document/<int:document_id>', views.client_document, name='client_document'),
     path('delete/<int:document_id>', views.delete, name='document_delete'),
@@ -15,8 +15,6 @@ urlpatterns = [
     path('print_document/<int:client_container_id>', views.print_document, name='print_document'),
 
     path('new_print/', TemplateView.as_view(template_name='containers/print/new_print.html'),),
-    # path('cont-dislocation', views.container_dislocation, name='container_dislocation'),
-
 
     path('users', views.users, name='users'),
     path('change_user/<int:user_id>', views.change_user, name='change_user'),
