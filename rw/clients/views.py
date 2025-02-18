@@ -24,7 +24,12 @@ def load_book_file(request):
             try:
                 create_containers(book=book)
             except Exception as error:
-                form.add_error(None, f'Ошибка чтения файла: {type(error)}:{error}')
+                error_text = f'Ошибка чтения файла: {type(error)}:{error}'
+                form.add_error(None, error_text)
+                form.data._mutable = True
+                form.data['text'] = ''
+                book.error_text = error_text
+                book.save()
             else:
                 containers_count = book.containers.count()
                 messages.success(request, f'Книга создана, {containers_count} контейнеров')

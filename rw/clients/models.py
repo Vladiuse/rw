@@ -14,6 +14,7 @@ class Book(models.Model):
     description = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=30, choices=BOOK_TYPES, default=CALL_TO_CLIENTS_BOOK)
     no_containers_file = models.FileField(upload_to='books_no_containers', blank=True)
+    error_text = models.TextField(blank=True)
 
 
 class Container(models.Model):
