@@ -4,6 +4,7 @@ from django.db.models import Count
 from django.http import HttpResponse
 from .forms import TextBookForm
 from .models import Book
+from .container_creator import create_containers
 
 def index(request):
     return HttpResponse('Clients app')
@@ -20,7 +21,9 @@ def load_book_file(request):
         form = TextBookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save()
-            messages.success(request, 'Книга создана')
+            create_containers(book=book)
+            containers_count = book.containers.count()
+            messages.success(request, f'Книга создана, {containers_count} контейнеров')
             return redirect('clients:book_list')
         content = {
             'form': form,

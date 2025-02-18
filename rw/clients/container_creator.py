@@ -23,7 +23,9 @@ class CallClientContainerCreator:
                 end_date=container_data.end_date,
             )
             containers_to_create.append(container)
-        print(Container.objects.bulk_create(containers_to_create))
+        result = Container.objects.bulk_create(containers_to_create)
+        print(result)
+        print(type(result))
 
 
 creators = {
