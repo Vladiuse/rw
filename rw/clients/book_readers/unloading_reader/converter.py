@@ -1,7 +1,8 @@
 from datetime import date, datetime
+from .dto import UploadingContainer
 from clients.book_readers.dto import FileContainerExistLines
 from common.containers.utils import is_line_contain_container
-from .dto import UploadingContainer
+
 
 
 class UnloadingBookTextConverter:
@@ -48,5 +49,8 @@ class UnloadingBookTextConverter:
     def _get_weight(self, line: str) -> str:
         return line[77: 85].strip()
 
-    def _get_area(self, line: str) -> str:
-        return line[87: 89].strip()
+    def _get_area(self, line: str) -> int | None:
+        area = line[87: 89].strip()
+        if area == '':
+            return None
+        return int(area)

@@ -11,7 +11,7 @@ class ClientCallTextLineConverter:
         lines = text.split('\n')
         for line in lines:
             if is_line_contain_container(line=line):
-                item = ClientRow(
+                item = CallClientContainer(
                     container_number=self._get_container(line=line),
                     start_date=self._get_start_date(line=line),
                     end_date=self._get_end_date(line=line),

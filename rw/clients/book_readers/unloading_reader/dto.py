@@ -9,4 +9,4 @@ class UploadingContainer:
     nn: str
     send_number: str
     weight: str
-    area: int | str
+    area: int | None
