@@ -13,6 +13,7 @@ urlpatterns = [
     path('', include('containers.urls')),
     path('container-dislocation/', include('cont_dislocation.urls')),
     path('compare-container-lists/', include('compare_container_lists.urls')),
+    path('clients/', include('clients.urls')),
 ]
 
 # Serving the media files in development mode

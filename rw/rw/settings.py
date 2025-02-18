@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'containers.apps.ContainersConfig',
     'cont_dislocation.apps.ContDislocationConfig',
     'compare_container_lists.apps.CompareContainerListsConfig',
+    'clients.apps.ClientsConfig',
 
     #tools
     'debug_toolbar',
