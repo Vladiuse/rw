@@ -17,7 +17,7 @@ class Book(models.Model):
 
 
 class Container(models.Model):
-    document = models.ForeignKey(Book, on_delete=models.CASCADE)
+    document = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='containers', related_query_name='container')
     number = models.CharField(max_length=11)
     client_name = models.CharField(max_length=30)
     start_date = models.DateField(default=None, null=True)

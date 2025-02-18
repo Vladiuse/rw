@@ -1,6 +1,7 @@
 from .dto import ClientRow
 from clients.book_readers.dto import FileContainerExistLines
 from common.containers.utils import is_line_contain_container
+from datetime import datetime, date
 
 class ClientCallTextLineConverter:
 
@@ -27,11 +28,13 @@ class ClientCallTextLineConverter:
     def _get_container(self, line: str) -> str:
         return line[7:18]
 
-    def _get_start_date(self, line: str) -> str:
-        return line[32:42]
+    def _get_start_date(self, line: str) -> date:
+        date_string  = line[32:42]
+        return datetime.strptime(date_string, '%d.%m.%Y').date()
 
-    def _get_end_date(self, line: str) -> str:
-        return line[49: 59]
+    def _get_end_date(self, line: str) -> date:
+        date_string =  line[49: 59]
+        return datetime.strptime(date_string, '%d.%m.%Y').date()
 
     def _get_client_name(self, line: str) -> str:
         return line[79: 89]

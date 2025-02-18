@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 from django.http import HttpResponse
 from .forms import TextBookForm
 from .models import Book
@@ -7,7 +8,7 @@ def index(request):
     return HttpResponse('Clients app')
 
 def book_list(request):
-    books = Book.objects.all()
+    books = Book.objects.annotate(containers_count=Count('container')).order_by('book_date', '-pk')
     content = {
         'books': books,
     }
