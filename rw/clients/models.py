@@ -11,4 +11,4 @@ class Book(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     book_date = models.DateField(default=timezone.now())
     description = models.CharField(max_length=255, blank=True)
-    type = models.CharField(max_length=30, choices=BOOK_TYPES)
+    type = models.CharField(max_length=30, choices=BOOK_TYPES, default=CALL_TO_CLIENTS_BOOK)
