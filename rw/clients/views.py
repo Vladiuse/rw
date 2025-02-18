@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from .forms import TextBookForm
 from .models import Book
 from .container_creator import create_containers
+from django.views import View
 
 def index(request):
     return HttpResponse('Clients app')
@@ -16,8 +17,17 @@ def book_list(request):
     }
     return render(request, 'clients/book_list.html', content)
 
-def load_book_file(request):
-    if request.method == 'POST':
+class LoadBookFileView(View):
+    template_name = 'clients/create_book_form.html'
+
+    def get(self, request, *args, **kwargs):
+        form = TextBookForm()
+        content = {
+            'form': form,
+        }
+        return render(request, self.template_name, content)
+
+    def post(self, request, *args, **kwargs):
         form = TextBookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save()
@@ -37,13 +47,7 @@ def load_book_file(request):
         content = {
             'form': form,
         }
-        return render(request, 'clients/create_book_form.html', content)
-    form = TextBookForm()
-    content = {
-        'form': form,
-    }
-    return render(request, 'clients/create_book_form.html', content)
-
+        return render(request, self.template_name, content)
 
 def test(request):
     content = {}
