@@ -4,6 +4,6 @@ from datetime import date
 @dataclass
 class ClientRow:
     container_number: str
-    start_date: str
+    start_date: date
     end_date: date
-    client_name: date
+    client_name: str
