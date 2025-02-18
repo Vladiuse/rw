@@ -8,32 +8,8 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
-
-
-def is_client_user(user):
-    try:
-        user.clientuser
-        return True
-    except ClientUser.DoesNotExist:
-        return False
-
-def month_text(month_num):
-    data = {
-        '1': 'января',
-        '2': 'декабря',
-        '3': 'марта',
-        '4': 'апреля',
-        '5': 'мая',
-        '6': 'июня',
-        '7': 'июля',
-        '8': 'августа',
-        '9': 'сентября',
-        '10': 'октября',
-        '11': 'ноября',
-        '12': 'декабря',
-    }
-    return data[str(month_num)]
-
+from common import utils as common_utils
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def index(requets):
     return render(requets, 'containers/main.html')
@@ -187,7 +163,7 @@ def print_document(request, client_container_id):
         'client_user': client_user,
         'faces': faces,
         'today': datetime.today().date(),
-        'month_text': month_text(datetime.today().month),
+        'month_text': common_utils.month_text(datetime.today().month),
     }
     return render(request, 'containers/print/document_3.html', content)
 
