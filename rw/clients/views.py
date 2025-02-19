@@ -1,12 +1,14 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, F
 from django.http import HttpResponse
 from .forms import TextBookForm
 from .models import Book
 from .container_creator import create_containers
 from django.views import View
 from clients.book_readers.exception import ContainerFileReadError
+from .models import Container
 
 def index(request):
     return HttpResponse('Clients app')
@@ -54,6 +56,32 @@ class LoadBookFileView(View):
                 'form': form,
             }
             return render(request, self.template_name, content)
+
+def book_detail(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    rows = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
+    rows_no_area = [row for row in rows if row.area == 0]
+    # rows_cont_number_error = [row for row in rows if not row.container_number_correct()]
+    # rows_cont_past_30 = [row for row in rows if row.is_past_30()]
+    content = {
+        'book': book,
+        'rows': rows,
+        'rows_no_area': rows_no_area,
+        # 'rows_cont_number_error': rows_cont_number_error,
+        # 'rows_cont_past_30': rows_cont_past_30,
+    }
+    return render(request, 'clients/book.html', content)
+
+def book_no_containers_data(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    text = book.no_containers_file.read().decode('utf-8')
+    return HttpResponse(text)
+
+def book_delete(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    book.delete()
+    messages.success(request, 'Книга удалена')
+    return redirect('clients:book_list')
 
 def test(request):
     content = {}

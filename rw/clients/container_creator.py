@@ -34,7 +34,7 @@ class CallClientContainerCreator(ContainerCreatorFromBook):
         containers_to_create = []
         for container_data in containers_data:
             container = Container(
-                document=book,
+                book=book,
                 number=container_data.container_number,
                 client_name=container_data.client_name,
                 start_date=container_data.start_date,
@@ -52,7 +52,7 @@ class UnloadingContainerCreator(ContainerCreatorFromBook):
         containers_to_create = []
         for container_data in containers_data:
             container = Container(
-                document=book,
+                book=book,
                 number=container_data.container_number,
                 client_name=container_data.client_name,
                 start_date=container_data.start_date,
