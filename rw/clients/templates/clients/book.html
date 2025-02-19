@@ -1,0 +1,261 @@
+{% extends 'containers/base.html'%}
+{%load client%}
+{%block page-name%}
+<h1>Просмотр книги</h1>
+{%endblock%}
+
+
+{%block content%}
+<style>
+    table td,
+    table th {
+        text-align: left;
+    }
+
+    .container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    ul>li {
+        list-style-type: none;
+    }
+
+    #site-message {
+        margin-bottom: 5px;
+    }
+
+    .fa-solid.success {
+        color: green;
+    }
+
+    .fa-solid.danger {
+        color: red;
+    }
+</style>
+
+<div class="toast align-items-center text-white bg-primary border-0 position-fixed bottom-0 end-0" role="alert"
+    aria-live="assertive" aria-atomic="true" id="site-message" style="z-index: 11" data-bs-deley="5000">
+    <div class="d-flex">
+        <div class="toast-body">
+            Скопировано
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+            aria-label="Close"></button>
+    </div>
+</div>
+
+
+<div class="container">
+
+    <h2>Документ: {{ book.description }}</h2>
+    <p>Дата: {{book.book_date}}</p>
+    <p><b>Тип книги</b>: {{book.type}}</p>
+
+    <p>Строки <a href="{%url 'clients:book_no_containers_data' book.pk %}" target="_blank">без
+            данных</a></p>
+
+
+</div>
+<!-- Button trigger modal -->
+
+<div class="container"></i>
+    <a class="btn btn-primary" href="{%url 'clients:book_list'%}" role="button"><i class="fa-solid fa-list"> </i>Все
+        документы</a>
+    <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDELETE"><i
+            class="fa-solid fa-trash"></i>Удалить</button>
+</div>
+
+<div class="container">
+    <div class="card text-center" id="result-tables">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="true" id="tab-client_count"
+                        data-table="client_count">Наличие по
+                        клиентам</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span
+                            id="client_rows_count">({{containers|length}})</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без
+                        участков
+                        ({{containers_no_area|length}})<span></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-incorrect_containers" data-table="rows_cont_past_30">Простой больше
+                        30дн.
+                        ({{containers_past_30|length}})<span></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-incorrect_containers" data-table="incorrect_containers">Некоррекнтые
+                        номера
+                        ({{containers_number_error|length}})<span></span></a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <button class="btn btn-secondary" id="client_filter" onclick="dropFilter()" style="display: none;">Сбросить
+                фильтр:<span></span></button>
+            <table class="table table-striped" id="client_count">
+                <thead>
+                    <tr>
+                        <th scope="col">Клиент</th>
+                        <th scope="col">Наличие КТК</th>
+                        <th scope="col">Средний простой</th>
+                        <th scope="col">Максимальный простой </th>
+                        <th scope="col">Минимальный простой</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for row in grouped_by_client%}
+                    <tr>
+                        <td><a href="#" class="client-filter">{{row.client_name}}</a></td>
+                        <td>{{row.count}}</td>
+                        <td>{{row.average_past.days}} days</td>
+                        <td>{{row.max.days}} days</td>
+                        <td>{{row.min.days}} days</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+            <!-- DATA ROW -->
+            {% row_table containers id='client_rows'%}
+            <!-- NO AREA TALBE -->
+            {% row_table containers_no_area id='client_rows_no_area'%}
+            <!-- INCORRECT CONT NUMBER -->
+            {% row_table containers_number_error id='incorrect_containers' %}
+            <!-- PAST 30 -->
+            {% row_table containers_past_30 id='rows_cont_past_30' %}
+        </div>
+    </div>
+</div>
+<!-- EDIT FROM  -->
+<div style="height: 70px;"></div>
+
+
+
+
+
+
+
+<!-- Modal DELETE-->
+<div class="modal fade" id="exampleModalDELETE" tabindex="-1" aria-labelledby="exampleModalDELETELabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalDELETELabel">Удаление документа</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Удалить документ "{{book.description}}" за {{book.book_date}}?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <a type="button" href="{%url 'clients:book_delete' book.pk %}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var rowsCount = {{ rows| length}}
+    var current_table_id = 'client_count'
+    $('#result-tables .nav a').click(function (e) {
+        e.preventDefault()
+        let table_to_show = $(this).data('table')
+        showTable(table_to_show)
+    })
+    function showTable(table_id) {
+        $('#result-tables .card-header a').removeClass('active')
+        $('#result-tables .card-header a').each(function () {
+            if ($(this).data('table') == table_id) { $(this).addClass('active') }
+        })
+        $('#result-tables table').hide()
+        $('#' + table_id).show()
+        current_table_id = table_id;
+    }
+    function filterCliendTable(client_name) {
+        let rows = $('#client_rows tbody tr')
+        if (client_name == null) {
+            rows.show();
+            return
+        }
+        showButtonFilter(client_name)
+        markTabFilter(client_name)
+        var clientRowCount = 0;
+        rows.each(function () {
+            let client_cell = $(this).find('.client_name')
+            if (client_cell.text() == client_name) {
+                $(this).show();
+                clientRowCount++;
+            } else { $(this).hide() }
+        })
+        $('#client_rows_count').text(clientRowCount)
+    }
+
+
+    function markTabFilter(text) {
+        $('#tab-client_rows span').text(text)
+    }
+    function showButtonFilter(text) {
+        $('#client_filter span').text(text)
+        $('#client_filter').show()
+    }
+    function dropFilter() {
+        $('#client_filter').hide()
+        markTabFilter('')
+        filterCliendTable(null)
+        $('#client_rows_count').text(rowsCount)
+    }
+
+    $('a.client-filter').click(function (e) {
+        e.preventDefault();
+        var client_name = $(this).text()
+        console.log(client_name)
+        showTable('client_rows')
+        filterCliendTable(client_name)
+    })
+</script>
+<script>
+    function selectElementContents(el) {
+        var body = document.body, range, sel;
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            try {
+                range.selectNodeContents(el);
+                sel.addRange(range);
+            } catch (e) {
+                range.selectNode(el);
+                sel.addRange(range);
+            }
+        } else if (body.createTextRange) {
+            range = body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+        }
+        document.execCommand("Copy");
+    }
+
+
+    $('#copy_table').click(function () {
+        let table_to_copy = current_table_id;
+        let elem = document.getElementById(table_to_copy)
+        selectElementContents(elem)
+        $('.toast').toast('show');
+    })
+
+
+</script>
+<script>
+
+</script>
+{%endblock%}
