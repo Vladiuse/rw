@@ -48,14 +48,19 @@
 
 <div class="container">
 
-    <h2>Документ: {{ book.description }}</h2>
-    <p>Дата: {{book.book_date}}</p>
-    <p><b>Тип книги</b>: {{book.type}}</p>
-
-    <p>Строки <a href="{%url 'clients:book_no_containers_data' book.pk %}" target="_blank">без
+    <h2>Документ: 
+        {%if book.description != ''%}
+        {{book.description}}
+        {%else%}
+        Без описания
+        {%endif%}
+    </h2>
+</div>
+<div class="container d-flex">
+    <p class="me-4"><b>Дата:</b> {{book.book_date}}</p>
+    <p class="me-4"><b>Тип книги:</b> {{book.type}}</p>
+    <p class="me-4">Строки <a href="{%url 'clients:book_no_containers_data' book.pk %}" target="_blank">без
             данных</a></p>
-
-
 </div>
 <!-- Button trigger modal -->
 
@@ -165,7 +170,7 @@
 
 
 <script>
-    var rowsCount = {{ rows| length}}
+    var rowsCount = {{ containers| length}}
     var current_table_id = 'client_count'
     $('#result-tables .nav a').click(function (e) {
         e.preventDefault()
@@ -221,6 +226,15 @@
         console.log(client_name)
         showTable('client_rows')
         filterCliendTable(client_name)
+    })
+    document.querySelectorAll('.nav-tabs .nav-item a').forEach(elem => {
+        var filterBlock = document.getElementById('client_filter')
+        elem.addEventListener('click', function(e){
+        if (window.getComputedStyle(filterBlock).display != 'none' && e.currentTarget.id != 'tab-client_rows'){
+                console.log('close')
+                dropFilter()
+            }
+        })
     })
 </script>
 <script>
