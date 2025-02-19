@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from .dto import UploadingContainer
-from clients.exception import FileLineFindDataError
+from clients.book_readers.exception import FileLineFindDataError
 
 class UnloadingBookTextConverter:
 

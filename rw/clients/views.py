@@ -6,6 +6,7 @@ from .forms import TextBookForm
 from .models import Book
 from .container_creator import create_containers
 from django.views import View
+from clients.book_readers.exception import ContainerFileReadError
 
 def index(request):
     return HttpResponse('Clients app')
@@ -33,21 +34,26 @@ class LoadBookFileView(View):
             book = form.save()
             try:
                 create_containers(book=book)
-            except Exception as error:
-                error_text = f'Ошибка чтения файла: {type(error)}:{error}'
+            except ContainerFileReadError as error:
+                error_text = f'Ошибка чтения файла: {error}'
                 form.add_error(None, error_text)
                 form.data._mutable = True
                 form.data['text'] = ''
                 book.error_text = error_text
                 book.save()
+                content = {
+                    'form': form,
+                }
+                return render(request, self.template_name, content)
             else:
                 containers_count = book.containers.count()
                 messages.success(request, f'Книга создана, {containers_count} контейнеров')
                 return redirect('clients:book_list')
-        content = {
-            'form': form,
-        }
-        return render(request, self.template_name, content)
+        else:
+            content = {
+                'form': form,
+            }
+            return render(request, self.template_name, content)
 
 def test(request):
     content = {}

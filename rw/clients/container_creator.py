@@ -3,8 +3,8 @@ from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 from clients.book_readers.call_to_client_reader import ClientCallTextLineConverter
 from clients.book_readers.unloading_reader import UnloadingBookTextConverter
 from .utils import create_no_containers_file
-from clients.book_reader.container_separator import ContainerSeparator
-from .exception import ContainerNotFound
+from clients.book_readers.container_separator import ContainerSeparator
+from clients.book_readers.exception import ContainerNotFound
 
 class ContainerCreatorFromBook:
     separator = ContainerSeparator()
@@ -17,9 +17,13 @@ class ContainerCreatorFromBook:
         separated_lines = self.separator.separate(lines=text.split('\n'))
         if len(separated_lines.lines_with_container) == 0:
             raise ContainerNotFound('В файле не найдены строки с контейнерами')
-        create_no_containers_file(book=book, text=separated_lines.lines_without_containers)
         containers_to_create = self.create_containers_items(book=book, lines_with_container=separated_lines.lines_with_container)
-        Container.objects.bulk_create(containers_to_create)
+        res = Container.objects.bulk_create(containers_to_create)
+        print(res)
+        print(type(res))
+        no_container_text = '\n'.join(separated_lines.lines_without_containers)
+        create_no_containers_file(book=book, text=no_container_text)
+
 
 
 class CallClientContainerCreator(ContainerCreatorFromBook):
@@ -40,13 +44,13 @@ class CallClientContainerCreator(ContainerCreatorFromBook):
         return containers_to_create
 
 
-class UnloadingContainerCreator:
+class UnloadingContainerCreator(ContainerCreatorFromBook):
     converter = UnloadingBookTextConverter()
 
     def create_containers_items(self, book: Book,lines_with_container: list[str]):
         containers_data = self.converter.convert(lines_with_containers=lines_with_container)
         containers_to_create = []
-        for container_data in containers_data.lines_with_container:
+        for container_data in containers_data:
             container = Container(
                 document=book,
                 number=container_data.container_number,

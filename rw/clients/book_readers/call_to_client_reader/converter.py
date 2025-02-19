@@ -1,6 +1,6 @@
 from .dto import CallClientContainer
 from datetime import datetime, date
-from clients.exception import FileLineFindDataError
+from clients.book_readers.exception import FileLineFindDataError
 
 class ClientCallTextLineConverter:
 
