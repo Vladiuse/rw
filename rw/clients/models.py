@@ -87,9 +87,9 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
 
 def get_containers_with_past(book: Book) ->  QuerySet[Container]:
     if book.type == CALL_TO_CLIENTS_BOOK:
-        containers = Container.objects.filter(book=book).annotate(past=F('end_date') - F('start_date'))
+        end_date = F('end_date')
     elif book.type == UNLOADING_BOOK:
-        containers = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
+        end_date = timezone.now().date() + timedelta(days=1)
     else:
         raise ValueError('Type for book not found')
-    return containers
+    return Container.objects.filter(book=book).annotate(past=end_date - F('start_date')).order_by('-past')

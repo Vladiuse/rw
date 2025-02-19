@@ -43,8 +43,7 @@ class LoadBookFileView(View):
                 form.add_error(None, error_text)
                 form.data._mutable = True
                 form.data['text'] = ''
-                book.error_text = error_text
-                book.save()
+                book.delete()
                 content = {
                     'form': form,
                 }
