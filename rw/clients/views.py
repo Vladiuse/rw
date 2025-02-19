@@ -88,11 +88,8 @@ def book_delete(request, book_id):
 
 def test(request):
     content = {}
-    if request.method == 'POST':
-        param = request.POST['param']
-        if param == 'x':
-            messages.success(request,'123')
-        content = {
-            'param': param,
-        }
+    messages.success(request, 'success')
+    messages.error(request, 'error')
+    messages.warning(request, 'warning')
+    messages.info(request, 'info')
     return render(request, 'clients/test.html', content)
