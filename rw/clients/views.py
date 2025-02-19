@@ -59,16 +59,16 @@ class LoadBookFileView(View):
 
 def book_detail(request, book_id):
     book = Book.objects.get(pk=book_id)
-    rows = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
-    rows_no_area = [row for row in rows if row.area == 0]
+    containers = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
+    rows_no_area = [container for container in containers if container.area is None]
     # rows_cont_number_error = [row for row in rows if not row.container_number_correct()]
-    # rows_cont_past_30 = [row for row in rows if row.is_past_30()]
+    rows_cont_past_30 = [container for container in containers if container.is_past_30()]
     content = {
         'book': book,
-        'rows': rows,
+        'rows': containers,
         'rows_no_area': rows_no_area,
         # 'rows_cont_number_error': rows_cont_number_error,
-        # 'rows_cont_past_30': rows_cont_past_30,
+        'rows_cont_past_30': rows_cont_past_30,
     }
     return render(request, 'clients/book.html', content)
 

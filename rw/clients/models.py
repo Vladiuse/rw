@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from datetime import timedelta, datetime
 from django.core.validators import MaxValueValidator
 from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 
@@ -30,3 +31,14 @@ class Container(models.Model):
 
     class Meta:
         ordering = ['client_name', 'start_date']
+
+    def time_delta_past(self):
+        """Время простоя"""
+        return str(timezone.now().date() - self.start_date + timedelta(days=1)).split(',')[0]
+
+    def is_past_30(self):
+        """Является ли простой больше месяца"""
+        diff  = datetime.now().date() - self.start_date
+        if diff.days  >= 29:
+            return True
+        return False

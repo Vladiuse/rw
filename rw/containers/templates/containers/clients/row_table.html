@@ -8,7 +8,8 @@
             <th scope="col">Контейнер</th>
             <th scope="col">Участок</th>
             <th scope="col">Отправка</th>
-            <th scope="col">Дата</th>
+            <th scope="col">Дата прибытия</th>
+            <th scope="col">Дата дата убития</th>
             <th scope="col">Простой</th>
             <th scope="col">Масса</th>
             <th scope="col">N/N</th>
@@ -23,7 +24,8 @@
             <td>{{row.container}}</td>
             <td>{%if row.area%}{{row.area}}{%endif%}</td>
             <th>{{row.send_number}}</th>
-            <td>{{row.date|date:"d.m.Y"}}</td>
+            <td>{{row.start_date|date:"d.m.Y"}}</td>
+            <td>{{row.end_date|date:"d.m.Y"}}</td>
             <td>{{row.time_delta_past}}</td>
             <td>{{row.weight}}</td>
             <th>{{row.nn}}</th>
