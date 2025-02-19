@@ -1,22 +1,25 @@
 from datetime import date, datetime
 from .dto import UploadingContainer
-
+from clients.exception import FileLineFindDataError
 
 class UnloadingBookTextConverter:
 
     def convert(self, lines_with_containers:list[str]) -> list[UploadingContainer]:
         uploading_containers = []
         for line in lines_with_containers:
-            item = UploadingContainer(
-                container_number=self._get_container(line=line),
-                start_date=self._get_start_date(line=line),
-                client_name=self._get_client_name(line=line),
-                nn=self._get_nn(line=line),
-                send_number=self._get_send_number(line=line),
-                weight=self._get_weight(line=line),
-                area=self._get_area(line=line),
-            )
-            uploading_containers.append(item)
+            try:
+                item = UploadingContainer(
+                    container_number=self._get_container(line=line),
+                    start_date=self._get_start_date(line=line),
+                    client_name=self._get_client_name(line=line),
+                    nn=self._get_nn(line=line),
+                    send_number=self._get_send_number(line=line),
+                    weight=self._get_weight(line=line),
+                    area=self._get_area(line=line),
+                )
+                uploading_containers.append(item)
+            except ValueError as error:
+                raise FileLineFindDataError(f'Не удалось прочитать строку файла: {error}')
         return uploading_containers
 
     def _get_container(self, line: str) -> str:
