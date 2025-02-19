@@ -1,29 +1,19 @@
 from .dto import CallClientContainer
-from clients.book_readers.dto import FileContainerExistLines
-from common.containers.utils import is_line_contain_container
 from datetime import datetime, date
 
 class ClientCallTextLineConverter:
 
-    def convert(self, text: str) -> FileContainerExistLines:
-        lines_with_container = []
-        lines_without_containers = []
-        lines = text.split('\n')
-        for line in lines:
-            if is_line_contain_container(line=line):
-                item = CallClientContainer(
-                    container_number=self._get_container(line=line),
-                    start_date=self._get_start_date(line=line),
-                    end_date=self._get_end_date(line=line),
-                    client_name=self._get_client_name(line=line)
-                )
-                lines_with_container.append(item)
-            else:
-                lines_without_containers.append(line)
-        return FileContainerExistLines(
-            lines_with_container=lines_with_container,
-            lines_without_containers=lines_without_containers,
-        )
+    def convert(self, lines_with_containers: list[str]) -> list[CallClientContainer]:
+        call_client_containers = []
+        for line in lines_with_containers:
+            item = CallClientContainer(
+                container_number=self._get_container(line=line),
+                start_date=self._get_start_date(line=line),
+                end_date=self._get_end_date(line=line),
+                client_name=self._get_client_name(line=line)
+            )
+            call_client_containers.append(item)
+        return call_client_containers
 
     def _get_container(self, line: str) -> str:
         return line[7:18]
