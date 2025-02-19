@@ -21,12 +21,12 @@
 
             <th scope="row">{{row.pk}}</th>
             <td class="client_name">{{row.client_name}}</td>
-            <td>{{row.container}}</td>
+            <td>{{row.number}}</td>
             <td>{%if row.area%}{{row.area}}{%endif%}</td>
             <th>{{row.send_number}}</th>
             <td>{{row.start_date|date:"d.m.Y"}}</td>
             <td>{{row.end_date|date:"d.m.Y"}}</td>
-            <td>{{row.time_delta_past}}</td>
+            <td>{{row.past.days}}</td>
             <td>{{row.weight}}</td>
             <th>{{row.nn}}</th>
           </tr>

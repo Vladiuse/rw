@@ -9,7 +9,8 @@ from .models import Book
 from .container_creator import create_containers
 from django.views import View
 from clients.book_readers.exception import ContainerFileReadError
-from .models import Container
+from .models import Container, get_grouped_by_client_book
+from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 
 def index(request):
     return HttpResponse('Clients app')
@@ -60,16 +61,24 @@ class LoadBookFileView(View):
 
 def book_detail(request, book_id):
     book = Book.objects.get(pk=book_id)
-    containers = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
-    rows_no_area = [container for container in containers if container.area is None]
-    rows_cont_number_error = [container for container in containers if not iso6346.is_valid(container.number)]
-    rows_cont_past_30 = [container for container in containers if container.is_past_30()]
+    grouped_by_client = get_grouped_by_client_book(book=book)
+    if book.type == CALL_TO_CLIENTS_BOOK:
+        print('end date')
+        containers = Container.objects.filter(book=book).annotate(past=F('end_date') - F('start_date'))
+    elif book.type == UNLOADING_BOOK:
+        containers = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
+    else:
+        raise ValueError('Type for book not found')
+    containers_no_area = [container for container in containers if container.area is None]
+    containers_number_error = [container for container in containers if not iso6346.is_valid(container.number)]
+    containers_past_30 = [container for container in containers if container.is_past_30()]
     content = {
         'book': book,
-        'rows': containers,
-        'rows_no_area': rows_no_area,
-        'rows_cont_number_error': rows_cont_number_error,
-        'rows_cont_past_30': rows_cont_past_30,
+        'grouped_by_client': grouped_by_client,
+        'containers': containers,
+        'containers_no_area': containers_no_area,
+        'containers_number_error': containers_number_error,
+        'containers_past_30': containers_past_30,
     }
     return render(request, 'clients/book.html', content)
 

@@ -1,10 +1,13 @@
 from django.db import models
+from django.db.models import F, Count, Min, Max, Avg
+from django.db.models.query import QuerySet
 from django.utils import timezone
 from datetime import timedelta, datetime
 from django.core.validators import MaxValueValidator
 from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 from django.db import connection
 from common.utils import dictfetchall
+from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 
 QUERY = """
 SELECT client_name, COUNT(*)as count , 
@@ -21,6 +24,8 @@ FROM clients_container
 WHERE book_id = %d
 GROUP BY client_name ORDER BY count DESC;
 """
+
+
 
 class Book(models.Model):
     BOOK_TYPES = (
@@ -54,9 +59,6 @@ class Container(models.Model):
     weight = models.CharField(max_length=5, blank=True)
     area = models.PositiveIntegerField(default=None, null=True, validators=[MaxValueValidator(99)])
 
-    class Meta:
-        ordering = ['client_name', 'start_date']
-
     def time_delta_past(self):
         """Время простоя"""
         return str(timezone.now().date() - self.start_date + timedelta(days=1)).split(',')[0]
@@ -64,6 +66,21 @@ class Container(models.Model):
     def is_past_30(self):
         """Является ли простой больше месяца"""
         diff  = datetime.now().date() - self.start_date
-        if diff.days  >= 29:
-            return True
-        return False
+        return diff.days >= 29
+
+def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
+    if book.type == CALL_TO_CLIENTS_BOOK:
+        end_date = F('end_date')
+    elif book.type == UNLOADING_BOOK:
+        end_date = timezone.now().date() + timedelta(days=1)
+    else:
+        raise ValueError('Type for book not found')
+    return (
+        Container.objects.filter(book=book)
+        .annotate(past=end_date - F('start_date'))
+        .values('client_name')
+        .annotate(count=Count('client_name'))
+        .annotate(max=Max('past'))
+        .annotate(min=Min('past'))
+        .annotate(average_past=Avg('past'))
+    )
