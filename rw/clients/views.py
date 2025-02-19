@@ -1,3 +1,4 @@
+from stdnum import iso6346
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -61,13 +62,13 @@ def book_detail(request, book_id):
     book = Book.objects.get(pk=book_id)
     containers = Container.objects.filter(book=book).annotate(past=book.book_date - F('start_date'))
     rows_no_area = [container for container in containers if container.area is None]
-    # rows_cont_number_error = [row for row in rows if not row.container_number_correct()]
+    rows_cont_number_error = [container for container in containers if not iso6346.is_valid(container.number)]
     rows_cont_past_30 = [container for container in containers if container.is_past_30()]
     content = {
         'book': book,
         'rows': containers,
         'rows_no_area': rows_no_area,
-        # 'rows_cont_number_error': rows_cont_number_error,
+        'rows_cont_number_error': rows_cont_number_error,
         'rows_cont_past_30': rows_cont_past_30,
     }
     return render(request, 'clients/book.html', content)

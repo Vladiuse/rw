@@ -23,3 +23,12 @@ def get_random_file_name(length=10) -> str:
     for _ in range(length):
         result += random.choice(ascii_letters)
     return result
+
+
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]

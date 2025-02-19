@@ -4,6 +4,7 @@ from datetime import timedelta, datetime
 from django.core.validators import MaxValueValidator
 from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 from django.db import connection
+from common.utils import dictfetchall
 
 QUERY = """
 SELECT client_name, COUNT(*)as count , 
@@ -21,14 +22,6 @@ WHERE book_id = %d
 GROUP BY client_name ORDER BY count DESC;
 """
 
-def dictfetchall(cursor):
-    "Return all rows from a cursor as a dict"
-    columns = [col[0] for col in cursor.description]
-    return [
-        dict(zip(columns, row))
-        for row in cursor.fetchall()
-    ]
-
 class Book(models.Model):
     BOOK_TYPES = (
         (CALL_TO_CLIENTS_BOOK, CALL_TO_CLIENTS_BOOK),
@@ -44,8 +37,8 @@ class Book(models.Model):
 
     def client_count(self):
         with connection.cursor() as cursor:
-            result_query = QUERY % (self.book_date, self.book_date, self.book_date, self.pk)
-            cursor.execute(result_query)
+            query = QUERY % (self.book_date, self.book_date, self.book_date, self.pk)
+            cursor.execute(query)
             rows = dictfetchall(cursor)
         return rows
 
