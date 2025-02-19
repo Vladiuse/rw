@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
 @dataclass
-class FileContainerExistLines:
-    lines_with_container: list
+class ContainerExistLines:
+    lines_with_container: list[str]
     lines_without_containers: list[str]
