@@ -88,7 +88,7 @@ def book_no_containers_data(request, book_id):
 def book_delete(request, book_id):
     book = Book.objects.get(pk=book_id)
     book.delete()
-    messages.success(request, 'Книга удалена')
+    messages.info(request, 'Книга удалена')
     return redirect('clients:book_list')
 
 def test(request):
