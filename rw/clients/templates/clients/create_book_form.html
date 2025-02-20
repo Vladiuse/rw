@@ -35,10 +35,19 @@
     .errorlist{
       color: red;
     }
+    .modal h1{
+        color: black;
+    }
+    .modal pre{
+        margin-bottom: 50px;
+    }
 </style>
 <div class="container">
     <a class="btn btn-primary" href="{%url 'clients:book_list'%}" role="button"><i class="fa-solid fa-list"> </i>Все
         документы</a>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#booksEmampleModal">
+            Памятка по книгам
+          </button>
     <form method="POST" id="client-form" enctype="multipart/form-data">
         {%csrf_token%}
         {{ form.non_field_errors }}
@@ -75,4 +84,29 @@
 
     </form>
 </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="booksEmampleModal" tabindex="-1" aria-labelledby="booksEmampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="booksEmampleModalLabel">Примеры книг</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {% for book_type, book_example_text in book_examples.items%}
+          <h1>{{book_type}}</h1>
+          <pre>{{book_example_text}}</pre>
+          {%endfor%}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var bookExampleModal = new bootstrap.Modal(document.getElementById('booksEmampleModal'))
+    bookExampleModal.show()
+  </script>
 {%endblock%}

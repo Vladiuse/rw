@@ -10,6 +10,7 @@ from .container_creator import create_containers
 from django.views import View
 from clients.book_readers.exception import ContainerFileReadError
 from .models import Container, get_grouped_by_client_book, get_containers_with_past
+from .types import BOOK_EXAMPLES
 
 
 def index(request):
@@ -29,6 +30,7 @@ class LoadBookFileView(View):
         form = TextBookForm()
         content = {
             'form': form,
+            'book_examples': BOOK_EXAMPLES,
         }
         return render(request, self.template_name, content)
 
