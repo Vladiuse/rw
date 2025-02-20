@@ -75,7 +75,7 @@
 
             </div>
             <div class="col-8">
-                <p>Текст для "Клиент-Контейнеры"</p>
+                <label for="{{ form.text.id_for_label }}">Вставте текст книги:</label>
                 {{ form.text.errors }}
                 <textarea name="text" id="" required>{{form.text.value}}</textarea>
 
@@ -105,8 +105,4 @@
       </div>
     </div>
   </div>
-  <script>
-    var bookExampleModal = new bootstrap.Modal(document.getElementById('booksEmampleModal'))
-    bookExampleModal.show()
-  </script>
 {%endblock%}

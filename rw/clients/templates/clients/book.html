@@ -48,7 +48,7 @@
 
 <div class="container">
 
-    <h2>Документ: 
+    <h2>Документ:
         {%if book.description != ''%}
         {{book.description}}
         {%else%}
@@ -59,16 +59,18 @@
 <div class="container d-flex">
     <p class="me-4"><b>Дата:</b> {{book.book_date}}</p>
     <p class="me-4"><b>Тип книги:</b> {{book.type}}</p>
-    <p class="me-4">Строки <a href="{%url 'clients:book_no_containers_data' book.pk %}" target="_blank">без
-            данных</a></p>
 </div>
 <!-- Button trigger modal -->
 
 <div class="container"></i>
     <a class="btn btn-primary" href="{%url 'clients:book_list'%}" role="button"><i class="fa-solid fa-list"> </i>Все
-        документы</a>
+        книги</a>
     <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
-    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalDELETE"><i
+    <a href="{%url 'clients:book_no_containers_data' book.pk %}" class="btn btn-primary"><i
+            class="fa-solid fa-bug-slash"></i></i>Строки без контейнеров</a>
+
+
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#booksEmampleModalDELETE"><i
             class="fa-solid fa-trash"></i>Удалить</button>
 </div>
 
@@ -148,12 +150,12 @@
 
 
 <!-- Modal DELETE-->
-<div class="modal fade" id="exampleModalDELETE" tabindex="-1" aria-labelledby="exampleModalDELETELabel"
+<div class="modal fade" id="booksEmampleModalDELETE" tabindex="-1" aria-labelledby="booksEmampleModalDELETELabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalDELETELabel">Удаление документа</h5>
+                <h5 class="modal-title" id="booksEmampleModalDELETELabel">Удаление документа</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -229,8 +231,8 @@
     })
     document.querySelectorAll('.nav-tabs .nav-item a').forEach(elem => {
         var filterBlock = document.getElementById('client_filter')
-        elem.addEventListener('click', function(e){
-        if (window.getComputedStyle(filterBlock).display != 'none' && e.currentTarget.id != 'tab-client_rows'){
+        elem.addEventListener('click', function (e) {
+            if (window.getComputedStyle(filterBlock).display != 'none' && e.currentTarget.id != 'tab-client_rows') {
                 console.log('close')
                 dropFilter()
             }
