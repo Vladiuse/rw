@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import F, Count, Min, Max, Avg
 from django.db.models.query import QuerySet
 from django.utils import timezone
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 from django.core.validators import MaxValueValidator
 from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 from django.db import connection
@@ -68,13 +68,18 @@ class Container(models.Model):
         diff  = datetime.now().date() - self.start_date
         return diff.days >= 29
 
-def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
+
+def get_end_date_by_book_type(book: Book) -> date | F:
     if book.type == CALL_TO_CLIENTS_BOOK:
         end_date = F('end_date')
     elif book.type == UNLOADING_BOOK:
         end_date = timezone.now().date() + timedelta(days=1)
     else:
         raise ValueError('Type for book not found')
+    return end_date
+
+def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
+    end_date = get_end_date_by_book_type(book=book)
     return (
         Container.objects.filter(book=book)
         .annotate(past=end_date - F('start_date'))
@@ -86,10 +91,5 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     )
 
 def get_containers_with_past(book: Book) ->  QuerySet[Container]:
-    if book.type == CALL_TO_CLIENTS_BOOK:
-        end_date = F('end_date')
-    elif book.type == UNLOADING_BOOK:
-        end_date = timezone.now().date() + timedelta(days=1)
-    else:
-        raise ValueError('Type for book not found')
+    end_date = get_end_date_by_book_type(book=book)
     return Container.objects.filter(book=book).annotate(past=end_date - F('start_date')).order_by('-past')
