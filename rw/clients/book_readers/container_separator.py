@@ -17,3 +17,6 @@ class ContainerSeparator:
             lines_with_container=lines_with_container,
             lines_without_containers=lines_without_containers,
         )
+
+class VagonSeparator:
+    pass

@@ -5,26 +5,6 @@ from django.utils import timezone
 from datetime import timedelta, datetime, date
 from django.core.validators import MaxValueValidator
 from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
-from django.db import connection
-from common.utils import dictfetchall
-from .types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
-
-QUERY = """
-SELECT client_name, COUNT(*)as count , 
-ROUND(AVG(DATEDIFF('%s', start_date))) as past,
-CASE
-    WHEN COUNT(*) > 1 THEN MAX( DATEDIFF('%s', start_date))
-    ELSE '-'
-END as max,
-CASE
-    WHEN COUNT(*) > 1 THEN MIN( DATEDIFF('%s', start_date))
-    ELSE '-'
-END as min
-FROM clients_container
-WHERE book_id = %d
-GROUP BY client_name ORDER BY count DESC;
-"""
-
 
 
 class Book(models.Model):
@@ -39,13 +19,6 @@ class Book(models.Model):
     type = models.CharField(max_length=30, choices=BOOK_TYPES, default=CALL_TO_CLIENTS_BOOK)
     no_containers_file = models.FileField(upload_to='books_no_containers', blank=True)
     error_text = models.TextField(blank=True)
-
-    def client_count(self):
-        with connection.cursor() as cursor:
-            query = QUERY % (self.book_date, self.book_date, self.book_date, self.pk)
-            cursor.execute(query)
-            rows = dictfetchall(cursor)
-        return rows
 
 
 class Container(models.Model):
@@ -70,6 +43,7 @@ class Container(models.Model):
 
 
 def get_end_date_by_book_type(book: Book) -> date | F:
+    """Получить стартовую дату в зависимости от типа книги"""
     if book.type == CALL_TO_CLIENTS_BOOK:
         end_date = F('end_date')
     elif book.type == UNLOADING_BOOK:
@@ -79,6 +53,7 @@ def get_end_date_by_book_type(book: Book) -> date | F:
     return end_date
 
 def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
+    """Получить данные по контейнерам с групировкой по клиентам"""
     end_date = get_end_date_by_book_type(book=book)
     return (
         Container.objects.filter(book=book)
@@ -91,5 +66,6 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     )
 
 def get_containers_with_past(book: Book) ->  QuerySet[Container]:
+    """Получить контейнеры с временем простоя"""
     end_date = get_end_date_by_book_type(book=book)
     return Container.objects.filter(book=book).annotate(past=end_date - F('start_date')).order_by('-past')

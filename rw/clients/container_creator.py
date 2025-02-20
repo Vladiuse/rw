@@ -7,6 +7,7 @@ from clients.book_readers.container_separator import ContainerSeparator
 from clients.book_readers.exception import ContainerNotFound
 
 class ContainerCreatorFromBook:
+    """Класс для создания контейнеров по данным из книги"""
     separator = ContainerSeparator()
 
     def create_containers_items(self, book: Book, lines_with_container: list[str]) -> list[Container]:
@@ -72,5 +73,6 @@ creators = {
 }
 
 def create_containers(book: Book):
+    """Создать контейнеры для книги"""
     creator = creators[book.type]
     creator.create(book=book)
