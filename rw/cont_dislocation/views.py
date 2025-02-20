@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from containers.containers.containers_reader import Container
 from django.db.models import Count
@@ -7,7 +8,7 @@ from django.views import View
 from .utils import get_area_type
 from django.urls import reverse
 
-class ContainerDislocationView(View):
+class ContainerDislocationView(View, LoginRequiredMixin):
     template = 'cont_dislocation/container_dislocation.html'
 
     def _get_last_client_report(self):

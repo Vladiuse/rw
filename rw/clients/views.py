@@ -1,5 +1,7 @@
 from stdnum import iso6346
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Count, F
@@ -9,13 +11,14 @@ from .models import Book
 from .container_creator import create_containers
 from django.views import View
 from clients.book_readers.exception import ContainerFileReadError
-from .models import Container, get_grouped_by_client_book, get_containers_with_past
+from .models import get_grouped_by_client_book, get_containers_with_past
 from .types import BOOK_EXAMPLES
 
 
 def index(request):
     return HttpResponse('Clients app')
 
+@login_required
 def book_list(request):
     books = Book.objects.annotate(containers_count=Count('container')).order_by('book_date', '-pk')
     content = {
@@ -23,7 +26,7 @@ def book_list(request):
     }
     return render(request, 'clients/book_list.html', content)
 
-class LoadBookFileView(View):
+class LoadBookFileView(View, LoginRequiredMixin):
     template_name = 'clients/create_book_form.html'
 
     def get(self, request, *args, **kwargs):
@@ -60,6 +63,7 @@ class LoadBookFileView(View):
             }
             return render(request, self.template_name, content)
 
+@login_required
 def book_detail(request, book_id):
     book = Book.objects.get(pk=book_id)
     grouped_by_client = get_grouped_by_client_book(book=book)
@@ -77,6 +81,7 @@ def book_detail(request, book_id):
     }
     return render(request, 'clients/book.html', content)
 
+@login_required
 def book_no_containers_data(request, book_id):
     book = Book.objects.get(pk=book_id)
     text = book.no_containers_file.read().decode('utf-8')
@@ -85,6 +90,7 @@ def book_no_containers_data(request, book_id):
     }
     return render(request, 'clients/no_containers_file.html', content)
 
+@login_required
 def book_delete(request, book_id):
     book = Book.objects.get(pk=book_id)
     book.delete()
