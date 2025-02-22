@@ -3,7 +3,7 @@ from django.core.validators import ValidationError
 from .types import CONTAINERS, VAGONS
 
 
-choices = [(CONTAINERS, 'Всерка контейнеров'), (VAGONS, 'Сверка вагонов')]
+choices = [(CONTAINERS, 'Сверка контейнеров'), (VAGONS, 'Сверка вагонов')]
 class CompareTwoFileForm(forms.Form):
     type = forms.ChoiceField(choices=choices, initial=CONTAINERS)
     file_name_1 = forms.CharField(required=True, initial='Файл #1')

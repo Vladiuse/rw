@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.db.models import Count, F
 from django.http import HttpResponse
 from .forms import TextBookForm
-from .models import Book
+from .models import Book, get_col_name_by_book
 from .container_creator import create_containers
 from django.views import View
 from clients.book_readers.exception import ContainerFileReadError
@@ -66,6 +66,7 @@ class LoadBookFileView(LoginRequiredMixin, View):
 @login_required
 def book_detail(request, book_id):
     book = Book.objects.get(pk=book_id)
+    col_name = get_col_name_by_book(book=book)
     grouped_by_client = get_grouped_by_client_book(book=book)
     containers = get_containers_with_past(book=book)
     containers_no_area = [container for container in containers if container.area is None]
@@ -73,6 +74,7 @@ def book_detail(request, book_id):
     containers_past_30 = [container for container in containers if container.is_past_30()]
     content = {
         'book': book,
+        'col_name': col_name,
         'grouped_by_client': grouped_by_client,
         'containers': containers,
         'containers_no_area': containers_no_area,

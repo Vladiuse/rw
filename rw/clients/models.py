@@ -41,6 +41,15 @@ class Container(models.Model):
         diff  = datetime.now().date() - self.start_date
         return diff.days >= 29
 
+def get_col_name_by_book(book: Book) -> str:
+    if book.type == CALL_TO_CLIENTS_BOOK:
+        col_name = 'Среднесуточный вывоз'
+    elif book.type == UNLOADING_BOOK:
+        col_name = 'Наличие КТК'
+    else:
+        raise ValueError('Type for book not found')
+    return col_name
+
 
 def get_end_date_by_book_type(book: Book) -> date | F:
     """Получить стартовую дату в зависимости от типа книги"""
@@ -55,17 +64,22 @@ def get_end_date_by_book_type(book: Book) -> date | F:
 def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     """Получить данные по контейнерам с групировкой по клиентам"""
     end_date = get_end_date_by_book_type(book=book)
-    return (
+    qs =  (
         Container.objects.filter(book=book)
         .annotate(past=end_date - F('start_date'))
         .values('client_name')
-        .annotate(count=Count('client_name'))
-        .annotate(max=Max('past'))
-        .annotate(min=Min('past'))
-        .annotate(average_past=Avg('past'))
+        .annotate(
+            count=Count('client_name'),
+            max=Max('past'),
+            min=Min('past'),
+            average_past=Avg('past')
+        )
+        .order_by('client_name')
     )
+    return qs
+
 
 def get_containers_with_past(book: Book) ->  QuerySet[Container]:
     """Получить контейнеры с временем простоя"""
     end_date = get_end_date_by_book_type(book=book)
-    return Container.objects.filter(book=book).annotate(past=end_date - F('start_date')).order_by('-past')
+    return Container.objects.filter(book=book).annotate(past=end_date - F('start_date')).order_by('client_name', '-past')
