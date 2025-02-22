@@ -26,7 +26,7 @@ def book_list(request):
     }
     return render(request, 'clients/book_list.html', content)
 
-class LoadBookFileView(View, LoginRequiredMixin):
+class LoadBookFileView(LoginRequiredMixin, View):
     template_name = 'clients/create_book_form.html'
 
     def get(self, request, *args, **kwargs):

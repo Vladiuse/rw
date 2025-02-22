@@ -13,6 +13,8 @@ from common import utils as common_utils
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+
+@login_required
 def index(requets):
     return render(requets, 'containers/main.html')
 

@@ -4,7 +4,7 @@ from django.views import View
 from .types import reader_types
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-class CompareListsView(View, LoginRequiredMixin):
+class CompareListsView(LoginRequiredMixin, View):
     form_template = 'compare_container_lists/compare_files_form.html'
     result_template = 'compare_container_lists/compare_lists_result.html'
 

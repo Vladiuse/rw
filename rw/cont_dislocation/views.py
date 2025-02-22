@@ -8,7 +8,7 @@ from django.views import View
 from .utils import get_area_type
 from django.urls import reverse
 
-class ContainerDislocationView(View, LoginRequiredMixin):
+class ContainerDislocationView(LoginRequiredMixin, View):
     template = 'cont_dislocation/container_dislocation.html'
 
     def _get_last_client_report(self):
