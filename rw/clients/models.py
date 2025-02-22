@@ -74,7 +74,7 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
             min=Min('past'),
             average_past=Avg('past')
         )
-        .order_by('client_name')
+        .order_by('-count')
     )
     return qs
 
