@@ -154,11 +154,13 @@
       {%endblock%}
     </div>
 
-    {%if user.is_authenticated%}
+
     <div id="logout">
+      {%if user.is_authenticated%}
       <a href="{%url 'logout' %}">{{user.username}}: Выйти</a>
+      {%endif%}
     </div>
-    {%endif%}
+
   </header>
   {%block content%}
   {%endblock%}
