@@ -1,0 +1,56 @@
+{% extends 'containers/base.html' %}
+{%load static%}
+{%load static%}
+{%block page-name%}
+<h1>RW Helper</h1>
+{%endblock%}
+{%block content%}
+<style>
+    .card-title{
+        text-align: center;
+    }
+    .card img{
+        padding: 20px;
+    }
+</style>
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <a href="{%url 'compare_container_lists:compare_lists'%}">
+                    <img src="{%static 'containers/images/compare_lists.png'%}" class="card-img-top" alt="">
+                </a>
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <a href="{%url 'compare_container_lists:compare_lists'%}">Сверка списков</a>
+                  </h5>
+                </div>
+              </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <a href="{%url 'clients:book_list'%}">
+                    <img src="{%static 'containers/images/clients.png'%}" class="card-img-top" alt="...">
+                </a>
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <a href="{%url 'clients:book_list'%}">Клиенты</a>
+                  </h5>
+                </div>
+              </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <a href="{%url 'cont_dislocation:index'%}">
+                    <img src="{%static 'containers/images/search.png'%}" class="card-img-top" alt="...">
+                </a>
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <a href="{%url 'cont_dislocation:index'%}">Дислокация контейнеров</a>
+                  </h5>
+                </div>
+              </div>
+        </div>
+      </div>
+</div>
+{%endblock%}
