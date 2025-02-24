@@ -20,7 +20,7 @@ def index(request):
 
 @login_required
 def book_list(request):
-    books = Book.objects.annotate(containers_count=Count('container')).order_by('book_date', '-pk')
+    books = Book.objects.annotate(containers_count=Count('container')).order_by('-book_date', '-pk')
     content = {
         'books': books,
     }

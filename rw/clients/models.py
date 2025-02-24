@@ -16,7 +16,7 @@ class Book(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     book_date = models.DateField(default=timezone.now())
     description = models.CharField(max_length=255, blank=True)
-    type = models.CharField(max_length=30, choices=BOOK_TYPES, default=CALL_TO_CLIENTS_BOOK)
+    type = models.CharField(max_length=30, choices=BOOK_TYPES, default=UNLOADING_BOOK)
     no_containers_file = models.FileField(upload_to='books_no_containers', blank=True)
     error_text = models.TextField(blank=True)
 
@@ -43,7 +43,7 @@ class Container(models.Model):
 
 def get_col_name_by_book(book: Book) -> str:
     if book.type == CALL_TO_CLIENTS_BOOK:
-        col_name = 'Среднесуточный вывоз'
+        col_name = 'Вывезено КТК'
     elif book.type == UNLOADING_BOOK:
         col_name = 'Наличие КТК'
     else:
@@ -54,7 +54,7 @@ def get_col_name_by_book(book: Book) -> str:
 def get_end_date_by_book_type(book: Book) -> date | F:
     """Получить стартовую дату в зависимости от типа книги"""
     if book.type == CALL_TO_CLIENTS_BOOK:
-        end_date = F('end_date')
+        end_date = F('end_date') + timedelta(days=1)
     elif book.type == UNLOADING_BOOK:
         end_date = timezone.now().date() + timedelta(days=1)
     else:
@@ -74,7 +74,7 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
             min=Min('past'),
             average_past=Avg('past')
         )
-        .order_by('-count')
+        .order_by('-count', '-average_past')
     )
     return qs
 
