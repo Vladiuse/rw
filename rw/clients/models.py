@@ -1,6 +1,7 @@
 from django.db import models
-from django.db.models import F, Count, Min, Max, Avg
+from django.db.models import F, Count, Min, Max, Avg, ExpressionWrapper
 from django.db.models.query import QuerySet
+from django.db.models.fields import DurationField
 from django.utils import timezone
 from datetime import timedelta, datetime, date
 from django.core.validators import MaxValueValidator
@@ -66,7 +67,10 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     end_date = get_end_date_by_book_type(book=book)
     qs =  (
         Container.objects.filter(book=book)
-        .annotate(past=end_date - F('start_date'))
+        .annotate(past=ExpressionWrapper(
+            end_date - F('start_date'),
+            output_field=DurationField(),
+        ))
         .values('client_name')
         .annotate(
             count=Count('client_name'),
