@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import F, Count, Min, Max, Avg, ExpressionWrapper
 from django.db.models.query import QuerySet
-from django.db.models.fields import DurationField
+from django.db.models.fields import DurationField, DateField
 from django.utils import timezone
 from datetime import timedelta, datetime, date
 from django.core.validators import MaxValueValidator
@@ -55,7 +55,10 @@ def get_col_name_by_book(book: Book) -> str:
 def get_end_date_by_book_type(book: Book) -> date | F:
     """Получить стартовую дату в зависимости от типа книги"""
     if book.type == CALL_TO_CLIENTS_BOOK:
-        end_date = F('end_date') + timedelta(days=1)
+        end_date = ExpressionWrapper(
+            F('end_date') + timedelta(days=1),
+            output_field=DateField(),
+        )
     elif book.type == UNLOADING_BOOK:
         end_date = timezone.now().date() + timedelta(days=1)
     else:
@@ -67,10 +70,7 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     end_date = get_end_date_by_book_type(book=book)
     qs =  (
         Container.objects.filter(book=book)
-        .annotate(past=ExpressionWrapper(
-            end_date - F('start_date'),
-            output_field=DurationField(),
-        ))
+        .annotate(past=end_date - F('start_date'))
         .values('client_name')
         .annotate(
             count=Count('client_name'),
