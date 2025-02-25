@@ -41,6 +41,8 @@ class Container(models.Model):
 
     def is_past_30(self):
         """Является ли простой больше месяца"""
+        if hasattr(self, 'past'):
+            return self.past.days >= 29
         if self.end_date:
             diff  = self.end_date - self.start_date
         else:
@@ -65,7 +67,7 @@ def get_end_date_by_book_type(book: Book) -> date | F:
             output_field=DateField(),
         )
     elif book.type == UNLOADING_BOOK:
-        end_date = timezone.now().date() + timedelta(days=1)
+        end_date = book.book_date + timedelta(days=1)
     else:
         raise ValueError('Type for book not found')
     return end_date
