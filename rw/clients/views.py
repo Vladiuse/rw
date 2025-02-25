@@ -4,14 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.db.models import Count, F
+from django.db.models import Count
 from django.http import HttpResponse
 from .forms import TextBookForm
-from .models import Book, get_col_name_by_book
+from .models import Book, get_col_name_by_book, get_book_stat, get_grouped_by_client_book, get_containers_with_past
 from .container_creator import create_containers
 from django.views import View
 from clients.book_readers.exception import ContainerFileReadError
-from .models import get_grouped_by_client_book, get_containers_with_past
 from .types import BOOK_EXAMPLES
 
 
@@ -66,6 +65,7 @@ class LoadBookFileView(LoginRequiredMixin, View):
 @login_required
 def book_detail(request, book_id):
     book = Book.objects.get(pk=book_id)
+    book_stat = get_book_stat(book=book)
     col_name = get_col_name_by_book(book=book)
     grouped_by_client = get_grouped_by_client_book(book=book)
     containers = get_containers_with_past(book=book)
@@ -74,6 +74,7 @@ def book_detail(request, book_id):
     containers_past_30 = [container for container in containers if container.is_past_30()]
     content = {
         'book': book,
+        'book_stat': book_stat,
         'col_name': col_name,
         'grouped_by_client': grouped_by_client,
         'containers': containers,

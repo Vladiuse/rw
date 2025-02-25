@@ -84,6 +84,16 @@ def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     )
     return qs
 
+def get_book_stat(book: Book) -> dict:
+    """Получить статистику по книге"""
+    end_date = get_end_date_by_book_type(book=book)
+    return Container.objects.filter(book=book).annotate(past=end_date - F('start_date')).aggregate(
+        clients_count=Count('client_name', distinct=True),
+        containers_count=Count('number'),
+        average_past=Avg('past'),
+        max=Max('past'),
+        min=Min('past'),
+    )
 
 def get_containers_with_past(book: Book) ->  QuerySet[Container]:
     """Получить контейнеры с временем простоя"""

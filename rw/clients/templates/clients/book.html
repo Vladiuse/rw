@@ -119,9 +119,18 @@
                         <th scope="col">Максимальный простой </th>
                         <th scope="col">Минимальный простой</th>
                     </tr>
+                    <tr class="table-primary">
+                        <td>Всего клиентов: {{book_stat.clients_count}}</td>
+                        <td>{{book_stat.containers_count}}</td>
+                        <td>{{book_stat.average_past.days}}</td>
+                        <td>{{book_stat.max.days}}</td>
+                        <td>{{book_stat.min.days}}</td>
+                        <div></div>
+                    </tr>
                 </thead>
                 <tbody>
-                    {%for row in grouped_by_client%}
+
+                {%for row in grouped_by_client%}
                     <tr>
                         <td><a href="#" class="client-filter">{{row.client_name}}</a></td>
                         <td>{{row.count}}</td>
