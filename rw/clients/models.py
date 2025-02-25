@@ -41,7 +41,10 @@ class Container(models.Model):
 
     def is_past_30(self):
         """Является ли простой больше месяца"""
-        diff  = datetime.now().date() - self.start_date
+        if self.end_date:
+            diff  = self.end_date - self.start_date
+        else:
+            diff  = datetime.now().date() - self.start_date
         return diff.days >= 29
 
 def get_col_name_by_book(book: Book) -> str:
