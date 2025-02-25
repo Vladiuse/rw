@@ -5,10 +5,10 @@ from clients.book_readers.unloading_reader import UnloadingBookTextConverter
 from .utils import create_no_containers_file
 from clients.book_readers.container_separator import ContainerSeparator
 from clients.book_readers.exception import ContainerNotFound
+from clients.book_readers.unloading_reader.container_separator import UploadingBookContainerSeparator
 
 class ContainerCreatorFromBook:
     """Класс для создания контейнеров по данным из книги"""
-    separator = ContainerSeparator()
 
     def create_containers_items(self, book: Book, lines_with_container: list[str]) -> list[Container]:
         raise NotImplementedError
@@ -19,9 +19,7 @@ class ContainerCreatorFromBook:
         if len(separated_lines.lines_with_container) == 0:
             raise ContainerNotFound('В файле не найдены строки с контейнерами')
         containers_to_create = self.create_containers_items(book=book, lines_with_container=separated_lines.lines_with_container)
-        res = Container.objects.bulk_create(containers_to_create)
-        print(res)
-        print(type(res))
+        Container.objects.bulk_create(containers_to_create)
         no_container_text = '\n'.join(separated_lines.lines_without_containers)
         create_no_containers_file(book=book, text=no_container_text)
 
@@ -29,6 +27,7 @@ class ContainerCreatorFromBook:
 
 class CallClientContainerCreator(ContainerCreatorFromBook):
     converter = ClientCallTextLineConverter()
+    separator = ContainerSeparator()
 
     def create_containers_items(self, book: Book,lines_with_container: list[str]):
         containers_data = self.converter.convert(lines_with_containers=lines_with_container)
@@ -47,8 +46,9 @@ class CallClientContainerCreator(ContainerCreatorFromBook):
 
 class UnloadingContainerCreator(ContainerCreatorFromBook):
     converter = UnloadingBookTextConverter()
+    separator = UploadingBookContainerSeparator()
 
-    def create_containers_items(self, book: Book,lines_with_container: list[str]):
+    def create_containers_items(self, book: Book, lines_with_container: list[str]):
         containers_data = self.converter.convert(lines_with_containers=lines_with_container)
         containers_to_create = []
         for container_data in containers_data:

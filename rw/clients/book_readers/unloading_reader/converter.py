@@ -3,19 +3,24 @@ from .dto import UploadingContainer
 from clients.book_readers.exception import FileLineFindDataError
 
 class UnloadingBookTextConverter:
+    CLIENT_TEXT_POSITION = (93, 108)
 
     def convert(self, lines_with_containers:list[str]) -> list[UploadingContainer]:
         uploading_containers = []
-        for line in lines_with_containers:
+        for paired_line in lines_with_containers:
+            print(paired_line)
+            print('********')
+            print(paired_line.split('\n'))
+            header_line, footer_line = paired_line.split('\n')
             try:
                 item = UploadingContainer(
-                    container_number=self._get_container(line=line),
-                    start_date=self._get_start_date(line=line),
-                    client_name=self._get_client_name(line=line),
-                    nn=self._get_nn(line=line),
-                    send_number=self._get_send_number(line=line),
-                    weight=self._get_weight(line=line),
-                    area=self._get_area(line=line),
+                    container_number=self._get_container(line=header_line),
+                    start_date=self._get_start_date(line=header_line),
+                    client_name=self._get_client_name(header_line=header_line, footer_line=footer_line),
+                    nn=self._get_nn(line=header_line),
+                    send_number=self._get_send_number(line=header_line),
+                    weight=self._get_weight(line=header_line),
+                    area=self._get_area(line=header_line),
                 )
                 uploading_containers.append(item)
             except ValueError as error:
@@ -29,8 +34,10 @@ class UnloadingBookTextConverter:
         date_string = line[109:119]
         return datetime.strptime(date_string, '%d.%m.%Y').date()
 
-    def _get_client_name(self, line: str) -> str:
-        return line[93: 108]
+    def _get_client_name(self, header_line: str, footer_line: str) -> str:
+        start, end = UnloadingBookTextConverter.CLIENT_TEXT_POSITION
+        client_name = header_line[start: end] + footer_line[start: end]
+        return client_name.strip()
 
     def _get_nn(self, line: str) -> str:
         return line[0: 6].strip()
