@@ -14,6 +14,7 @@
           </tr>
         </thead>
         <tbody>
+        {%if rows%}
           {%for row in rows%}
           <tr>
             <td class="client_name">{{row.client_name}}</td>
@@ -26,6 +27,13 @@
             <th>{{row.nn}}</th>
           </tr>
           {%endfor%}
+        {%else%}
+        <tr>
+          <td colspan="8" style="text-align: center">
+            Нет данных
+          </td>
+        </tr>
+        {%endif%}
         </tbody>
       </table>
       <!-- DATA ROW -->
