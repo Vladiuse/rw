@@ -1,5 +1,4 @@
 from stdnum import iso6346
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
@@ -23,7 +22,7 @@ def book_list(request):
     content = {
         'books': books,
     }
-    return render(request, 'clients/book_list.html', content)
+    return render(request, 'clients/book/book_list.html', content)
 
 class LoadBookFileView(LoginRequiredMixin, View):
     template_name = 'clients/create_book_form.html'
@@ -82,16 +81,14 @@ def book_detail(request, book_id):
         'containers_number_error': containers_number_error,
         'containers_past_30': containers_past_30,
     }
-    return render(request, 'clients/book.html', content)
+    return render(request, 'clients/book/book_detail.html', content)
 
 @login_required
 def book_no_containers_data(request, book_id):
     book = Book.objects.get(pk=book_id)
     text = book.no_containers_file.read().decode('utf-8')
-    content = {
-        'data': text,
-    }
-    return render(request, 'clients/no_containers_file.html', content)
+    return HttpResponse(f'<pre>{text}</pre>')
+
 
 @login_required
 def book_delete(request, book_id):
