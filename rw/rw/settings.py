@@ -14,6 +14,9 @@ from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,29 +109,30 @@ WSGI_APPLICATION = 'rw.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# for MySql database remote
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_secret('db_name'),
-        'USER': get_secret('db_login'),
-        'PASSWORD': get_secret('db_pass'),
-        'HOST': 'vladiuse.beget.tech',
-        'PORT': '3306',
+if os.environ.get('USE_LOCAL_DB') == 'False':
+    # for MySql database remote
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': get_secret('db_name'),
+            'USER': get_secret('db_login'),
+            'PASSWORD': get_secret('db_pass'),
+            'HOST': 'vladiuse.beget.tech',
+            'PORT': '3306',
+        }
     }
-}
-
-# for MySql database local
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': get_secret('db_local_name'),
-#         'USER': get_secret('db_local_login'),
-#         'PASSWORD': get_secret('db_local_pass'),
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
+else:
+    # for MySql database local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': get_secret('db_local_name'),
+            'USER': get_secret('db_local_login'),
+            'PASSWORD': get_secret('db_local_pass'),
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
+    }
 
 
 # Password validation
