@@ -25,7 +25,7 @@ def book_list(request):
     return render(request, 'clients/book/book_list.html', content)
 
 class LoadBookFileView(LoginRequiredMixin, View):
-    template_name = 'clients/create_book_form.html'
+    template_name = 'clients/book/create_book.html'
 
     def get(self, request, *args, **kwargs):
         form = TextBookForm()

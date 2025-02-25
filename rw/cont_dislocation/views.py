@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-from containers.containers.containers_reader import Container
-from clients.models import Book, Container as ContainerModel
+from clients.models import Book, Container
 from django.views import View
+from stdnum import iso6346
 from .utils import get_area_type
 
 
@@ -21,31 +21,29 @@ class ContainerDislocationView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         last_uploading_book = self._get_last_uploading_book()
-        print(last_uploading_book)
         container_number = request.POST['container']
         send_number = request.POST['send_number']
-        print(request.POST)
-        if not Container._is_number_correct(container_number):
+        if not iso6346.is_valid(container_number):
             result = {
                 'status': False,
-                'msg': 'Некоректный номер контейнера (не правильная контрольная сумма)'
+                'msg': 'Некоректный номер контейнера'
             }
             return JsonResponse(result)
         try:
-            client_row = ContainerModel.objects.get(book=last_uploading_book, send_number=send_number,
-                                                    number=container_number)
-            if client_row.area:
-                area_type = get_area_type(client_row.area)
-                area_text = f'{client_row.area} участок ({area_type})'
+            container = Container.objects.get(book=last_uploading_book, send_number=send_number,
+                                              number=container_number)
+            if container.area:
+                area_type = get_area_type(container.area)
+                area_text = f'{container.area} участок ({area_type})'
             else:
                 area_text = 'Участок не указан'
             result = {
                 'status': True,
                 'msg': 'Model found',
                 'area_text': area_text,
-                'area': client_row.area,
+                'area': container.area,
             }
-        except ContainerModel.DoesNotExist as error:
+        except Container.DoesNotExist as error:
             result = {
                 'status': False,
                 'msg': 'Ошибка, проверьте внесенные данные',
