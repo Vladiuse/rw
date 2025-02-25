@@ -1,7 +1,6 @@
 <table class="table table-striped" id="{{id}}" style="display: none;">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Клиент</th>
       <th scope="col">Контейнер</th>
       <th scope="col">Дата выгрузки</th>
@@ -12,7 +11,6 @@
   <tbody>
     {%for row in rows%}
     <tr>
-      <th scope="row">{{row.pk}}</th>
       <td class="client_name">{{row.client_name}}</td>
       <td>{{row.number}}</td>
       <td>{{row.start_date|date:"d.m.Y"}}</td>
