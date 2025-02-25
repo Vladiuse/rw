@@ -89,6 +89,12 @@ def book_no_containers_data(request, book_id):
     text = book.no_containers_file.read().decode('utf-8')
     return HttpResponse(f'<pre>{text}</pre>')
 
+@login_required
+def book_file_original_text(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    text = book.file.read().decode('utf-8')
+    return HttpResponse(f'<pre>{text}</pre>')
+
 
 @login_required
 def book_delete(request, book_id):

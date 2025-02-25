@@ -59,6 +59,7 @@
 <div class="container d-flex">
     <p class="me-4"><b>Дата:</b> {{book.book_date}}</p>
     <p class="me-4"><b>Тип книги:</b> {{book.type}}</p>
+    <p class="me-4"><b>Дата загрузки:</b> {{book.created|date:"d.m.Y H:i"}}</p>
 </div>
 <!-- Button trigger modal -->
 
@@ -66,10 +67,10 @@
     <a class="btn btn-primary" href="{%url 'clients:book_list'%}" role="button"><i class="fa-solid fa-list"> </i>Все
         книги</a>
     <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
-    <a href="{%url 'clients:book_no_containers_data' book.pk %}" class="btn btn-primary"><i
-            class="fa-solid fa-bug-slash"></i></i>Строки без контейнеров</a>
-
-
+    <a href="{%url 'clients:book_file_original_text' book.pk %}" class="btn btn-primary" target="_blank"><i
+            class="fa-solid fa-eye"></i>Оригинал книги</a>
+    <a href="{%url 'clients:book_no_containers_data' book.pk %}" class="btn btn-primary" target="_blank"><i
+            class="fa-solid fa-bug-slash"></i>Строки без контейнеров</a>
     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#booksEmampleModalDELETE"><i
             class="fa-solid fa-trash"></i>Удалить</button>
 </div>
