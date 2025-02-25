@@ -1,5 +1,5 @@
 {% extends 'containers/base.html'%}
-{%load client%}
+{%load container_tags%}
 {%block page-name%}
 <h1>Просмотр книги</h1>
 {%endblock%}
@@ -73,7 +73,6 @@
     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#booksEmampleModalDELETE"><i
             class="fa-solid fa-trash"></i>Удалить</button>
 </div>
-
 <div class="container">
     <div class="card text-center" id="result-tables">
         <div class="card-header">
@@ -87,11 +86,13 @@
                     <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span
                             id="client_rows_count">({{containers|length}})</span></a>
                 </li>
+                {%if book.type == book.UNLOADING_BOOK %}
                 <li class="nav-item">
                     <a class="nav-link" id="tab-client_rows_no_area" data-table="client_rows_no_area">Строки без
                         участков
                         ({{containers_no_area|length}})<span></span></a>
                 </li>
+                {%endif%}
                 <li class="nav-item">
                     <a class="nav-link" id="tab-incorrect_containers" data-table="rows_cont_past_30">Простой больше
                         30дн.
@@ -131,14 +132,21 @@
                     {%endfor%}
                 </tbody>
             </table>
-            <!-- DATA ROW -->
-            {% row_table containers id='client_rows'%}
-            <!-- NO AREA TALBE -->
-            {% row_table containers_no_area id='client_rows_no_area'%}
-            <!-- INCORRECT CONT NUMBER -->
-            {% row_table containers_number_error id='incorrect_containers' %}
-            <!-- PAST 30 -->
-            {% row_table containers_past_30 id='rows_cont_past_30' %}
+
+            {%if book.type == book.UNLOADING_BOOK %}
+                {% uploading_containers_table containers table_id='client_rows'%}
+                {% uploading_containers_table containers_no_area table_id='client_rows_no_area'%}
+                {% uploading_containers_table containers_number_error table_id='incorrect_containers' %}
+                {% uploading_containers_table containers_past_30 table_id='rows_cont_past_30' %}
+            {%endif%}
+
+            {%if book.type == book.CALL_TO_CLIENTS_BOOK %}
+                {% call_to_client_containers_table containers table_id='client_rows'%}
+                {% call_to_client_containers_table containers_number_error table_id='incorrect_containers' %}
+                {% call_to_client_containers_table containers_past_30 table_id='rows_cont_past_30' %}
+            {%endif%}
+
+
         </div>
     </div>
 </div>
