@@ -59,7 +59,7 @@
 </style>
 <h4 class="text-center">
     Дaнные обновлены {{book.book_date|date:"d.m.Y"}}<br>
-    Книга:
+    <a href="{% url 'clients:book_detail' book.pk %}" target="_blank">Книга</a>:
     {%if book.description != ''%}
     {{book.description}}
     {%else%}
