@@ -1,46 +1,39 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from containers.containers.containers_reader import Container
-from django.db.models import Count
-from containers.models import ClientsReport, ClientContainerRow
+from clients.models import Book, Container as ContainerModel
 from django.views import View
 from .utils import get_area_type
-from django.urls import reverse
+
 
 class ContainerDislocationView(LoginRequiredMixin, View):
     template = 'cont_dislocation/container_dislocation.html'
 
-    def _get_last_client_report(self):
-        return ClientsReport.objects.annotate(container_count=Count('row')).filter(
-            container_count__gt=0).latest('document_date', '-pk')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('login'))
-        if not (request.user.groups.filter(name='Админы').exists() or request.user.is_superuser):
-            return HttpResponse('Недоступно')
-        return super().dispatch(request, *args, **kwargs)
+    def _get_last_uploading_book(self):
+        return Book.objects.filter(type=Book.UNLOADING_BOOK).latest('book_date', 'pk')
 
     def get(self, request, *args, **kwargs):
         content = {
-            'report': self._get_last_client_report(),
+            'book': self._get_last_uploading_book(),
         }
         return render(request, self.template, content)
 
     def post(self, request, *args, **kwargs):
-        last_client_report = self._get_last_client_report()
-        container = request.POST['container']
+        last_uploading_book = self._get_last_uploading_book()
+        print(last_uploading_book)
+        container_number = request.POST['container']
         send_number = request.POST['send_number']
-        if not Container._is_number_correct(container):
+        print(request.POST)
+        if not Container._is_number_correct(container_number):
             result = {
                 'status': False,
                 'msg': 'Некоректный номер контейнера (не правильная контрольная сумма)'
             }
             return JsonResponse(result)
         try:
-            client_row = ClientContainerRow.objects.get(document=last_client_report, send_number=send_number,
-                                                        container=container)
+            client_row = ContainerModel.objects.get(book=last_uploading_book, send_number=send_number,
+                                                    number=container_number)
             if client_row.area:
                 area_type = get_area_type(client_row.area)
                 area_text = f'{client_row.area} участок ({area_type})'
@@ -52,7 +45,7 @@ class ContainerDislocationView(LoginRequiredMixin, View):
                 'area_text': area_text,
                 'area': client_row.area,
             }
-        except ClientContainerRow.DoesNotExist as error:
+        except ContainerModel.DoesNotExist as error:
             result = {
                 'status': False,
                 'msg': 'Ошибка, проверьте внесенные данные',
