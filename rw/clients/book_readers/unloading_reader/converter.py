@@ -7,10 +7,7 @@ class UnloadingBookTextConverter:
 
     def convert(self, lines_with_containers:list[str]) -> list[UploadingContainer]:
         uploading_containers = []
-        for paired_line in lines_with_containers:
-            print(paired_line)
-            print('********')
-            print(paired_line.split('\n'))
+        for line_num, paired_line in enumerate(lines_with_containers):
             header_line, footer_line = paired_line.split('\n')
             try:
                 item = UploadingContainer(
@@ -24,7 +21,8 @@ class UnloadingBookTextConverter:
                 )
                 uploading_containers.append(item)
             except ValueError as error:
-                raise FileLineFindDataError(f'Не удалось прочитать строку файла: {error}')
+                error_message = f'Не удалось прочитать строку файла #{line_num + 1}: {error} \n{header_line}'
+                raise FileLineFindDataError(error_message)
         return uploading_containers
 
     def _get_container(self, line: str) -> str:

@@ -123,7 +123,7 @@
                     <tr class="table-primary">
                         <td>Всего клиентов: {{book_stat.clients_count}}</td>
                         <td>{{book_stat.containers_count}}</td>
-                        <td>{{book_stat.average_past.days}}</td>
+                        <td>{{book_stat.average_past|timedelta_to_days}}</td>
                         <td>{{book_stat.max.days}}</td>
                         <td>{{book_stat.min.days}}</td>
                         <div></div>

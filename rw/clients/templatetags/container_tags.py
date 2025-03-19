@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 from clients.types import UNLOADING_BOOK, CALL_TO_CLIENTS_BOOK
 from django.template.loader import render_to_string
+from datetime import timedelta
 
 register = template.Library()
 
@@ -26,3 +27,12 @@ def call_to_client_containers_table(rows, table_id):
     context = {'rows': rows, 'id': table_id}
     rendered = render_to_string(template, context)
     return format_html(rendered)
+
+
+def timedelta_to_days(delta: timedelta) -> float:
+    days = delta.days
+    seconds = delta.seconds
+    days += seconds / 86400
+    return round(days, 2)
+
+register.filter("timedelta_to_days", timedelta_to_days)
