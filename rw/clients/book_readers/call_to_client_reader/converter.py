@@ -23,12 +23,12 @@ class ClientCallTextLineConverter:
         return line[7:18]
 
     def _get_start_date(self, line: str) -> date:
-        date_string  = line[32:42]
-        return datetime.strptime(date_string, '%d.%m.%Y').date()
+        date_string  = line[32:48]
+        return datetime.strptime(date_string, '%d.%m.%Y %H:%M')
 
     def _get_end_date(self, line: str) -> date:
-        date_string =  line[49: 59]
-        return datetime.strptime(date_string, '%d.%m.%Y').date()
+        date_string =  line[49: 65]
+        return datetime.strptime(date_string, '%d.%m.%Y  %H:%M')
 
     def _get_client_name(self, line: str) -> str:
         return line[79: 89]

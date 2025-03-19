@@ -1,4 +1,4 @@
-
+{%load container_tags%}
       <!-- DATA ROW 1 -->
       <table class="table table-striped" id="{{id}}" style="display: none;">
         <thead>
@@ -21,8 +21,8 @@
             <td>{{row.number}}</td>
             <td>{%if row.area%}{{row.area}}{%endif%}</td>
             <th>{{row.send_number}}</th>
-            <td>{{row.start_date|date:"d.m.Y"}}</td>
-            <td>{{row.past.days}}</td>
+            <td>{{row.start_date|date:"d.m.Y H:i"}}</td>
+            <td>{{row.past|timedelta_to_days}}</td>
             <td>{{row.weight}}</td>
             <th>{{row.nn}}</th>
           </tr>

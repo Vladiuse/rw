@@ -1,3 +1,4 @@
+{%load container_tags%}
 <table class="table table-striped" id="{{id}}" style="display: none;">
   <thead>
     <tr>
@@ -13,9 +14,9 @@
     <tr>
       <td class="client_name">{{row.client_name}}</td>
       <td>{{row.number}}</td>
-      <td>{{row.start_date|date:"d.m.Y"}}</td>
-      <td>{{row.end_date|date:"d.m.Y"}}</td>
-      <td>{{row.past.days}}</td>
+      <td>{{row.start_date|date:"d.m.Y H:i"}}</td>
+      <td>{{row.end_date|date:"d.m.Y H:i"}}</td>
+      <td>{{row.past|timedelta_to_days}}</td>
     </tr>
     {%endfor%}
   </tbody>

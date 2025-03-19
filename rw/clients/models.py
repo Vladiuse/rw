@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import F, Count, Min, Max, Avg, ExpressionWrapper
 from django.db.models.query import QuerySet
-from django.db.models.fields import DurationField, DateField
+from django.db.models.fields import DurationField, DateField, DateTimeField
 from django.utils import timezone
 from datetime import timedelta, datetime, date
 from django.core.validators import MaxValueValidator
@@ -17,7 +17,7 @@ class Book(models.Model):
     )
     file = models.FileField(upload_to='books')
     created = models.DateTimeField(auto_now_add=True)
-    book_date = models.DateField(default=timezone.now())
+    book_date = models.DateTimeField(default=timezone.now())
     description = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=30, choices=BOOK_TYPES, default=UNLOADING_BOOK)
     no_containers_file = models.FileField(upload_to='books_no_containers', blank=True)
@@ -28,8 +28,8 @@ class Container(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='containers', related_query_name='container')
     number = models.CharField(max_length=11)
     client_name = models.CharField(max_length=30)
-    start_date = models.DateField(default=None, null=True)
-    end_date = models.DateField(default=None, null=True)
+    start_date = models.DateTimeField(default=None, null=True)
+    end_date = models.DateTimeField(default=None, null=True)
     nn = models.CharField(max_length=5, blank=True)
     send_number = models.CharField(max_length=10, blank=True)
     weight = models.CharField(max_length=5, blank=True)
@@ -64,7 +64,7 @@ def get_end_date_by_book_type(book: Book) -> date | F:
     if book.type == CALL_TO_CLIENTS_BOOK:
         end_date = ExpressionWrapper(
             F('end_date') + timedelta(days=1),
-            output_field=DateField(),
+            output_field=DateTimeField(),
         )
     elif book.type == UNLOADING_BOOK:
         end_date = book.book_date + timedelta(days=1)

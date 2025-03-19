@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import DateInput
+from django.forms.widgets import DateInput, DateTimeInput
 from django.core.files.base import ContentFile
 from .models import Book
 from .utils import get_name_for_book_file

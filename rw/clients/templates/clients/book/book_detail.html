@@ -57,7 +57,7 @@
     </h2>
 </div>
 <div class="container d-flex">
-    <p class="me-4"><b>Дата:</b> {{book.book_date}}</p>
+    <p class="me-4"><b>Дата:</b> {{book.book_date|date:"d.m.Y H:i"}}</p>
     <p class="me-4"><b>Тип книги:</b> {{book.type}}</p>
     <p class="me-4"><b>Дата загрузки:</b> {{book.created|date:"d.m.Y H:i"}}</p>
 </div>
@@ -135,7 +135,7 @@
                     <tr>
                         <td><a href="#" class="client-filter">{{row.client_name}}</a></td>
                         <td>{{row.count}}</td>
-                        <td>{{row.average_past.days}}</td>
+                        <td>{{row.average_past|timedelta_to_days}}</td>
                         <td>{{row.max.days}}</td>
                         <td>{{row.min.days}}</td>
                     </tr>

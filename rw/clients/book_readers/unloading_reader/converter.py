@@ -12,7 +12,7 @@ class UnloadingBookTextConverter:
             try:
                 item = UploadingContainer(
                     container_number=self._get_container(line=header_line),
-                    start_date=self._get_start_date(line=header_line),
+                    start_date=self._get_start_date(header_line=header_line, footer_line=footer_line),
                     client_name=self._get_client_name(header_line=header_line, footer_line=footer_line),
                     nn=self._get_nn(line=header_line),
                     send_number=self._get_send_number(line=header_line),
@@ -28,9 +28,9 @@ class UnloadingBookTextConverter:
     def _get_container(self, line: str) -> str:
         return line[44:55]
 
-    def _get_start_date(self, line: str) -> date:
-        date_string = line[109:119]
-        return datetime.strptime(date_string, '%d.%m.%Y').date()
+    def _get_start_date(self, header_line: str, footer_line: str) -> date:
+        date_string = header_line[109:119] + ' ' +footer_line[109:114]
+        return datetime.strptime(date_string, '%d.%m.%Y %H:%M')
 
     def _get_client_name(self, header_line: str, footer_line: str) -> str:
         start, end = UnloadingBookTextConverter.CLIENT_TEXT_POSITION
