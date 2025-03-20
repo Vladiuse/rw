@@ -55,7 +55,7 @@
       {%for book in mounth.list %}
       <tr class="client_link" href="{%url 'clients:book_detail' book.pk %}">
         <td>
-          {{book.book_date}}
+          {{book.book_date|date:"d.m.Y H:i"}}
         </td>
         <td>
           {{book.type}}

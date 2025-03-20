@@ -71,6 +71,9 @@
             class="fa-solid fa-eye"></i>Оригинал книги</a>
     <a href="{%url 'clients:book_no_containers_data' book.pk %}" class="btn btn-primary" target="_blank"><i
             class="fa-solid fa-bug-slash"></i>Строки без контейнеров</a>
+    <a href="http://127.0.0.1:8000/admin/clients/book/{{book.pk}}/change/" class="btn btn-primary" target="_blank">
+        <i class="fa-solid fa-pen-to-square"></i>
+        Редактировать</a>
     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#booksEmampleModalDELETE"><i
             class="fa-solid fa-trash"></i>Удалить</button>
 </div>
@@ -131,7 +134,7 @@
                 </thead>
                 <tbody>
 
-                {%for row in grouped_by_client%}
+                    {%for row in grouped_by_client%}
                     <tr>
                         <td><a href="#" class="client-filter">{{row.client_name}}</a></td>
                         <td>{{row.count}}</td>
@@ -144,16 +147,16 @@
             </table>
 
             {%if book.type == book.UNLOADING_BOOK %}
-                {% uploading_containers_table containers table_id='client_rows'%}
-                {% uploading_containers_table containers_no_area table_id='client_rows_no_area'%}
-                {% uploading_containers_table containers_number_error table_id='incorrect_containers' %}
-                {% uploading_containers_table containers_past_30 table_id='rows_cont_past_30' %}
+            {% uploading_containers_table containers table_id='client_rows'%}
+            {% uploading_containers_table containers_no_area table_id='client_rows_no_area'%}
+            {% uploading_containers_table containers_number_error table_id='incorrect_containers' %}
+            {% uploading_containers_table containers_past_30 table_id='rows_cont_past_30' %}
             {%endif%}
 
             {%if book.type == book.CALL_TO_CLIENTS_BOOK %}
-                {% call_to_client_containers_table containers table_id='client_rows'%}
-                {% call_to_client_containers_table containers_number_error table_id='incorrect_containers' %}
-                {% call_to_client_containers_table containers_past_30 table_id='rows_cont_past_30' %}
+            {% call_to_client_containers_table containers table_id='client_rows'%}
+            {% call_to_client_containers_table containers_number_error table_id='incorrect_containers' %}
+            {% call_to_client_containers_table containers_past_30 table_id='rows_cont_past_30' %}
             {%endif%}
 
 

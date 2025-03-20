@@ -64,7 +64,8 @@
                 <div class="field-wrap">
                     {{ form.book_date.errors }}
                     <label for="{{ form.book_date.id_for_label }}">{{form.book_date.label}}:</label>
-                    {{ form.book_date }}
+<!--                    {{ form.book_date }}-->
+                    <input name="book_date" class="datetimepicker">
                 </div>
                 <div class="field-wrap">
                     {{ form.description.errors }}
@@ -108,4 +109,16 @@
         </div>
     </div>
 </div>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr(".datetimepicker", {
+                enableTime: true,            // Включаем выбор времени
+                noCalendar: false,           // Включаем выбор даты
+                dateFormat: "Y-m-d H:i",     // Формат: год-месяц-день часы:минуты
+                time_24hr: true,             // Включаем 24-часовой формат
+                defaultHour: 12,             // Часы по умолчанию
+                defaultMinute: 0,            // Минуты по умолчанию
+            });
+        });
+    </script>
 {%endblock%}

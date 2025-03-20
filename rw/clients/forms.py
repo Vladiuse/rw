@@ -11,7 +11,7 @@ class TextBookForm(forms.ModelForm):
         model = Book
         exclude = ('file',)
         widgets = {
-            'book_date': DateInput(attrs={'type': 'date'})
+            'book_date': DateTimeInput(attrs={'type': 'datetime-local'})
         }
 
     def save(self, commit=True):
