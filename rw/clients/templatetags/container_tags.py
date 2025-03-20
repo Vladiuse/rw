@@ -29,10 +29,11 @@ def call_to_client_containers_table(rows, table_id):
     return format_html(rendered)
 
 
-def timedelta_to_days(delta: timedelta) -> float:
+def timedelta_to_days(delta: timedelta) -> str:
     days = delta.days
     seconds = delta.seconds
     days += seconds / 86400
-    return round(days, 2)
+    result_string = str(round(days, 2))
+    return result_string.replace('.', ',')
 
 register.filter("timedelta_to_days", timedelta_to_days)

@@ -37,7 +37,7 @@ class Container(models.Model):
 
     def time_delta_past(self):
         """Время простоя"""
-        return str(timezone.now().date() - self.start_date + timedelta(days=1)).split(',')[0]
+        return str(timezone.now().date() - self.start_date).split(',')[0]
 
     def is_past_30(self):
         """Является ли простой больше месяца"""
@@ -63,11 +63,11 @@ def get_end_date_by_book_type(book: Book) -> date | F:
     """Получить стартовую дату в зависимости от типа книги"""
     if book.type == CALL_TO_CLIENTS_BOOK:
         end_date = ExpressionWrapper(
-            F('end_date') + timedelta(days=1),
+            F('end_date'),
             output_field=DateTimeField(),
         )
     elif book.type == UNLOADING_BOOK:
-        end_date = book.book_date + timedelta(days=1)
+        end_date = book.book_date
     else:
         raise ValueError('Type for book not found')
     return end_date
