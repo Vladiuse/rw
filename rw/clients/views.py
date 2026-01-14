@@ -11,8 +11,15 @@ from clients.book_readers.exception import ContainerFileReadError
 
 from .container_creator import create_containers
 from .forms import TextBookForm
-from .models import Book, get_book_stat, get_col_name_by_book, get_containers_with_past, get_grouped_by_client_book
-from .types import BOOK_EXAMPLES
+from .models import (
+    Book,
+    get_book_stat,
+    get_col_name_by_book,
+    get_containers_with_past,
+    get_grouped_by_client_book,
+    group_containers_by_day_night,
+)
+from .types import BOOK_EXAMPLES, CALL_TO_CLIENTS_BOOK
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -85,6 +92,16 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
     containers_no_area = [container for container in containers if container.area is None]
     containers_number_error = [container for container in containers if not iso6346.is_valid(container.number)]
     containers_past_30 = [container for container in containers if container.is_past_30()]
+    day_night_8 = (
+        group_containers_by_day_night(book=book, day_start_at=8, night_start_at=20)
+        if book.type == CALL_TO_CLIENTS_BOOK
+        else []
+    )
+    day_night_6 = (
+        group_containers_by_day_night(book=book, day_start_at=6, night_start_at=18)
+        if book.type == CALL_TO_CLIENTS_BOOK
+        else []
+    )
     content = {
         "book": book,
         "book_stat": book_stat,
@@ -94,6 +111,8 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
         "containers_no_area": containers_no_area,
         "containers_number_error": containers_number_error,
         "containers_past_30": containers_past_30,
+        "day_night_8": day_night_8,
+        "day_night_6": day_night_6,
     }
     return render(request, "clients/book/book_detail.html", content)
 
