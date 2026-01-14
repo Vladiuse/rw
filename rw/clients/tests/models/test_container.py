@@ -1,10 +1,11 @@
 from datetime import date, datetime
 from unittest.mock import Mock
 
-from clients.models import Book, Container, group_containers_by_day_night
-from clients.types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 from django.test import TestCase
 from django.utils import timezone
+
+from clients.models import Book, Container, group_containers_by_day_night
+from clients.types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 
 
 def parse_dt(value: str) -> datetime:
@@ -14,7 +15,7 @@ def parse_dt(value: str) -> datetime:
 
 class ContainersCountByDayNightTest(TestCase):
     def setUp(self):
-        self.book = Book.objects.create(file="123", type=UNLOADING_BOOK)
+        self.book = Book.objects.create(file="123", type=CALL_TO_CLIENTS_BOOK)
 
     def _create_containers_by_date(self, dates: list[str]) -> None:
         books_to_create = []
@@ -26,7 +27,7 @@ class ContainersCountByDayNightTest(TestCase):
 
     def test_incorrect_book_type(self) -> None:
         book = Mock(spec=Book)
-        book.type = CALL_TO_CLIENTS_BOOK
+        book.type = UNLOADING_BOOK
         with self.assertRaises(TypeError):
             group_containers_by_day_night(book=book, day_start_at=8, night_start_at=20)
 
