@@ -1,4 +1,5 @@
-from datetime import date, datetime, timedelta
+from collections import defaultdict
+from datetime import date, datetime, timedelta, time
 
 from django.core.validators import MaxValueValidator
 from django.db import models
@@ -78,14 +79,13 @@ def get_end_date_by_book_type(book: Book) -> date | F:
 def get_grouped_by_client_book(book: Book) -> QuerySet[Container]:
     """Получить данные по контейнерам с группировкой по клиентам."""
     end_date = get_end_date_by_book_type(book=book)
-    qs = (
+    return (
         Container.objects.filter(book=book)
         .annotate(past=end_date - F("start_date"))
         .values("client_name")
         .annotate(count=Count("client_name"), max=Max("past"), min=Min("past"), average_past=Avg("past"))
         .order_by("-count", "-average_past")
     )
-    return qs
 
 
 def get_book_stat(book: Book) -> dict:
@@ -112,7 +112,11 @@ def get_containers_with_past(book: Book) -> QuerySet[Container]:
     )
 
 
-def group_containers_by_day_night(book: Book, day_start_at: int, night_start_at: int) -> list[dict]:
+def group_containers_by_day_night(
+    book: Book,
+    day_start_at: int,
+    night_start_at: int,
+) -> list[dict]:
     """Группировка по дням с учетом диапазона день и ночь.
 
     Пример:
@@ -151,5 +155,46 @@ def group_containers_by_day_night(book: Book, day_start_at: int, night_start_at:
                 filter=Q(end_date__hour__gte=night_start_at) | Q(end_date__hour__lt=day_start_at),
             ),
         )
-        .order_by("base_day")
+        .order_by("base_day"),
     )
+
+
+def group_containers_by_day_and_railway(book: Book) -> list[dict]:
+    """Группировка по обычному дню и железнодорожному дню (18:00–18:00).
+
+    Возвращает таблицу с колонками:
+        - date: календарная дата
+        - total: количество контейнеров за этот день
+        - railway: количество контейнеров за железнодорожный день (18:00 предыдущего дня - 18:00 текущего)
+    """
+    if book.type != CALL_TO_CLIENTS_BOOK:
+        msg = f"Incorrect book type. must be {CALL_TO_CLIENTS_BOOK}"
+        raise TypeError(msg)
+    calendar_count = defaultdict(int)
+    railway_count = defaultdict(int)
+    containers = Container.objects.filter(book=book)
+    for container in containers:
+        # календарный день
+        calendar_date = container.end_date.date()
+        calendar_count[calendar_date] += 1
+
+        # железнодорожный день
+        # если время > 18:00, относим к предыдущему дню
+        rail_date = (
+            (container.end_date + timedelta(days=1)).date()
+            if container.end_date.time() > time(18, 0)
+            else container.end_date.date()
+        )
+        railway_count[rail_date] += 1
+
+    # объединяем все даты
+    all_dates = sorted(set(calendar_count.keys()) | set(railway_count.keys()))
+
+    return [
+        {
+            "date": d,
+            "total": calendar_count.get(d, 0),
+            "railway": railway_count.get(d, 0),
+        }
+        for d in all_dates
+    ]

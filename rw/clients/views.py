@@ -17,6 +17,7 @@ from .models import (
     get_col_name_by_book,
     get_containers_with_past,
     get_grouped_by_client_book,
+    group_containers_by_day_and_railway,
     group_containers_by_day_night,
 )
 from .types import BOOK_EXAMPLES, CALL_TO_CLIENTS_BOOK
@@ -102,6 +103,11 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
         if book.type == CALL_TO_CLIENTS_BOOK
         else []
     )
+    day_and_railway_day_count = (
+        group_containers_by_day_and_railway(book=book)
+        if book.type == CALL_TO_CLIENTS_BOOK
+        else []
+    )
     content = {
         "book": book,
         "book_stat": book_stat,
@@ -113,6 +119,7 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
         "containers_past_30": containers_past_30,
         "day_night_8": day_night_8,
         "day_night_6": day_night_6,
+        "day_and_railway_day_count": day_and_railway_day_count,
     }
     return render(request, "clients/book/book_detail.html", content)
 
