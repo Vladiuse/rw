@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from django.test import TestCase
 from django.utils import timezone
 
-from clients.models import Book, Container, group_containers_by_day_night
+from clients.models import Book, Container, group_containers_by_day_night, group_containers_by_day_and_railway
 from clients.types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 
 
@@ -65,5 +65,39 @@ class ContainersCountByDayNightTest(TestCase):
         expected = [
             {"base_day": date(2025, 1, 1), "day_count": 2, "night_count": 4},
             {"base_day": date(2025, 1, 2), "day_count": 2, "night_count": 3},
+        ]
+        assert result == expected, f"actual: {result}"
+
+
+class RegularAndRailwaysDaysCountTest(TestCase):
+    def setUp(self):
+        self.book = Book.objects.create(file="123", type=CALL_TO_CLIENTS_BOOK)
+
+    def _create_containers_by_date(self, dates: list[str]) -> None:
+        books_to_create = []
+        for date_str in dates:
+            container = Container(book=self.book, end_date=parse_dt(date_str))
+            books_to_create.append(container)
+        Container.objects.bulk_create(books_to_create)
+        assert Container.objects.count() == len(dates)
+
+    def test_(self) -> None:
+        dates = (
+            "2025-01-01 08:10",  # 2025-01-01
+            "2025-01-01 10:10",  # 2025-01-01
+            "2025-01-01 20:10",  # 2025-01-02
+            "2025-01-02 08:10",  # 2025-01-02
+            "2025-01-02 10:10",  # 2025-01-02
+            "2025-01-02 20:10",  # 2025-01-03
+            "2025-01-03 02:10",  # 2025-01-03
+        )
+        self._create_containers_by_date(dates=dates)
+        result = group_containers_by_day_and_railway(
+            book=self.book,
+        )
+        expected = [
+            {"date": date(2025, 1, 1), "total": 3, "railway": 2},
+            {"date": date(2025, 1, 2), "total": 3, "railway": 3},
+            {"date": date(2025, 1, 3), "total": 1, "railway": 2},
         ]
         assert result == expected, f"actual: {result}"
