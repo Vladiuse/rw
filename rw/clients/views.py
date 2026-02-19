@@ -19,6 +19,8 @@ from .models import (
     get_grouped_by_client_book,
     group_containers_by_day_and_railway,
     group_containers_by_day_night,
+    group_containers_by_4_time_periods,
+    group_containers_by_24_time_periods,
 )
 from .types import BOOK_EXAMPLES, CALL_TO_CLIENTS_BOOK
 
@@ -104,9 +106,13 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
         else []
     )
     day_and_railway_day_count = (
-        group_containers_by_day_and_railway(book=book)
-        if book.type == CALL_TO_CLIENTS_BOOK
-        else []
+        group_containers_by_day_and_railway(book=book) if book.type == CALL_TO_CLIENTS_BOOK else []
+    )
+    group_containers_by_4_time_periods_count = (
+        group_containers_by_4_time_periods(book=book) if book.type == CALL_TO_CLIENTS_BOOK else []
+    )
+    group_containers_by_24_time_periods_count = (
+        group_containers_by_24_time_periods(book=book) if book.type == CALL_TO_CLIENTS_BOOK else []
     )
     content = {
         "book": book,
@@ -120,6 +126,8 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
         "day_night_8": day_night_8,
         "day_night_6": day_night_6,
         "day_and_railway_day_count": day_and_railway_day_count,
+        "group_containers_by_4_time_periods_count": group_containers_by_4_time_periods_count,
+        "group_containers_by_24_time_periods": group_containers_by_24_time_periods_count,
     }
     return render(request, "clients/book/book_detail.html", content)
 

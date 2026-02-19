@@ -34,14 +34,13 @@
     }
 </style>
 
-<div class="toast align-items-center text-white bg-primary border-0 position-fixed bottom-0 end-0" role="alert"
-    aria-live="assertive" aria-atomic="true" id="site-message" style="z-index: 11" data-bs-deley="5000">
+<div class="toast align-items-center text-white bg-primary border-0 position-fixed bottom-0 end-0" role="alert" aria-live="assertive" aria-atomic="true" id="site-message" style="z-index: 11"
+    data-bs-deley="5000">
     <div class="d-flex">
         <div class="toast-body">
             Скопировано
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-            aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
 </div>
 
@@ -67,28 +66,23 @@
     <a class="btn btn-primary" href="{%url 'clients:book_list'%}" role="button"><i class="fa-solid fa-list"> </i>Все
         книги</a>
     <button class="btn btn-primary" id="copy_table"><i class="fa-solid fa-copy"></i>Скопировать</button>
-    <a href="{%url 'clients:book_file_original_text' book.pk %}" class="btn btn-primary" target="_blank"><i
-            class="fa-solid fa-eye"></i>Оригинал книги</a>
-    <a href="{%url 'clients:book_no_containers_data' book.pk %}" class="btn btn-primary" target="_blank"><i
-            class="fa-solid fa-bug-slash"></i>Строки без контейнеров</a>
+    <a href="{%url 'clients:book_file_original_text' book.pk %}" class="btn btn-primary" target="_blank"><i class="fa-solid fa-eye"></i>Оригинал книги</a>
+    <a href="{%url 'clients:book_no_containers_data' book.pk %}" class="btn btn-primary" target="_blank"><i class="fa-solid fa-bug-slash"></i>Строки без контейнеров</a>
     <a href="http://127.0.0.1:8000/admin/clients/book/{{book.pk}}/change/" class="btn btn-primary" target="_blank">
         <i class="fa-solid fa-pen-to-square"></i>
         Редактировать</a>
-    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#booksEmampleModalDELETE"><i
-            class="fa-solid fa-trash"></i>Удалить</button>
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#booksEmampleModalDELETE"><i class="fa-solid fa-trash"></i>Удалить</button>
 </div>
 <div class="container">
     <div class="card text-center" id="result-tables">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="true" id="tab-client_count"
-                        data-table="client_count">Наличие по
+                    <a class="nav-link active" aria-current="true" id="tab-client_count" data-table="client_count">Наличие по
                         клиентам</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span
-                            id="client_rows_count">({{containers|length}})</span></a>
+                    <a class="nav-link" id="tab-client_rows" data-table="client_rows">Строки <span id="client_rows_count">({{containers|length}})</span></a>
                 </li>
                 {%if book.type == book.UNLOADING_BOOK %}
                 <li class="nav-item">
@@ -121,6 +115,16 @@
                 <li class="nav-item">
                     <a class="nav-link" id="tab-8-20" data-table="day_and_railway_day_count">
                         Сутки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-8-20" data-table="group_containers_by_4_time_periods_count">
+                        жд сутки 4 периода
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-8-20" data-table="group_containers_by_24_time_periods">
+                        24 периода
                     </a>
                 </li>
                 {%endif%}
@@ -234,6 +238,88 @@
                 </tbody>
             </table>
 
+            <table class="table table-striped table-bordered" id="group_containers_by_4_time_periods_count" style="display: none;">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">День</th>
+                        <th scope="col">18:00-00:00</th>
+                        <th scope="col">00:00-08:00</th>
+                        <th scope="col">08:00-12:00</th>
+                        <th scope="col">12:00-18:00</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for row in group_containers_by_4_time_periods_count%}
+                    <tr>
+                        <td>{{row.day|date:"d.m.Y"}}</td>
+                        <td>{{row.c_18_24}}</td>
+                        <td>{{row.c_0_8}}</td>
+                        <td>{{row.c_8_12}}</td>
+                        <td>{{row.c_12_18}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+            <table class="table table-striped table-bordered" id="group_containers_by_24_time_periods" style="display: none;">
+                <tr>
+                    <th scope="col">День</th>
+                    <th scope="col">00</th>
+                    <th scope="col">01</th>
+                    <th scope="col">02</th>
+                    <th scope="col">03</th>
+                    <th scope="col">04</th>
+                    <th scope="col">05</th>
+                    <th scope="col">06</th>
+                    <th scope="col">07</th>
+                    <th scope="col">08</th>
+                    <th scope="col">09</th>
+                    <th scope="col">10</th>
+                    <th scope="col">11</th>
+                    <th scope="col">12</th>
+                    <th scope="col">13</th>
+                    <th scope="col">14</th>
+                    <th scope="col">15</th>
+                    <th scope="col">16</th>
+                    <th scope="col">17</th>
+                    <th scope="col">18</th>
+                    <th scope="col">19</th>
+                    <th scope="col">20</th>
+                    <th scope="col">21</th>
+                    <th scope="col">22</th>
+                    <th scope="col">23</th>
+                </tr>
+                <tbody>
+                    {%for row in group_containers_by_24_time_periods%}
+                    <tr>
+                        <td>{{row.day|date:"d.m.Y"}}</td>
+                        <td>{{ row.h_0 }}</td>
+                        <td>{{ row.h_1 }}</td>
+                        <td>{{ row.h_2 }}</td>
+                        <td>{{ row.h_3 }}</td>
+                        <td>{{ row.h_4 }}</td>
+                        <td>{{ row.h_5 }}</td>
+                        <td>{{ row.h_6 }}</td>
+                        <td>{{ row.h_7 }}</td>
+                        <td>{{ row.h_8 }}</td>
+                        <td>{{ row.h_9 }}</td>
+                        <td>{{ row.h_10 }}</td>
+                        <td>{{ row.h_11 }}</td>
+                        <td>{{ row.h_12 }}</td>
+                        <td>{{ row.h_13 }}</td>
+                        <td>{{ row.h_14 }}</td>
+                        <td>{{ row.h_15 }}</td>
+                        <td>{{ row.h_16 }}</td>
+                        <td>{{ row.h_17 }}</td>
+                        <td>{{ row.h_18 }}</td>
+                        <td>{{ row.h_19 }}</td>
+                        <td>{{ row.h_20 }}</td>
+                        <td>{{ row.h_21 }}</td>
+                        <td>{{ row.h_22 }}</td>
+                        <td>{{ row.h_23 }}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -242,8 +328,7 @@
 
 
 <!-- Modal DELETE-->
-<div class="modal fade" id="booksEmampleModalDELETE" tabindex="-1" aria-labelledby="booksEmampleModalDELETELabel"
-    aria-hidden="true">
+<div class="modal fade" id="booksEmampleModalDELETE" tabindex="-1" aria-labelledby="booksEmampleModalDELETELabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
