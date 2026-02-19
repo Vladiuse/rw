@@ -1,11 +1,11 @@
 from collections import defaultdict
-from datetime import date, datetime, timedelta, time
+from datetime import date, datetime, time, timedelta
 
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.db.models import Avg, Case, Count, DateField, ExpressionWrapper, F, Max, Min, Q, When
 from django.db.models.fields import DateTimeField
-from django.db.models.functions import TruncDate
+from django.db.models.functions import Cast, ExtractHour, TruncDate
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
@@ -38,6 +38,9 @@ class Container(models.Model):
     send_number = models.CharField(max_length=10, blank=True)
     weight = models.CharField(max_length=5, blank=True)
     area = models.PositiveIntegerField(default=None, null=True, validators=[MaxValueValidator(99)])
+
+    def __str__(self) -> str:
+        return f"<Container:{self.number}>"
 
     def time_delta_past(self) -> str:
         """Время простоя."""
@@ -198,3 +201,27 @@ def group_containers_by_day_and_railway(book: Book) -> list[dict]:
         }
         for d in all_dates
     ]
+
+
+def group_containers_by_4_time_periods(book: Book) -> list[dict]:
+    qs =  (
+        Container.objects.filter(book=book)
+        .annotate(
+            hour=ExtractHour("end_date"),
+            base_day=TruncDate("end_date"),
+            day=Case(
+                When(hour__gte=18, then=Cast(TruncDate("end_date") + timedelta(days=1), DateField())),
+                default=TruncDate("end_date"),
+                output_field=DateField(),
+            ),
+        )
+        .values("day")
+        .annotate(
+            c_18_24=Count(Case(When(hour__gte=18, hour__lt=24, then=1))),
+            c_0_8=Count(Case(When(hour__gte=0, hour__lt=8, then=1))),
+            c_8_12=Count(Case(When(hour__gte=8, hour__lt=12, then=1))),
+            c_12_18=Count(Case(When(hour__gte=12, hour__lt=18, then=1))),
+        )
+        .order_by("day")
+    )
+    return list(qs)
