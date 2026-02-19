@@ -8,6 +8,7 @@ from clients.models import (
     Book,
     Container,
     group_containers_by_4_time_periods,
+    group_containers_by_24_time_periods,
     group_containers_by_day_and_railway,
     group_containers_by_day_night,
 )
@@ -110,6 +111,8 @@ class RegularAndRailwaysDaysCountTest(TestCase):
 
 
 class FourPeriodForDayTest(TestCase):
+    """Four hours periods test."""
+
     def setUp(self):
         self.book = Book.objects.create(file="123", type=CALL_TO_CLIENTS_BOOK)
 
@@ -141,5 +144,55 @@ class FourPeriodForDayTest(TestCase):
         expected = [
             {"day": date(2025, 1, 1), "c_18_24": 0, "c_0_8": 1, "c_8_12": 2, "c_12_18": 3},
             {"day": date(2025, 1, 2), "c_18_24": 4, "c_0_8": 0, "c_8_12": 0, "c_12_18": 0},
+        ]
+        assert result == expected, f"actual: {result}"
+
+
+class AllHourPeriodForDayTest(TestCase):
+    """24 hours periods test."""
+
+    def setUp(self):
+        self.book = Book.objects.create(file="123", type=CALL_TO_CLIENTS_BOOK)
+
+    def _create_containers_by_date(self, dates: list[str]) -> None:
+        books_to_create = []
+        for date_str in dates:
+            container = Container(book=self.book, end_date=parse_dt(date_str))
+            books_to_create.append(container)
+        Container.objects.bulk_create(books_to_create)
+        assert Container.objects.count() == len(dates)
+
+    def test_group_by_hour(self) -> None:
+        dates = [f"2025-01-01 {h:02}:00" for h in range(24)]
+        self._create_containers_by_date(dates=dates)
+        result = group_containers_by_24_time_periods(book=self.book)
+        expected = [
+            {
+                "day": date(2025, 1, 1),
+                "h_0": 1,
+                "h_1": 1,
+                "h_2": 1,
+                "h_3": 1,
+                "h_4": 1,
+                "h_5": 1,
+                "h_6": 1,
+                "h_7": 1,
+                "h_8": 1,
+                "h_9": 1,
+                "h_10": 1,
+                "h_11": 1,
+                "h_12": 1,
+                "h_13": 1,
+                "h_14": 1,
+                "h_15": 1,
+                "h_16": 1,
+                "h_17": 1,
+                "h_18": 1,
+                "h_19": 1,
+                "h_20": 1,
+                "h_21": 1,
+                "h_22": 1,
+                "h_23": 1,
+            }
         ]
         assert result == expected, f"actual: {result}"

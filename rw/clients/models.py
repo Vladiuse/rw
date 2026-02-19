@@ -3,7 +3,7 @@ from datetime import date, datetime, time, timedelta
 
 from django.core.validators import MaxValueValidator
 from django.db import models
-from django.db.models import Avg, Case, Count, DateField, ExpressionWrapper, F, Max, Min, Q, When
+from django.db.models import Avg, Case, Count, DateField, ExpressionWrapper, F, Max, Min, Q, When, IntegerField
 from django.db.models.fields import DateTimeField
 from django.db.models.functions import Cast, ExtractHour, TruncDate
 from django.db.models.query import QuerySet
@@ -204,7 +204,7 @@ def group_containers_by_day_and_railway(book: Book) -> list[dict]:
 
 
 def group_containers_by_4_time_periods(book: Book) -> list[dict]:
-    qs =  (
+    qs = (
         Container.objects.filter(book=book)
         .annotate(
             hour=ExtractHour("end_date"),
@@ -222,6 +222,20 @@ def group_containers_by_4_time_periods(book: Book) -> list[dict]:
             c_8_12=Count(Case(When(hour__gte=8, hour__lt=12, then=1))),
             c_12_18=Count(Case(When(hour__gte=12, hour__lt=18, then=1))),
         )
+        .order_by("day")
+    )
+    return list(qs)
+
+
+def group_containers_by_24_time_periods(book: Book) -> list[dict]:
+    qs = (
+        Container.objects.filter(book=book)
+        .annotate(
+            day=TruncDate("end_date"),
+            hour=ExtractHour("end_date"),
+        )
+        .values("day")
+        .annotate(**{f"h_{h}": Count(Case(When(hour=h, then=1), output_field=IntegerField())) for h in range(24)})
         .order_by("day")
     )
     return list(qs)
