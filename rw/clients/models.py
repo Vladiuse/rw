@@ -1,11 +1,25 @@
 from collections import defaultdict
 from datetime import date, datetime, time, timedelta
+from itertools import groupby
 
 from django.core.validators import MaxValueValidator
 from django.db import models
-from django.db.models import Avg, Case, Count, DateField, ExpressionWrapper, F, IntegerField, Max, Min, Q, When
+from django.db.models import (
+    Avg,
+    Case,
+    Count,
+    DateField,
+    DurationField,
+    ExpressionWrapper,
+    F,
+    IntegerField,
+    Max,
+    Min,
+    Q,
+    When,
+)
 from django.db.models.fields import DateTimeField
-from django.db.models.functions import Cast, ExtractHour, TruncDate
+from django.db.models.functions import Cast, ExtractHour, TruncDate, TruncMonth
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
@@ -66,6 +80,62 @@ def get_col_name_by_book(book: Book) -> str:
     else:
         raise ValueError("Type for book not found")
     return col_name
+
+
+def build_idle_report(book: Book) -> list[list[str | int]]:
+    """Строит сводную таблицу простоя контейнеров переданной книги.
+
+    Группирует контейнеры по клиенту и по месяцу въезда (start_date).
+    Для каждой пары (клиент, месяц) считает количество контейнеров
+    и средний простой в днях (от start_date до текущего момента).
+
+    Контейнеры без start_date в таблицу не попадают.
+
+    Возвращает двумерный массив (список строк, каждая строка — список ячеек).
+    Первая строка — заголовки колонок:
+        ["Клиент", "Кол-во YYYY-MM", "Ср. простой YYYY-MM", ...]
+    Каждая следующая строка — данные одного клиента:
+        [имя_клиента, count_месяц1, avg_days_месяц1, count_месяц2, ...]
+
+    На каждый месяц приходится две колонки: количество контейнеров
+    и средний простой в днях. Месяцы идут по возрастанию.
+    Если у клиента нет контейнеров за какой-то месяц,
+    обе ячейки этого месяца равны 0.
+    """
+    now = timezone.now()
+    idle = ExpressionWrapper(now - F("start_date"), output_field=DurationField())
+    queryset = (
+        Container.objects.filter(book=book, start_date__isnull=False)
+        .annotate(month=TruncMonth("start_date"))
+        .values("client_name", "month")
+        .annotate(count=Count("id"), avg_idle=Avg(idle))
+        .order_by("client_name", "month")
+    )
+
+    records: list[dict[str, object]] = list(queryset)
+    months: list[str] = sorted({record["month"].strftime("%Y-%m") for record in records})
+
+    header: list[str | int] = ["Клиент"]
+    for month in months:
+        header.append(f"Кол-во {month}")
+        header.append(f"Ср. простой {month}")
+
+    table: list[list[str | int]] = [header]
+    for client_name, group in groupby(records, key=lambda record: record["client_name"]):
+        by_month: dict[str, tuple[int, int]] = {}
+        for record in group:
+            month_key: str = record["month"].strftime("%Y-%m")
+            avg_idle: timedelta | None = record["avg_idle"]
+            by_month[month_key] = (record["count"], avg_idle.days if avg_idle else 0)
+
+        row: list[str | int] = [client_name]
+        for month in months:
+            count, avg_days = by_month.get(month, (0, 0))
+            row.append(count)
+            row.append(avg_days)
+        table.append(row)
+
+    return table
 
 
 def get_end_date_by_book_type(book: Book) -> date | F:

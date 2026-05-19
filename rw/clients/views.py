@@ -13,14 +13,15 @@ from .container_creator import create_containers
 from .forms import TextBookForm
 from .models import (
     Book,
+    build_idle_report,
     get_book_stat,
     get_col_name_by_book,
     get_containers_with_past,
     get_grouped_by_client_book,
-    group_containers_by_day_and_railway,
-    group_containers_by_day_night,
     group_containers_by_4_time_periods,
     group_containers_by_24_time_periods,
+    group_containers_by_day_and_railway,
+    group_containers_by_day_night,
 )
 from .types import BOOK_EXAMPLES, CALL_TO_CLIENTS_BOOK
 
@@ -114,6 +115,7 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
     group_containers_by_24_time_periods_count = (
         group_containers_by_24_time_periods(book=book) if book.type == CALL_TO_CLIENTS_BOOK else []
     )
+    build_idle_report_data = build_idle_report(book=book)
     content = {
         "book": book,
         "book_stat": book_stat,
@@ -128,6 +130,7 @@ def book_detail(request: HttpRequest, book_id: int) -> HttpResponse:
         "day_and_railway_day_count": day_and_railway_day_count,
         "group_containers_by_4_time_periods_count": group_containers_by_4_time_periods_count,
         "group_containers_by_24_time_periods": group_containers_by_24_time_periods_count,
+        "build_idle_report_data": build_idle_report_data,
     }
     return render(request, "clients/book/book_detail.html", content)
 

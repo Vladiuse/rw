@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from unittest.mock import Mock
 
 from django.test import TestCase
@@ -7,6 +7,7 @@ from django.utils import timezone
 from clients.models import (
     Book,
     Container,
+    build_idle_report,
     group_containers_by_4_time_periods,
     group_containers_by_24_time_periods,
     group_containers_by_day_and_railway,
@@ -18,6 +19,14 @@ from clients.types import CALL_TO_CLIENTS_BOOK, UNLOADING_BOOK
 def parse_dt(value: str) -> datetime:
     dt = datetime.strptime(value, "%Y-%m-%d %H:%M")  # noqa: DTZ007
     return timezone.make_aware(dt, timezone.get_current_timezone())
+
+
+def days_ago(days: int = 0) -> datetime:
+    """Возвращает дату-время на указанное число дней назад от текущего момента.
+
+    Без аргумента возвращает текущий момент.
+    """
+    return timezone.now() - timedelta(days=days)
 
 
 class ContainersCountByDayNightTest(TestCase):
@@ -193,6 +202,58 @@ class AllHourPeriodForDayTest(TestCase):
                 "h_21": 1,
                 "h_22": 1,
                 "h_23": 1,
-            }
+            },
         ]
         assert result == expected, f"actual: {result}"
+
+
+class BuildIdleReport(TestCase):
+    def setUp(self):
+        self.book = Book.objects.create(file="123", type=CALL_TO_CLIENTS_BOOK)
+
+    def _create_containers_by_date(self, data: list[tuple[str, datetime]]) -> None:
+        books_to_create = []
+        for client_name, dt in data:
+            container = Container(book=self.book, client_name=client_name, start_date=dt)
+            books_to_create.append(container)
+        Container.objects.bulk_create(books_to_create)
+        assert Container.objects.count() == len(data)
+
+    def test_one_client_on_month(self) -> None:
+        data = [
+            ("Client 1", days_ago(1)),
+            ("Client 1", days_ago(1)),
+        ]
+        self._create_containers_by_date(data=data)
+        table = build_idle_report(book=self.book)
+        _ = table.pop(0)  # remove header from table
+        assert len(table) == 1, f"rows in table: {len(table)}"
+        line = table[0]
+        assert line == ["Client 1", 2, 1]
+
+    def test_one_client_two_month(self) -> None:
+        data = [
+            ("Client 1", days_ago(1)),
+            ("Client 1", days_ago(32)),
+        ]
+        self._create_containers_by_date(data=data)
+        table = build_idle_report(book=self.book)
+        _ = table.pop(0)  # remove header from table
+        assert len(table) == 1, f"rows in table: {len(table)}"
+        line = table[0]
+        assert line == ["Client 1", 1, 32, 1, 1]
+
+    def test_two_clients(self) -> None:
+        data = [
+            ("Client 1", days_ago(1)),
+            ("Client 2", days_ago(1)),
+            ("Client 2", days_ago(4)),
+        ]
+        self._create_containers_by_date(data=data)
+        table = build_idle_report(book=self.book)
+        _ = table.pop(0)  # remove header from table
+        assert len(table) == 2, f"rows in table: {len(table)}"
+        line1 = table[0]
+        line2 = table[1]
+        assert line1 == ["Client 1", 1, 1]
+        assert line2 == ["Client 2", 2, 2]
