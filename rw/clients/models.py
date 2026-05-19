@@ -3,7 +3,7 @@ from datetime import date, datetime, time, timedelta
 
 from django.core.validators import MaxValueValidator
 from django.db import models
-from django.db.models import Avg, Case, Count, DateField, ExpressionWrapper, F, Max, Min, Q, When, IntegerField
+from django.db.models import Avg, Case, Count, DateField, ExpressionWrapper, F, IntegerField, Max, Min, Q, When
 from django.db.models.fields import DateTimeField
 from django.db.models.functions import Cast, ExtractHour, TruncDate
 from django.db.models.query import QuerySet
@@ -26,6 +26,9 @@ class Book(models.Model):
     type = models.CharField(max_length=30, choices=BOOK_TYPES, default=UNLOADING_BOOK)
     no_containers_file = models.FileField(upload_to="books_no_containers", blank=True)
     error_text = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.type} от {self.book_date:%d.%m.%Y}"
 
 
 class Container(models.Model):
