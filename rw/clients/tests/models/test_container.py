@@ -214,7 +214,7 @@ class BuildIdleReport(TestCase):
     def _create_containers_by_date(self, data: list[tuple[str, datetime]]) -> None:
         books_to_create = []
         for client_name, dt in data:
-            container = Container(book=self.book, client_name=client_name, start_date=dt)
+            container = Container(book=self.book, client_name=client_name, end_date=dt)
             books_to_create.append(container)
         Container.objects.bulk_create(books_to_create)
         assert Container.objects.count() == len(data)

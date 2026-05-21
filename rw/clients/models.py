@@ -103,10 +103,10 @@ def build_idle_report(book: Book) -> list[list[str | int]]:
     обе ячейки этого месяца равны 0.
     """
     now = timezone.now()
-    idle = ExpressionWrapper(now - F("start_date"), output_field=DurationField())
+    idle = ExpressionWrapper(now - F("end_date"), output_field=DurationField())
     queryset = (
-        Container.objects.filter(book=book, start_date__isnull=False)
-        .annotate(month=TruncMonth("start_date"))
+        Container.objects.filter(book=book, end_date__isnull=False)
+        .annotate(month=TruncMonth("end_date"))
         .values("client_name", "month")
         .annotate(count=Count("id"), avg_idle=Avg(idle))
         .order_by("client_name", "month")
