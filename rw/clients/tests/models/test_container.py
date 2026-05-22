@@ -211,49 +211,68 @@ class BuildIdleReport(TestCase):
     def setUp(self):
         self.book = Book.objects.create(file="123", type=CALL_TO_CLIENTS_BOOK)
 
-    def _create_containers_by_date(self, data: list[tuple[str, datetime]]) -> None:
-        books_to_create = []
-        for client_name, dt in data:
-            container = Container(book=self.book, client_name=client_name, end_date=dt)
-            books_to_create.append(container)
-        Container.objects.bulk_create(books_to_create)
+    def _create_containers(self, data: list[tuple[str, datetime, datetime]]) -> None:
+        """Создаёт контейнеры из (client_name, start_date, end_date)."""
+        containers_to_create = []
+        for client_name, start_date, end_date in data:
+            container = Container(
+                book=self.book,
+                client_name=client_name,
+                start_date=start_date,
+                end_date=end_date,
+            )
+            containers_to_create.append(container)
+        Container.objects.bulk_create(containers_to_create)
         assert Container.objects.count() == len(data)
 
-    def test_one_client_on_month(self) -> None:
+    def test_one_client_one_month(self) -> None:
         data = [
-            ("Client 1", days_ago(1)),
-            ("Client 1", days_ago(1)),
+            ("Client 1", days_ago(11), days_ago(1)),
+            ("Client 1", days_ago(11), days_ago(1)),
         ]
-        self._create_containers_by_date(data=data)
+        self._create_containers(data=data)
         table = build_idle_report(book=self.book)
-        _ = table.pop(0)  # remove header from table
+        _ = table.pop(0)
         assert len(table) == 1, f"rows in table: {len(table)}"
         line = table[0]
-        assert line == ["Client 1", 2, 1]
+        assert line == ["Client 1", 2, 10], f"actual: {line}"
 
-    def test_one_client_two_month(self) -> None:
+    def test_one_client_two_months(self) -> None:
         data = [
-            ("Client 1", days_ago(1)),
-            ("Client 1", days_ago(32)),
+            ("Client 1", days_ago(33), days_ago(32)),
+            ("Client 1", days_ago(11), days_ago(1)),
         ]
-        self._create_containers_by_date(data=data)
+        self._create_containers(data=data)
         table = build_idle_report(book=self.book)
-        _ = table.pop(0)  # remove header from table
+        _ = table.pop(0)
         assert len(table) == 1, f"rows in table: {len(table)}"
         line = table[0]
-        assert line == ["Client 1", 1, 32, 1, 1]
+        assert line == ["Client 1", 1, 1, 1, 10], f"actual: {line}"
 
     def test_two_clients(self) -> None:
         data = [
-            ("Client 1", days_ago(1)),
-            ("Client 2", days_ago(1)),
-            ("Client 2", days_ago(4)),
+            ("Client 1", days_ago(6), days_ago(1)),
+            ("Client 2", days_ago(4), days_ago(1)),
+            ("Client 2", days_ago(5), days_ago(2)),
         ]
-        self._create_containers_by_date(data=data)
+        self._create_containers(data=data)
         table = build_idle_report(book=self.book)
-        _ = table.pop(0)  # remove header from table
+        _ = table.pop(0)
         assert len(table) == 2, f"rows in table: {len(table)}"
         line1 = table[0]
         line2 = table[1]
-        assert line1 == ["Client 1", 1, 1]
-        assert line2 == ["Client 2", 2, 2]
+        assert line1 == ["Client 1", 1, 5], f"actual: {line1}"
+        assert line2 == ["Client 2", 2, 3], f"actual: {line2}"
+
+    def test_skip_containers_without_dates(self) -> None:
+        data = [
+            ("Client 1", days_ago(11), days_ago(1)),
+        ]
+        self._create_containers(data=data)
+        Container.objects.create(book=self.book, client_name="Client 2", start_date=days_ago(5))
+        Container.objects.create(book=self.book, client_name="Client 3", end_date=days_ago(5))
+
+        table = build_idle_report(book=self.book)
+        _ = table.pop(0)
+        assert len(table) == 1, f"rows in table: {len(table)}"
+        assert table[0] == ["Client 1", 1, 10], f"actual: {table[0]}"

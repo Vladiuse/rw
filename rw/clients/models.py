@@ -85,11 +85,11 @@ def get_col_name_by_book(book: Book) -> str:
 def build_idle_report(book: Book) -> list[list[str | int]]:
     """Строит сводную таблицу простоя контейнеров переданной книги.
 
-    Группирует контейнеры по клиенту и по месяцу въезда (start_date).
+    Группирует контейнеры по клиенту и по месяцу выезда (end_date).
     Для каждой пары (клиент, месяц) считает количество контейнеров
-    и средний простой в днях (от start_date до текущего момента).
+    и средний простой в днях (разница между end_date и start_date).
 
-    Контейнеры без start_date в таблицу не попадают.
+    Контейнеры без end_date или без start_date в таблицу не попадают.
 
     Возвращает двумерный массив (список строк, каждая строка — список ячеек).
     Первая строка — заголовки колонок:
@@ -102,10 +102,9 @@ def build_idle_report(book: Book) -> list[list[str | int]]:
     Если у клиента нет контейнеров за какой-то месяц,
     обе ячейки этого месяца равны 0.
     """
-    now = timezone.now()
-    idle = ExpressionWrapper(now - F("end_date"), output_field=DurationField())
+    idle = ExpressionWrapper(F("end_date") - F("start_date"), output_field=DurationField())
     queryset = (
-        Container.objects.filter(book=book, end_date__isnull=False)
+        Container.objects.filter(book=book, end_date__isnull=False, start_date__isnull=False)
         .annotate(month=TruncMonth("end_date"))
         .values("client_name", "month")
         .annotate(count=Count("id"), avg_idle=Avg(idle))
