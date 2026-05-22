@@ -82,12 +82,13 @@ def get_col_name_by_book(book: Book) -> str:
     return col_name
 
 
-def build_idle_report(book: Book) -> list[list[str | int]]:
+def build_idle_report(book: Book) -> list[list[str | int | float]]:
     """Строит сводную таблицу простоя контейнеров переданной книги.
 
     Группирует контейнеры по клиенту и по месяцу выезда (end_date).
     Для каждой пары (клиент, месяц) считает количество контейнеров
-    и средний простой в днях (разница между end_date и start_date).
+    и средний простой в днях (разница между end_date и start_date),
+    округлённый до двух знаков после запятой.
 
     Контейнеры без end_date или без start_date в таблицу не попадают.
 
@@ -102,6 +103,7 @@ def build_idle_report(book: Book) -> list[list[str | int]]:
     Если у клиента нет контейнеров за какой-то месяц,
     обе ячейки этого месяца равны 0.
     """
+    seconds_in_day = 86400
     idle = ExpressionWrapper(F("end_date") - F("start_date"), output_field=DurationField())
     queryset = (
         Container.objects.filter(book=book, end_date__isnull=False, start_date__isnull=False)
@@ -114,22 +116,23 @@ def build_idle_report(book: Book) -> list[list[str | int]]:
     records: list[dict[str, object]] = list(queryset)
     months: list[str] = sorted({record["month"].strftime("%Y-%m") for record in records})
 
-    header: list[str | int] = ["Клиент"]
+    header: list[str | int | float] = ["Клиент"]
     for month in months:
         header.append(f"Кол-во {month}")
         header.append(f"Ср. простой {month}")
 
-    table: list[list[str | int]] = [header]
+    table: list[list[str | int | float]] = [header]
     for client_name, group in groupby(records, key=lambda record: record["client_name"]):
-        by_month: dict[str, tuple[int, int]] = {}
+        by_month: dict[str, tuple[int, float]] = {}
         for record in group:
             month_key: str = record["month"].strftime("%Y-%m")
             avg_idle: timedelta | None = record["avg_idle"]
-            by_month[month_key] = (record["count"], avg_idle.days if avg_idle else 0)
+            avg_days: float = round(avg_idle.total_seconds() / seconds_in_day, 2) if avg_idle else 0.0
+            by_month[month_key] = (record["count"], avg_days)
 
-        row: list[str | int] = [client_name]
+        row: list[str | int | float] = [client_name]
         for month in months:
-            count, avg_days = by_month.get(month, (0, 0))
+            count, avg_days = by_month.get(month, (0, 0.0))
             row.append(count)
             row.append(avg_days)
         table.append(row)
