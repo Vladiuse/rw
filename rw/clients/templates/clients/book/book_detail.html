@@ -240,7 +240,7 @@
                         {%for cell in row%}
                         <td>
                             {%if cell%}
-                            {{cell}}
+                            {{cell|to_excel_format}}
                             {%else%}
                             -
                             {%endif%}
