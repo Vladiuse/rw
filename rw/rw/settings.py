@@ -32,7 +32,7 @@ SECRET_KEY = get_secret("DJ_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rw.vim-store.ru"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rw.vim-store.ru", "rw.vladiuse.beget.tech"]
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
