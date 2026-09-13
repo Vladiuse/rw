@@ -10,12 +10,19 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # get secret keys
-with open(BASE_DIR / "secrets.json") as secrets_file:
-    secrets = json.load(secrets_file)
+SECRETS_FILE = BASE_DIR / "secrets.json"
+if SECRETS_FILE.exists():
+    with SECRETS_FILE.open() as secrets_file:
+        secrets = json.load(secrets_file)
+else:
+    secrets = {}
 
 
-def get_secret(setting: str, secrets: dict=secrets) -> str | int | float | bool:
-    """Get secret setting or fail with ImproperlyConfigured."""
+def get_secret(setting: str, secrets: dict = secrets) -> str | int | float | bool:
+    """Get secret from environment, fall back to secrets.json."""
+    env_value = os.environ.get(setting)
+    if env_value is not None:
+        return env_value
     try:
         return secrets[setting]
     except KeyError as error:
@@ -32,7 +39,14 @@ SECRET_KEY = get_secret("DJ_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rw.vim-store.ru", "rw.vladiuse.beget.tech"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "rw.vim-store.ru",
+    "rw.vladiuse.beget.tech",
+    "rw.sladkievody.com",
+]
+CSRF_TRUSTED_ORIGINS = ["https://rw.sladkievody.com"]
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
@@ -97,30 +111,16 @@ WSGI_APPLICATION = "rw.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if os.environ.get("USE_LOCAL_DB") == "False":
-    # for MySql database remote
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": get_secret("db_name"),
-            "USER": get_secret("db_login"),
-            "PASSWORD": get_secret("db_pass"),
-            "HOST": "vladiuse.beget.tech",
-            "PORT": "3306",
-        }
-    }
-else:
-    # for MySql database local
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": get_secret("db_local_name"),
-            "USER": get_secret("db_local_login"),
-            "PASSWORD": get_secret("db_local_pass"),
-            "HOST": "localhost",
-            "PORT": "3306",
-        },
-    }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DB_NAME") or get_secret("db_local_name"),
+        "USER": os.environ.get("DB_USER") or get_secret("db_local_login"),
+        "PASSWORD": os.environ.get("DB_PASSWORD") or get_secret("db_local_pass"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "3306"),
+    },
+}
 
 
 # Password validation
@@ -160,7 +160,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = "/home/v/vladiuse/rw.vim-store.ru/public_html/static"
+STATIC_ROOT = os.environ.get("DJ_STATIC_ROOT", BASE_DIR / "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR /"media"
