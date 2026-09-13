@@ -20,10 +20,9 @@ services:
       - db
     volumes:
       - ./rw/media:/app/media
-      - static_files:/app/static
+      - ./static:/app/static
     ports:
       - "127.0.0.1:8003:8000"
 
 volumes:
   db_data:
-  static_files:
