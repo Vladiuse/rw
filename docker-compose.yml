@@ -19,8 +19,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./rw/media:/app/media
-      - ./static:/app/static
+      - ./rw:/app
     ports:
       - "127.0.0.1:8003:8000"
 
