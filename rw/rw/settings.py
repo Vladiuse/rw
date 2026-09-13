@@ -37,7 +37,7 @@ def get_secret(setting: str, secrets: dict = secrets) -> str | int | float | boo
 SECRET_KEY = get_secret("DJ_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJ_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -71,10 +71,14 @@ INSTALLED_APPS = [
     "cont_dislocation.apps.ContDislocationConfig",
     "compare_container_lists.apps.CompareContainerListsConfig",
     "clients.apps.ClientsConfig",
-    # tools
-    "debug_toolbar",
-    "django_extensions",
 ]
+
+if DEBUG:
+    # tools
+    INSTALLED_APPS += [
+        "debug_toolbar",
+        "django_extensions",
+    ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
